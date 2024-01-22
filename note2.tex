@@ -1,0 +1,184 @@
+\newcommand{\bits}{\{0,1\}}
+\newcommand{\bfu}{\mathbf{u}}
+\newcommand{\bfv}{\mathbf{v}}
+\newcommand{\bfp}{\mathbf{p}}
+\newcommand{\bfz}{\mathbf{z}}
+\newcommand{\bfx}{\mathbf{x}}
+\newcommand{\bfy}{\mathbf{y}}
+
+\newcommand{\bbZ}{\mathbb{Z}}
+\newcommand{\calR}{\mathcal{R}}
+
+\section{Sub-poly Communication 2-server Classical PIR}
+
+As introduced in the earlier lecture, Private Information Retreival~(PIR)~\cite{chor1998private} is a cryptographic mechanism which allows a user holding an index $i\in[n]$ to retrieve the $i$-th bit from a $n$-bit database, copies of which are held by one or more (non-colluding) servers, such that the servers do not learn anything about about $i$. We saw a construction of two-server information-theoretic PIR that has bandwidth $O(n^{1/3})$ in the last lecture. The ultimate goal in this lecture is to see at a PIR construction that has bandwidth sub-polynomial in $n$.
+As a first step, we will see a 2-server PIR construction by Woodruff and Yekhanin~\cite{woodruff2005geometric} that has bandwidth $O(n^{1/3})$, based on an interpolation approach.
+\subsection{An Interpolation Approach to 2-Server PIR}
+As a warm-up, we will first start with a na\"ive \emph{four-server} construction. Let $\bfx=(x_1,x_2,\ldots,x_n)\in \bits^n$ be the database. Define $E:[n]\to \bits^m$ such that $E(1),E(2),\ldots,E(n)$ are $n$ distinct points of Hamming weight $3$. Note that such a mapping $E$ exists as long as ${m\choose 3}\ge n$. Hence, we set $m=O(n^{1/3})$. Define the multivariate polynomial $F(z_1,z_2,\ldots,z_m)$ over $\mathbb{F}_5$ as
+\[
+F(z_1,z_2,\ldots,z_m)=\sum_{i=1}^nx_i\prod_{E(i)_\ell=1}z_\ell\;.
+\]
+First off, observe that since each $E(i)$ has hamming weight $3$, $F$ has degree $3$. Furthermore, for each $i$, $F(E(i))=x_i$.
+
+Therefore, in the PIR protocol a user that has index $i$, needs to retrieve the value of $F(\bfp)$ for $\bfp=E(i)$. Let $\bfv$ be some randomly chosen element of $\mathbb{F}_5^m$. Suppose, the user learns the values $F(\bfp+\bfv),F(\bfp+2\bfv),F(\bfp+3\bfv),F(\bfp+4\bfv)$. Let $f(\lambda)=F(\bfp+\lambda \bfv)$. Since the degree of $f$ is $3$, and the user knows $f(1),f(2),f(3),f(4)$, they can interpolate $f$ to find $f(0)=F(\bfp)=x_i$. This observation gives us the following protocol.
+\begin{enumerate}
+    \item User picks $\bfv\in \mathbb{F}_5^m$ uniformly at random
+    \item To server $j\in [4]$, user sends $\bfp+j\bfv$
+    \item Server $j$ returns $F(\bfp+j\bfv)$
+    \item User computes $F(\bfp)$ using interpolation
+\end{enumerate}
+The correctness of the protocol follows directly from the observation above, while privacy follows because $(\bfp+j\bfv)$ is distributed uniformly over $\mathbb{F}_5^m$ and does not reveal $\bfp$.
+Observe that the communication is somewhat asymmetric: the user sends an element of $\mathbb{F}_5^m$ to the servers while the servers respond with an element of $\mathbb{F}_5$. We will make this symmetric and reduce the number of servers next. Towards that, we prove the following simple lemma. Note that the derivative of a function $f$ at $x$ is denoted $f'(x)$.
+\begin{lemma}
+    Let $p$ be a prime. Suppose $x_1,x_2,y_1,y_2,z_1,z_2\in \mathbb{F}_p$ are such that $x_1\ne x_2$. Then there exists at most one polynomial $f(\lambda)\in \mathbb{F}_p(\lambda)$ of degree $\le 3$ such that $f(x_1)=y_1,f(x_2)=y_2,f'(x_1)=z_1,f'(x_2)=z_2$.
+\end{lemma}
+\begin{proof}
+    Assume there exist two such polynomials $f_1,f_2$. Consider the polynomial $f=f_1-f_2$. Clearly, $f(x_1)=f(x_2)=0=f'(x_1)=f'(x_2)$. Therefore $(\lambda-x_1)^2(\lambda-x_2)^2$ divides $f(\lambda)$. Since the degree of $f(\lambda)$ is at most $3$, this implies $f(\lambda)=0$.
+\end{proof}
+Therefore, if the user were given the value of $f(1),f(2),f'(1),f'(2)$ then they can compute $f(0)$. This observation allows us to give the following 2-server protocol and even reduce the finite field to $\mathbb{F}_3$. (Recall $\bfp$ is such that $\bfp=E(i)$ where $i$ is the index whose value the user wants to retrieve, and $f(\lambda)=F(\bfp+\lambda \bfv)$).
+\begin{enumerate}
+    \item User picks $\bfv\in \mathbb{F}_3^m$ uniformly at random
+    \item To server $j\in [2]$, user sends $\bfp+j\bfv$
+    \item Server $j$ returns $F(\bfp+j\bfv),\frac{\partial F}{\partial z_1}\big|_{(\bfp+j\bfv)},\ldots, \frac{\partial F}{\partial z_m}\big|_{(\bfp+j\bfv)}$
+    \item For $j\in [2]$, server computes $f'(j)=\sum_{\ell=1}^m\frac{\partial F}{\partial z_\ell}\big|_{(\bfp+j\bfv)}\bfv_\ell$ (where $\bfv_\ell$ is the value at the $\ell$-th index of $\bfv$). Use $f(1),f(2),f'(1),f'(2)$ to compute $f(0)$ and output the answer.
+\end{enumerate}
+Correctness follows since $f'(\lambda)\big|_j=\sum_{\ell=1}^m\frac{\partial F}{\partial z_\ell}\big|_{(\bfp+j\bfv)}\bfv_\ell$ using the chain rule. Privacy follows for the same reason as in the previous protocol. Note that the communication here is $O(m)=O(n^{1/3})$ but symmetric. Next, we will see a protocol where the communication is significantly reduced using ideas from coding theory.
+\subsection{2-Server PIR using Matching Vector Families}
+In this section, we will see the 2-server PIR construction by Dvir and Gopi~\cite{dvir20162}.
+We first define what a matching vector family is.
+\begin{definition}
+    Let $S\in \mathbb{Z}_m\setminus \{0\}$ and let $\mathcal{F}=(\mathcal{U},\mathcal{V})$ where $\mathcal{U}=(\bfu_1,\bfu_2,\ldots,\bfu_n)$, $\mathcal{V}=(\bfv_1,\bfv_2,\ldots,\bfv_n)$ and for all $i\in [n]$, $\bfu_i,\bfv_i\in \mathbb{Z}_m^k$. Then $\mathcal{F}$ is called an $S$-matching vector family of size $n$ and dimension $k$ if for all $i,j\in[n]$,
+    \[
+    \langle \bfu_i,\bfv_j\rangle\begin{cases}
+        =0 &\text{ if }i=j\\
+        \in S&\text{ if }i\ne j
+    \end{cases}
+    \]
+\end{definition}
+Matching vector family constructions will not be the focus of this class (if you want to learn more about matching vector families and their applications to coding theory, refer to~\cite{dvir2011matching} and chapter 4 of~\cite{Yek}), and we will directly use the following result from~\cite{Gro} in our PIR construction.
+\begin{proposition}[~\cite{Gro}]
+    There is an explicitly constructible $S$-matching vector family in $\mathbb{Z}_6^k$ of size $n\ge \left(\Omega\left(\frac{(\log k)^2}{\log\log k}\right)\right)$ where $S=\{1,3,4\}\subset \mathbb{Z}_6$.
+\end{proposition}
+Note that $n= \left(\Omega\left(\frac{(\log k)^2}{\log\log k}\right)\right)$ implies $k=\exp(O(\sqrt{\log n \log\log n}))$. 
+
+We will work with polynomials over the ring $\mathcal{R}=\mathcal{R}_{6,6}=\mathbb{Z}_6[\gamma]/(\gamma^6-1)$. We will denote the vector $(\gamma^{z_1},\gamma^{z_2}\ldots,\gamma^{z_k})$ by $\gamma^{\bfz}$ where $\bfz=(z_1,z_2,\ldots,z_k)\in \mathbb{Z}_6^k$. Further for $\bfy=(y_1,y_2,\ldots,y_k)$,$\bfz=(z_1,z_2,\ldots,z_k)$, we denote by $\bfy^{\bfz}$ the monomial $\prod_{i=1}^ky_i^{z_i}$.
+
+Let $\bfx=(x_1,x_2,\ldots,x_n)$ be the database and $(\mathcal{U},\mathcal{V})$ be a $\{1,3,4\}$-matching vector family of dimension $k$ and size $n$. 
+Define $F(\bfy)\in \calR[\bfy]=\calR[y_1,y_2,\ldots,y_k]$ given by 
+\[
+F(\bfy)=F(y_1,y_2,\ldots,y_k)=\sum_{\ell=1}^nx_\ell\bfy^{\bfu_\ell}\;.
+\]
+Here is the protocol. Let $i\in [n]$ be the index the user wants to read.
+\begin{enumerate}
+    \item The user picks $\bfz$ uniformly at random from $\bbZ_6^k$
+    \item For $j=1,2$, the user sends $\bfz+(j-1)\bfv_i$ to server $j$
+    \item Server $j$ sends back $F(\gamma^{\bfz+(j-1)\bfv_i})$ and 
+    \begin{displaymath}
+        F^{(1)}(\gamma^{\bfz+(j-1)\bfv_i}):=\left[
+        \begin{matrix}
+            & y_1\frac{\partial F}{\partial y_1}\big|_{\gamma^{\bfz+(j-1)\bfv_i}}\\[0.5em] 
+            &y_2\frac{\partial F}{\partial y_2}\big|_{\gamma^{\bfz+(j-1)\bfv_i}}\\[0.5em] 
+            &\vdots\\[0.5em] 
+            &y_k\frac{\partial F}{\partial y_k}\big|_{\gamma^{\bfz+(j-1)\bfv_i}}
+        \end{matrix}
+        \right]
+    \end{displaymath}
+    \item Let
+    \[
+    M:=\left[
+    \begin{matrix}
+        1 &1 &1 &1 \\
+        0 &1 &3 &4 \\
+        1 &\gamma &\gamma^3 &\gamma^4\\
+        0 &\gamma &3\gamma^3 &4\gamma^4\\
+    \end{matrix}\right]
+    \]
+    Compute the first entry of the matrix
+    \[M^{-1} \left[
+    \begin{matrix}
+        F(\gamma^{\bfz})\\
+        \langle F^{(1)}(\gamma^{\bfz}), \bfv_i\rangle\\
+        F(\gamma^{\bfz+\bfv_i})\\
+        \langle F^{(1)}(\gamma^{\bfz+\bfv_i}), \bfv_i\rangle\\
+    \end{matrix}
+    \right]\;.\]
+    Return $0$ if it is $0$ and $1$ otherwise.
+\end{enumerate}
+Proof of correctness:
+Define \[G(j):=F(\gamma^{\bfz+(j-1)\bfv_{i}})=\sum_{\ell=1}^nx_\ell\gamma^{\langle\bfz,\bfu_\ell\rangle+(j-1)\langle\bfv_i,\bfu_\ell\rangle}\;.\]
+Using the fact that $\gamma^6=1$ we can write 
+\[
+G(j)=\sum_{m=0}^5c_m\gamma^{(j-1)m}\;,
+\]
+where each $c_m\in \calR$ is given by 
+\[c_m=\sum_{\ell:\langle\bfu_\ell,\bfv_i\rangle=m}x_\ell\gamma^{\langle\bfz,\bfu_\ell\rangle}\;.\]
+Since 
+\[
+\langle \bfu_\ell,\bfv_i\rangle\text{ mod }6\begin{cases}
+    =0 &\text{ if }\ell=i\\
+    \in \{1,3,4\}&\text{ if }\ell\ne i
+\end{cases}
+\]
+we can conclude that $c_0=x_i\gamma^{\langle \bfu_i,\bfz\rangle}$ and $c_2=c_5=0$. Therefore,
+\[
+G(j)=c_0+c_1\gamma^{(j-1)}+c_3\gamma^{3(j-1)}+c_4\gamma^{4(j-1)}\;.
+\]
+Next, consider the polynomial
+\[g(T)=c_0+c_1T+c_3T^3+c_4T^4\in \calR[T]\;.\]
+By definition, 
+\[g(\gamma^{j-1})=G(j)=F(\gamma^{\bfz+(j-1)\bfv_i})\]
+Further, consider this inner product:
+\[
+\left\langle
+% \left[
+% \begin{matrix}
+    % & y_1\frac{\partial F}{\partial y_1}\big|_{\gamma^{\bfz+(j-1)\bfv_i}}\\[0.5em] 
+    % &y_2\frac{\partial F}{\partial y_2}\big|_{\gamma^{\bfz+(j-1)\bfv_i}}\\[0.5em] 
+    % &\vdots\\[0.5em] 
+    % &y_k\frac{\partial F}{\partial y_k}\big|_{\gamma^{\bfz+(j-1)\bfv_i}}
+    % \end{matrix}
+% \right]
+F^{(1)}(\gamma^{\bfz+(j-1)\bfv_i}), \bfv_i
+\right\rangle
+\]
+This is equal to
+\begin{align*}
+    &\sum_{\ell=1}^nx_\ell\langle\bfu_\ell,\bfv_i\rangle\gamma^{\langle\bfz,\bfu_\ell\rangle+(j-1)\langle\bfv_i,\bfu_\ell\rangle}\\
+    &=\sum_{m=0}^5m\left(\sum_{\ell:\langle \bfu_\ell,\bfv_i\rangle=m\text{ mod } 6}x_\ell\gamma^{\langle \bfz,\bfu_\ell \rangle}\right)\gamma^{(j-1)m}=\sum_{m=0}^5m c_m \gamma^{(j-1)m}
+\end{align*}
+Therefore
+\[
+\left[
+\begin{matrix}
+    F(\gamma^{\bfz})\\
+    \langle F^{(1)}(\gamma^{\bfz}), \bfv_i\rangle\\
+    F(\gamma^{\bfz+\bfv_i})\\
+    \langle F^{(1)}(\gamma^{\bfz+\bfv_i}), \bfv_i\rangle\\
+\end{matrix}
+\right]=\left[
+\begin{matrix}
+    1 &1 &1 &1 \\
+    0 &1 &3 &4 \\
+    1 &\gamma &\gamma^3 &\gamma^4\\
+    0 &\gamma &3\gamma^3 &4\gamma^4\\
+\end{matrix}\right]\left[
+\begin{matrix}
+    c_0\\
+    c_1\\
+    c_3\\
+    c_4
+\end{matrix}\right]=M\left[
+\begin{matrix}
+    c_0\\
+    c_1\\
+    c_3\\
+    c_4
+\end{matrix}\right]
+\]
+Note that determinant of $M$ is non-zero. Further since $c_0=x_i\gamma^{\bfu_i,\bfz}$ and $x_i\in \{0,1\}$, we have that $c_0=0$ if and only if $x_i=0$. Therefore the first entry of \[M^{-1}\left[\begin{matrix}
+    F(\gamma^{\bfz})\\
+    \langle F^{(1)}(\gamma^{\bfz}), \bfv_i\rangle\\
+    F(\gamma^{\bfz+\bfv_i})\\
+    \langle F^{(1)}(\gamma^{\bfz+\bfv_i}), \bfv_i\rangle\\
+\end{matrix}\right]\]
+is $0$ if and only if $x_i=0$\;.
