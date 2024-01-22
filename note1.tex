@@ -1,0 +1,158 @@
+\newcommand{\FHE}{\ensuremath{{\sf FHE}}}
+\newcommand{\Gen}{\ensuremath{{\sf Gen}}}
+\newcommand{\Eval}{\ensuremath{{\sf Eval}}}
+\newcommand{\Enc}{\ensuremath{{\sf Enc}}}
+\newcommand{\Dec}{\ensuremath{{\sf Dec}}}
+\newcommand{\DB}{\ensuremath{{\sf DB}}}
+
+
+\section{Lecture 1: Private Information Retrieval}
+The Private Information Retrieval problem was first introduced by CGKS 98, In this setting, we will have a client and server(s). The server(s) are connected to a public database indexed from $1$ to $n$, which could represent DNS, webpage, leaked password database, etc.
+
+A client wants to fetch an entry from this database $i \in [n]$ but does not want to leak their query to the server(s). More formally,
+\begin{definition}[PIR - Single Server Scheme]
+A protocol between a client $c$ and server $s$ where,
+\begin{itemize}
+	\item Client has desired index $i \in [n]$, and server(s) have $\DB \in \{0,1\}^n$
+	\item At the end of the protocol, client outputs bit $b \in \{0,1\}$
+\end{itemize}
+with properties,
+\begin{itemize}
+
+	\item \textbf{Correctness}: $\forall n: \DB \in \{0,1\}^n, i \in [n],$ under honest execution, 
+	\[\Pr[b = \DB[i]] \geq 1 - \mu(n) \tag{negligible $\mu$}\]
+	
+	\item \textbf{Privacy}: $\forall i,j \in [n], \DB  \in \{0,1\}^n$, and function $view_{s}$ representing the view of server $s$:
+	\[view_s(n,\DB,i) \cong view_s(n,\DB,j)\]
+\end{itemize}
+where $\cong$ is identically, statistically, or computationally indistinguishable equality.
+\end{definition}
+Intuitively, the privacy definition means that from the server's view, it cannot tell what the user is querying. One can also define a definition for malicious privacy, but since our schemes of interest are one-round, we do not make this distinction.
+
+This definition is naturally extended to a two (and any $n \geq 2$) server definition, where the two servers do not communicate.
+
+\begin{definition}[PIR - Two Server Scheme]
+A protocol between a client $c$ and servers $s_{1},s_{2}$ where,
+\begin{itemize}
+	\item Client has desired index $i \in [n]$, and server(s) have $\DB \in \{0,1\}^n$
+	\item At the end of the protocol, client outputs bit $b \in \{0,1\}$
+\end{itemize}
+with properties,
+\begin{itemize}
+
+	\item \textbf{Correctness}: $\forall n: \DB \in \{0,1\}^n, i \in [n],$ under honest execution, 
+	\[\Pr[b = \DB[i]] \geq 1 - \mu(n) \tag{negligible $\mu$}\]
+	
+	\item \textbf{Privacy}: $\forall i,j \in [n], \DB  \in \{0,1\}^n$, and function $view_{s}$ representing the view of server $s$:
+	\[view_{s_{1}}(n,\DB,i) \cong view_{s_{1}}(n,\DB,j)\]
+	\[view_{s_{2}}(n,\DB,i) \cong view_{s_{2}}(n,\DB,j)\]
+\end{itemize}
+\end{definition}
+Note that PIR schemes can additionally be extended to retrieve blocks of data by querying the database bit-by-bit.
+\subsection{Single Server PIR constructions}
+Naively, the client can just download the entire database, which is perfect correctness and privacy, but this has linear bandwidth, client computation, and server computation with respect to the database size.
+
+\subsubsection{FHE PIR}
+For a smarter and overall more efficient scheme, we assume we have an FHE scheme (Gen, Enc, Dec). An FHE scheme allows us to perform addition and multiplication operations on the ciphers which propagate to their underlying plain-texts.
+\footnote{TA:
+Arithmetic circuit (including addition and multiplication gates) is Turing-complete. Thus, FHE allows the server to evaluate arbitrary computation given the encrypted input. However, we have to be careful about its efficiency -- we usually discuss the time complexity of an algorithm in the RAM model, whereas FHE only works in the circuit model (in general).}
+
+The scheme is as follows:
+\begin{enumerate}
+	\item The client samples $(pk,sk) \leftarrow \FHE.\Gen(1^\lambda),$ and encrypts their query as $m \leftarrow \FHE.\Enc(i)$. The client then sends $m$ to the server.
+	\item The server homomorphically evaluates the selection circuit $S$ and let ${c} = {\sf Eval}(S, m)$ ($S(i)$ selects the $i$-th bit from $\DB$ and the circuit is $\tilde{O}(n)$\footnote{$\tilde{O}$ hides the polylogarithmic factors.} in size), and sends it to the client. 
+	\item The client decrypts $\FHE.\Dec(sk,c)$.
+\end{enumerate}
+The correctness of the scheme is clear. The scheme  has $\tilde{O}(1)$ bandwidth and client computation and $\tilde{O}(n)$ server computation. Some notable PIR schemes include Spiral~\cite{spiral} and SimplePIR~\cite{simplepir}.
+
+\textbf{Open question}: Can we get sub-linear bandwidth without any cryptographic (hardness) assumptions? In fact, this is possible in the two server setting (we will see this next), and we can prove that this is impossible in the one server case.
+
+\subsection{Two Server PIR Constructions}
+\subsubsection{$\sqrt{n}$-BW 2-Server-Scheme with Information-theoretic (IT) security}
+Note that IT security implies no harness assumptions, so this is perfect and statistically private.
+
+The key idea is the view of database $DB \in \{0,1\}^n$ as a $S \in \{0,1\}^{\sqrt{n} \times \sqrt{n}}$ matrix. Say the client wants to query the $(i,j)$'th entry. To do this, the server can simply return the entire column $j$, which we can afford to do via the square-root bandwidth. To provide security, the client also supplies a one-hot-vector $q_j$, split into two random shares $v_{1},v_{2}$ via a 2-share secret sharing scheme (that is, sample random $v_1,v_2$ conditioned on $v_1 \oplus v_2 = q_{j}$).
+
+The scheme is as follows:
+\begin{enumerate}
+	\item The client creates $v_{1},v_{2}$ as described above. The client sends these shares to servers $s_{1},s_{2}$ respectively.
+	\item Each server $s_{i}$, on receiving $v_{i}$ computes the matrix-vector product,
+	\[r_{i} \leftarrow S v_{i} \bmod 2\]
+	and sends the $\sqrt{n}$-size vector $r_{i}$ to the client.
+	\item The client computes and outputs $r_{1} \oplus r_{2}$.
+\end{enumerate}
+It is straightforward to verify correctness by seeing that
+\[r_{1} \oplus r_{2} = S r_{1} \oplus Sr_{2} \bmod 2 = S (r_{1} \oplus r_{2}) \bmod 2\]
+Lastly, this scheme is private, since $v_{1},v_{2}$ are uniformly random in each server's view, respectively.
+
+\subsubsection{$n^{\frac{1}{3}}$-BW 2-server Scheme (CGKS '98)}
+We will first motivate this construction with a two server scheme with expected $\frac{n}{2}$ bandwidth and a eight server scheme with $n^{\frac 1 3}$ bandwidth. 
+\begin{enumerate}
+	\item \textbf{$\mathbb{E}[\frac{n}{2}]$-BW 2-server Scheme}
+	
+		The client samples $S_{1} \subset [n]$ uniformly as follows: for each $i \in [n],$ add $i$ to $S_{1}$ with probability $\frac{1}{2}$. Then, the client computes
+		\[S_{2} = S_{1} \Delta \{i\}\]
+		where $\Delta$ is the symmetric difference operator. That is, if $i$ is included in $S_1$, we remove it from the set, otherwise we add it to the set. $S_{1},S_{2}$ are sent to each server respectively, where server $i$ computes and sends back,
+		\[r_{i} \leftarrow \bigoplus_{j \in S_{i}} \DB[j]\]
+		The client on receiving $r_1,r_2$ outputs $r_1 \oplus r_2$. 
+	
+		\textbf{Correctness} follows from the fact that $i$ is the only database index that appears once, with every other index appearing twice (hence XOR'ing to 0).
+
+		\textbf{Privacy}: First, $S_1$ is uniformly random. Second, to see why $S_2$ is uniformly random to server 2, just consider the following distribution -- ``tossing $n$ random coins, and flip the $i$-th coin afterwards, regardless of the original result''. This distribution is uniformly random even when $i$ is known. % because we are just flipping the random coin for $$
+        
+        
+        Notice that if we pack $\sqrt{n}$ bits together to a block and view the database as a ``packed" database with $\sqrt{n}$ entries, this scheme will be equivalent to the previous $\sqrt{n}$-BW scheme.
+	
+		%Although this is not a great bandwidth result, it has good ideas for the $n^{\frac 1 3}$-bandwidth case.
+	\item \textbf{$n^{\frac 1 3}-$BW 8-server Scheme}
+	
+		The idea is to view the database as a $n^{\frac 1 3} \times n^{\frac 1 3} \times n^{\frac 1 3}$ cube. Then, each index $i \in \{0,1,\dots,n - 1\}$ can be expressed as a thruple $(x^\star, y^\star, z^\star)$ (note we start at $0$ for natural base 3 representation.
+
+		The client samples $X,Y,Z \subset \{0, \dots, n^{\frac{1}{3}} - 1\}$ independently as follows: for each $x \in \{0,\dots, n^{\frac{1}{3}}\}$ add it to X with probability $\frac 1 2$. Do the same for $Y,Z$.
+	
+		Then, we compute $8$ different sets by a 3-wise cartesian products with symmetric differences, enumerated as 
+		\begin{align*}
+			S_{000} &= X \times Y \times Z \\
+			S_{001} &= X \times Y \times (Z \Delta \{z^\star\}) \\
+			S_{010} &= X \times (Y \Delta \{y^{\star}\}) \times Z \\
+			S_{011} &= X \times (Y \Delta \{y^{\star}\}) \times (Z \Delta \{z^\star\}) \\
+			S_{100} &= (X \Delta \{x^{\star}\}) \times Y \times Z \\
+			S_{101} &= (X \Delta \{x^{\star}\}) \times Y \times (Z \Delta \{z^\star\}) \\
+			S_{110} &= (X \Delta \{x^{\star}\}) \times (Y \Delta \{y^{\star}\}) \times Z \\
+			S_{111} &= (X \Delta \{x^{\star}\}) \times (Y \Delta \{y^{\star}\}) \times (Z \Delta \{z^\star\}) \\
+		\end{align*}
+		See that each of these sets have their sizes concentrated around $\left(\frac{n^{\frac 1 3}}{2}\right)^{3} = \frac n 8$. Then, the client sends a succinct description of each set (i.e., sends the three ``marginal'' vectors instead of the full set) of size $O(n^{\frac 1 3})$ to each server. 
+
+		Server $i$ on receiving $S = X' \times Y' \times Z'$ computes 
+			\[p_{i} = \bigoplus_{j \in S} \DB[j]\]
+		Then the client computes $p_0 \oplus \dots \oplus p_7$. 
+
+		We claim that $p_0 \oplus \dots \oplus p_7 = \DB[i], i = (x^\star, y^\star, z^\star)$.
+		\begin{proof}
+		For every $(x,y,z)$ not equal to the query, it will appear an even number times in the summation. We can pair up the sets to see this. 
+
+		On the other hand, $(x^\star, y^\star, z^\star)$ only appears once in the summation so we are done.
+		\end{proof}
+
+		Privacy follows the argument as the previous case. 
+\end{enumerate}
+
+Now, we finally compress this scheme from eight servers to two servers. To do this, the client sends $S_{000}$ to server 1 and $S_{111}$ to server 2.
+
+Each server on receiving $X' \times Y' \times Z'$ calculates $3 n^{\frac1 3}$ parities to send to the client as follows:
+\begin{enumerate}
+	\item For each $x' \in \{0,\dots,n^{\frac 1 3} - 1\}$ we calculate the parity for $(X' \Delta \{x'\}) \times Y' \times  Z'$ as in the previous scheme.
+	\item For each $y' \in \{0,\dots,n^{\frac 1 3} - 1\}$ we calculate the parity for $X' \times (Y' \Delta \{y'\}) \times  Z'$ as in the previous scheme.
+	\item For each $z' \in \{0,\dots,n^{\frac 1 3} - 1\}$ we calculate the parity for $X' \times Y' \times  (Z' \Delta \{z'\})$ as in the previous scheme.
+\end{enumerate}
+
+Now each server returns $1+3n^{1/3}$ parities to the client.
+That is, the server 1 will actually compute $S_{000}$ and $S_{100}, S_{010}, S_{001}$ will be in those $3n^{1/3}$ parities. 
+Similarly, the server 2 will compute $S_{111}$, and $S_{011},S_{101},S_{110}$ will be in those $3n^{1/3}$ parities.
+The client will be able to pick out the correct parities corresponding to its actual query.
+
+Thus, this scheme still has $n^{\frac 1 3}$ bandwidth, and correctness and security still follow.
+
+\subsection{State of the Art}
+	SOTA for the 2 server setting states that $5 - o(1)\log n$ bandwidth is necessary (\cite{WdW05}),  while bandwidth  
+	$n^{O\left(\sqrt{\lg \lg n / \lg n}\right)} \sim o(1)$ is the upperbound (\cite{dvir20162}). Closing this gap is an open problem. 
