@@ -27,9 +27,24 @@ with properties,
 \end{itemize}
 where $\cong$ is identically, statistically, or computationally indistinguishable equality.
 \end{definition}
-Intuitively, the privacy definition means that from the server's view, it cannot tell what the user is querying. One can also define a definition for malicious privacy, but since our schemes of interest are one-round, we do not make this distinction.
+%Intuitively, the privacy definition means that from the server's view, it cannot tell what the user is querying. One can also define a definition for malicious privacy, but since our schemes of interest are one-round, we do not make this distinction.
+
+\begin{remark}[Honest-server vs. malicious-server privacy]
+The above privacy definition assumes an honest server.
+It is also possible to define privacy against a malicious server.
+In today's lecture, all the PIR constructions
+will only have a single round-trip --- 
+in this special case, honest-server privacy
+and malicious-server
+privacy are equivalent. So we will simply define honest-server privacy here.
+\end{remark}
+
+
 
 This definition is naturally extended to a two (and any $n \geq 2$) server definition, where the two servers do not communicate.
+
+
+
 
 \begin{definition}[PIR - Two Server Scheme]
 A protocol between a client $c$ and servers $s_{1},s_{2}$ where,
@@ -49,15 +64,6 @@ with properties,
 \end{itemize}
 \end{definition}
 
-\begin{remark}[Honest-server vs. malicious-server privacy]
-The above privacy definition assumes an honest server.
-It is also possible to define privacy against a malicious server.
-In today's lecture, all the PIR constructions
-will only have a single round-trip --- 
-in this special case, honest-server privacy
-and malicious-server
-privacy are equivalent. So we will simply define honest-server privacy here.
-\end{remark}
 
 Note that PIR schemes can additionally be extended to retrieve blocks of data by querying the database bit-by-bit.
 \section{Single Server PIR constructions}
