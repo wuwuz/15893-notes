@@ -76,7 +76,7 @@ The scheme is as follows:
 \end{enumerate}
 The correctness of the scheme is clear. The scheme  has $\tilde{O}(1)$ bandwidth and client computation and $\tilde{O}(n)$ server computation. Some notable PIR schemes include Spiral~\cite{spiral} and SimplePIR~\cite{simplepir}.
 
-\textbf{Open question}: Can we get sub-linear bandwidth without any cryptographic (hardness) assumptions? In fact, this is possible in the two server setting (we will see this next), and we can prove that this is impossible in the one server case.
+\textbf{Question}: Can we get sub-linear bandwidth without any cryptographic (hardness) assumptions? In fact, this is possible in the two server setting (we will see this next), and we can prove that this is impossible in the one server case.
 
 \subsection{Two Server PIR Constructions}
 \subsubsection{$\sqrt{n}$-BW 2-Server-Scheme with Information-theoretic (IT) security}
@@ -111,8 +111,12 @@ We will first motivate this construction with a two server scheme with expected 
 
 		\textbf{Privacy}: First, $S_1$ is uniformly random. Second, to see why $S_2$ is uniformly random to server 2, just consider the following distribution -- ``tossing $n$ random coins, and flip the $i$-th coin afterwards, regardless of the original result''. This distribution is uniformly random even when $i$ is known. % because we are just flipping the random coin for $$
         
-        
-        Notice that if we pack $\sqrt{n}$ bits together to a block and view the database as a ``packed" database with $\sqrt{n}$ entries, this scheme will be equivalent to the previous $\sqrt{n}$-BW scheme.
+\begin{remark}        
+Note that if we run the above $n/2$-BW scheme not on bits,
+but on blocks of $\sqrt{n}$ size (i.e., treat
+the $n$-bit database as $\sqrt{n}$ blocks each of size $\sqrt{n})$, 
+the scheme is equivalent to the earlier $\sqrt{n}$-BW scheme.
+\end{remark}
 	
 		%Although this is not a great bandwidth result, it has good ideas for the $n^{\frac 1 3}$-bandwidth case.
 	\item \textbf{$n^{\frac 1 3}-$BW 8-server Scheme}
