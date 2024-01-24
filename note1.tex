@@ -48,6 +48,17 @@ with properties,
 	\[view_{s_{2}}(n,\DB,i) \cong view_{s_{2}}(n,\DB,j)\]
 \end{itemize}
 \end{definition}
+
+\begin{remark}[Honest-server vs. malicious-server privacy]
+The above privacy definition assumes an honest server.
+It is also possible to define privacy against a malicious server.
+In today's lecture, all the PIR constructions
+will only have a single round-trip --- 
+in this special case, honest-server privacy
+and malicious-server
+privacy are equivalent. So we will simply define honest-server privacy here.
+\end{remark}
+
 Note that PIR schemes can additionally be extended to retrieve blocks of data by querying the database bit-by-bit.
 \subsection{Single Server PIR constructions}
 Naively, the client can just download the entire database, which is perfect correctness and privacy, but this has linear bandwidth, client computation, and server computation with respect to the database size.
