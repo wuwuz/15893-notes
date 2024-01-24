@@ -6,7 +6,7 @@
 \newcommand{\DB}{\ensuremath{{\sf DB}}}
 
 
-\section{Lecture 1: Private Information Retrieval}
+%\section{Lecture 1: Private Information Retrieval}
 The Private Information Retrieval problem was first introduced by CGKS 98, In this setting, we will have a client and server(s). The server(s) are connected to a public database indexed from $1$ to $n$, which could represent DNS, webpage, leaked password database, etc.
 
 A client wants to fetch an entry from this database $i \in [n]$ but does not want to leak their query to the server(s). More formally,
@@ -60,10 +60,10 @@ privacy are equivalent. So we will simply define honest-server privacy here.
 \end{remark}
 
 Note that PIR schemes can additionally be extended to retrieve blocks of data by querying the database bit-by-bit.
-\subsection{Single Server PIR constructions}
+\section{Single Server PIR constructions}
 Naively, the client can just download the entire database, which is perfect correctness and privacy, but this has linear bandwidth, client computation, and server computation with respect to the database size.
 
-\subsubsection{FHE PIR}
+\subsection{FHE PIR}
 For a smarter and overall more efficient scheme, we assume we have an FHE scheme (Gen, Enc, Dec). An FHE scheme allows us to perform addition and multiplication operations on the ciphers which propagate to their underlying plain-texts.
 \footnote{TA:
 Arithmetic circuit (including addition and multiplication gates) is Turing-complete. Thus, FHE allows the server to evaluate arbitrary computation given the encrypted input. However, we have to be careful about its efficiency -- we usually discuss the time complexity of an algorithm in the RAM model, whereas FHE only works in the circuit model (in general).}
@@ -78,8 +78,8 @@ The correctness of the scheme is clear. The scheme  has $\tilde{O}(1)$ bandwidth
 
 \textbf{Question}: Can we get sub-linear bandwidth without any cryptographic (hardness) assumptions? In fact, this is possible in the two server setting (we will see this next), and we can prove that this is impossible in the one server case.
 
-\subsection{Two Server PIR Constructions}
-\subsubsection{$\sqrt{n}$-BW 2-Server-Scheme with Information-theoretic (IT) security}
+\section{Two Server PIR Constructions}
+\subsection{$\sqrt{n}$-BW 2-Server-Scheme with Information-theoretic (IT) security}
 Note that IT security implies no harness assumptions, so this is perfect and statistically private.
 
 The key idea is the view of database $DB \in \{0,1\}^n$ as a $S \in \{0,1\}^{\sqrt{n} \times \sqrt{n}}$ matrix. Say the client wants to query the $(i,j)$'th entry. To do this, the server can simply return the entire column $j$, which we can afford to do via the square-root bandwidth. To provide security, the client also supplies a one-hot-vector $q_j$, split into two random shares $v_{1},v_{2}$ via a 2-share secret sharing scheme (that is, sample random $v_1,v_2$ conditioned on $v_1 \oplus v_2 = q_{j}$).
@@ -96,7 +96,7 @@ It is straightforward to verify correctness by seeing that
 \[r_{1} \oplus r_{2} = S r_{1} \oplus Sr_{2} \bmod 2 = S (r_{1} \oplus r_{2}) \bmod 2\]
 Lastly, this scheme is private, since $v_{1},v_{2}$ are uniformly random in each server's view, respectively.
 
-\subsubsection{$n^{\frac{1}{3}}$-BW 2-server Scheme (CGKS '98)}
+\subsection{$n^{\frac{1}{3}}$-BW 2-server Scheme (CGKS '98)}
 We will first motivate this construction with a two server scheme with expected $\frac{n}{2}$ bandwidth and a eight server scheme with $n^{\frac 1 3}$ bandwidth. 
 \begin{enumerate}
 	\item \textbf{$\mathbb{E}[\frac{n}{2}]$-BW 2-server Scheme}
@@ -168,7 +168,7 @@ The client will be able to pick out the correct parities corresponding to its ac
 
 Thus, this scheme still has $n^{\frac 1 3}$ bandwidth, and correctness and security still follow.
 
-\subsection{State of the Art and Open Problem}
+\section{State of the Art and Open Problem}
 	For the 2-server setting, the best
 known lower bound states that $5 - o(1)\log n$ bandwidth is necessary (\cite{WdW05}),  while the best known upper bound requires 
 	$n^{O\left(\sqrt{\lg \lg n / \lg n}\right)} = n^{o(1)}$, i.e., 
