@@ -101,7 +101,7 @@ We will first motivate this construction with a two server scheme with expected 
 \begin{enumerate}
 	\item \textbf{$\mathbb{E}[\frac{n}{2}]$-BW 2-server Scheme}
 	
-		The client samples $S_{1} \subset [n]$ uniformly as follows: for each $i \in [n],$ add $i$ to $S_{1}$ with probability $\frac{1}{2}$. Then, the client computes
+		The client samples $S_{1} \subseteq [n]$ uniformly as follows: for each $i \in [n],$ add $i$ to $S_{1}$ with probability $\frac{1}{2}$. Then, the client computes
 		\[S_{2} = S_{1} \Delta \{i\}\]
 		where $\Delta$ is the symmetric difference operator. That is, if $i$ is included in $S_1$, we remove it from the set, otherwise we add it to the set. $S_{1},S_{2}$ are sent to each server respectively, where server $i$ computes and sends back,
 		\[r_{i} \leftarrow \bigoplus_{j \in S_{i}} \DB[j]\]
@@ -123,7 +123,7 @@ the scheme is equivalent to the earlier $\sqrt{n}$-BW scheme.
 	
 		The idea is to view the database as a $n^{\frac 1 3} \times n^{\frac 1 3} \times n^{\frac 1 3}$ cube. Then, each index $i \in \{0,1,\dots,n - 1\}$ can be expressed as a thruple $(x^\star, y^\star, z^\star)$ (note we start at $0$ for natural base 3 representation.
 
-		The client samples $X,Y,Z \subset \{0, \dots, n^{\frac{1}{3}} - 1\}$ independently as follows: for each $x \in \{0,\dots, n^{\frac{1}{3}}\}$ add it to X with probability $\frac 1 2$. Do the same for $Y,Z$.
+		The client samples $X,Y,Z \subseteq \{0, \dots, n^{\frac{1}{3}} - 1\}$ independently as follows: for each $x \in \{0,\dots, n^{\frac{1}{3}}\}$ add it to X with probability $\frac 1 2$. Do the same for $Y,Z$.
 	
 		Then, we compute $8$ different sets by a 3-wise cartesian products with symmetric differences, enumerated as 
 		\begin{align*}
