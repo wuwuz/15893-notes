@@ -1,10 +1,13 @@
 \newcommand{\PRF}{\ensuremath{{\sf PRF}}}
 
 
-\section{Motivation}
+
+\section{PIANO: An Extremely Simple PIR}
+
+\subsection{Motivation}
 Recall that in last lecture, we talked about  PIR where the server stores the original database ($\mathsf{DB}$) unencoded and there's no preprocessing. This is incredibly inefficient, because it requires the server to look through each element of the database otherwise the adversary can deduce that the skipped elements are unimportant to the client. This was proven formally by Beimel et.~al in 2000. \cite{beimel2000reducing}, where they prove that a server in classical PIR must have linear computation per query, with respect to the database. Following this discovery, Beimel et. al proved that preprocessing can overcome this complexity barrier. In this lecture, we'll understand how they did that.
 
-\section{Background}
+\subsection{Background}
 As we learned from guest lecturer Wei-Kai Lin, there are two main types of pre-processing.\
 
 \begin{definition}[Types of Preprocessing in PIR]
@@ -16,7 +19,6 @@ As we learned from guest lecturer Wei-Kai Lin, there are two main types of pre-p
 \end{definition}
 For this lecture, we'll be using client-specific preprocessing to achieve faster than linear time complexity.
 
-\section{PIANO: An Extremely Simple PIR}
 \subsection{Goals}
 This PIR scheme by Zhou et.~al achieves $O(\sqrt{n})$ time per query and $O(\sqrt{n})$ bandwidth \cite{zhou2023piano} assuming $\tilde{O}(\sqrt{n})$ client space. 
 The scheme assumes that pseudorandom functions (PRF) exists (One-way Function).
