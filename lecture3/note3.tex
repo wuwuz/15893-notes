@@ -23,7 +23,7 @@
 \newcommand{\Cst}{\ensuremath{{\sf Cst}}}
 \newcommand{\msg}{\ensuremath{{\sf msg}}}
 \newcommand{\msgp}{\ensuremath{{\sf msg'}}}
-\newcommand{\Coutput}{\ensuremath{{\sf Coutput}}}
+\newcommand{\Coutput}{\ensuremath{{\sf Decode}}}
 \newcommand{\ans}{\ensuremath{{\sf ans}}}
 \newcommand{\Ccoins}{\ensuremath{{\sf Ccoins}}}
 \newcommand{\Scoins}{\ensuremath{{\sf Scoins}}}
@@ -104,7 +104,7 @@ schemes with perfect privacy and correctness. However,
 Damg\r{a}rd, Larsen and Nielsen~\cite{DLN19} generalized the proof to statistical correctness and privacy as well.
 %We now provide the proof for the perfect PIR schemes. The proof for statistical PIR schemes requires extra steps and can be found in the original paper.
 
-\paragraph{Notations.} Given any database $\DB$ of size $n$, any client query $i\in[n]$,    
+\paragraph{Notations.} Given any database $\DB \in \{0, 1\}^n$, any client query $i\in[n]$,    
 we denote the PIR protocol's communication script as $\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$ (if it's multi-round, we just concatenate all the exchanged messages).
 Here, $r_1$ and $r_2$ are the random coins consumed by the server and the client, respectively.
 By the definition of perfect correctness, there exists an algorithm $\Coutput$, such that $\Coutput\left(\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle, i, r_2\right)=\DB[i]$ with probability 1.
@@ -113,7 +113,12 @@ That is, the $\Coutput$ is the client-side algorithm to construct the final answ
 \begin{proof}
 
 
-We want to show that this protocol must have at least $n$ bandwidth and the way we are going to propose an encoding scheme. We are going to see that by perfect privacy and perfect correctness of the PIR scheme, given any possible communication script $C$, a computationally unbounded extractor can extract all original database bits. Then, the communication script $C$ can actually be seen as the codeword for the database, and the decoder just runs the extractor to reconstruct the database. It gives a uniquely decodable scheme and by Shannon's source coding theorem, the expected length of the codeword has be be at least $n$-bit.
+%We want to show that this protocol must have at least $n$ bandwidth 
+%by constructing an encoding scheme 
+%and the way we are going to propose an encoding scheme. 
+At a high level, the intuition of the proof is the folowing. 
+By perfect privacy and perfect correctness of the PIR scheme, given any possible communication script $C$, a computationally unbounded extractor can extract all original database bits. Then, the communication script $C$ can actually be seen as an encoding for the database, and the decoder just runs the extractor to reconstruct the database. This gives a uniquely decodable scheme and by Shannon's source coding theorem, the expected length of the codeword has be be at least $n$-bit on 
+a randomly chosen $n$-bit database.
 
 We now define the encoding scheme and the decoding scheme. Notice that the encoder and the decoder algorithms do not need to be efficient (polynomially bounded).
 
