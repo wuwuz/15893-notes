@@ -1,4 +1,5 @@
 %\usepackage{xspace}
+
 \newcommand{\bits}{\{0,1\}}
 \newcommand{\bfu}{\mathbf{u}}
 \newcommand{\bfv}{\mathbf{v}}
@@ -48,8 +49,7 @@
 
 \newcommand{\ignore}[1]{}
 
-\newtheorem{claim}[theorem]{Claim}
-
+%\newtheorem{claim}[theorem]{Claim}
 
 
 \section{Lower Bounds for PIR}
@@ -126,6 +126,7 @@ the database is randomly sampled.
 The following claim says that one can extract the entire database from the 
 communication transcript of the PIR.
 \begin{claim}
+\label{clm:extract}
 Fix some $\DB \in \{0, 1\}^n$.  
 Fix an arbitrary $i \in [n]$, and arbitrary client and server coins $r_1, r_2$.
 Let $C = 
@@ -135,7 +136,6 @@ Then for any $j \in [n]$, there must
 exist some $r'_2$ such that $C$ is compatible with $(j, r'_2)$.
 Further, 
 $\Coutput\left(C, j, r'_2\right) = \DB[j]$.
-\label{clm:extract}
 \end{claim}
 In the above, the communication trascript $C$ being compatible with $(j, r'_2)$
 means that if we rerun the client's algorithm using input $j$, coins  
