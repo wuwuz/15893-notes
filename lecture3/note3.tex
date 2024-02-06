@@ -124,14 +124,14 @@ The following claim says that one can extract the entire database from the
 communication transcript of the PIR.
 \begin{claim}
 Fix some $\DB \in \{0, 1\}^n$.  
-Fix $i \in [n]$, and client and server coins $r_1, r_2$.
+Fix an arbitrary $i \in [n]$, and arbitrary client and server coins $r_1, r_2$.
 Let $C = 
 \langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$
 be the transcript of the PIR protocol on $\DB, i, r_1, r_2$.
 Then for any $j \in [n]$, there must 
 exist some $r'_2$ such that $C$ is compatible with $(j, r'_2)$.
 Further, 
-$\Coutput\left(C, i, r_2\right) = \DB[j]$.
+$\Coutput\left(C, j, r'_2\right) = \DB[j]$.
 \label{clm:extract}
 \end{claim}
 In the above, the communication trascript $C$ being compatible with $(j, r'_2)$
@@ -142,7 +142,19 @@ Further, this holds for any $r$.
 
 \elaine{Mingxun, can you please fix the cleveref? it doesn't work.}
 
-\paragraph{Proof of \Cref{clm:extract}.}
+\begin{proof}[Proof of \Cref{clm:extract}]
+For fixed $\DB, r_1$, 
+transcript $C$ happens with non-zero probability
+for query $i \in [n]$. 
+By perfect privacy, transcript $C$ must happen
+with non-zero probability for any query index $j \in [n]$.
+This means that there exists 
+$r'_2$ such that $j, r'_2$ is compatible with $C$.
+This means that the transcript is also $C$ when the PIR
+is executed on $\DB, r_1, j, r'_2$.
+By perfect correctness of the PIR scheme, it must be 
+that $\Coutput\left(C, j, r'_2\right) = \DB[j]$.
+\end{proof}
 
 
 We now define the encoding scheme and the decoding scheme. Notice that the encoder and the decoder algorithms need not be efficient (polynomially bounded).
