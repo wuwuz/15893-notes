@@ -1,0 +1,722 @@
+%\usepackage{xspace}
+\newcommand{\bits}{\{0,1\}}
+\newcommand{\bfu}{\mathbf{u}}
+\newcommand{\bfv}{\mathbf{v}}
+\newcommand{\bfp}{\mathbf{p}}
+\newcommand{\bfz}{\mathbf{z}}
+\newcommand{\bfx}{\mathbf{x}}
+\newcommand{\bfy}{\mathbf{y}}
+
+\newcommand{\calR}{\mathcal{R}}
+\newcommand{\FHE}{\ensuremath{{\sf FHE}}}
+\newcommand{\Gen}{\ensuremath{{\sf Gen}}}
+\newcommand{\Eval}{\ensuremath{{\sf Eval}}}
+\newcommand{\Enc}{\ensuremath{{\sf Enc}}}
+\newcommand{\Dec}{\ensuremath{{\sf Dec}}}
+\newcommand{\DB}{\ensuremath{{\sf DB}}}
+
+\newcommand{\CNextMsg}{\ensuremath{{\sf C Next Msg}}}
+\newcommand{\SNextMsg}{\ensuremath{{\sf S Next Msg}}}
+\newcommand{\CNext}{\ensuremath{{\sf C Next}}}
+\newcommand{\SNext}{\ensuremath{{\sf S Next}}}
+\newcommand{\Cstp}{\ensuremath{{\sf Cst'}}}
+\newcommand{\Cst}{\ensuremath{{\sf Cst}}}
+\newcommand{\msg}{\ensuremath{{\sf msg}}}
+\newcommand{\msgp}{\ensuremath{{\sf msg'}}}
+\newcommand{\Coutput}{\ensuremath{{\sf Coutput}}}
+\newcommand{\ans}{\ensuremath{{\sf ans}}}
+\newcommand{\Ccoins}{\ensuremath{{\sf Ccoins}}}
+\newcommand{\Scoins}{\ensuremath{{\sf Scoins}}}
+\newcommand{\Comm}{\ensuremath{{\sf Comm}}}
+\newcommand{\Expt}{\ensuremath{{\sf Expt}}}
+\newcommand{\coin}{\ensuremath{{\sf coin}}}
+\newcommand{\View}{\ensuremath{{\sf View}}}
+\newcommand{\negl}{\ensuremath{{\sf negl}}}
+\newcommand{\PPT}{PPT }
+\newcommand{\Out}{\ensuremath{{\sf Out}}}
+\newcommand{\OWF}{\ensuremath{{\sf OWF}}}
+\newcommand{\OT}{\ensuremath{{\sf OT}}}
+\newcommand{\PIR}{\ensuremath{{\sf PIR}}}
+\newcommand{\Server}{\ensuremath{{\sf Server}}}
+\newcommand{\Client}{\ensuremath{{\sf Client}}}
+\newcommand{\Alice}{\ensuremath{{\sf Alice}}}
+\newcommand{\Bob}{\ensuremath{{\sf Bob}}}
+\newcommand{\getr}{\ensuremath{~{\overset{\$}{\leftarrow}}}~}
+\newcommand{\get}{\ensuremath{\leftarrow}}
+\newcommand{\E}{\ensuremath{{\bf E}}}
+\newcommand{\out}{\ensuremath{{\sf out}}}
+
+\newcommand{\ignore}[1]{}
+
+\newtheorem{claim}[theorem]{Claim}
+
+
+
+\section{Lower Bounds for PIR}
+
+In recent lectures, the construction of two-server Private Information Retrieval (PIR) schemes with sublinear bandwidth was discussed. The current focus is on the single-server setting, questioning the feasibility of achieving sublinear bandwidth. It was established that under cryptographic assumptions, such as fully homomorphic encryption (FHE), one can indeed achieve essentially constant bandwidth. 
+We now see two lower bounds for single-server PIR. 
+
+\begin{enumerate}
+    \item \textit{A perfect (or even statistical) PIR scheme without cryptographic assumptions require linear bandwidth;}
+
+    \item \textit{A single-server PIR scheme with non-trivial bandwidth implies Oblivious Transfer.}
+
+
+
+\end{enumerate}
+
+In fact, the two lower bounds are highly connected. 
+The high-level idea of the first lower bound is to show that there exists a computationally unbounded extractor, such that given any database $\DB$ and any query $q$, the extractor can extract the whole database given the communication script.
+This shows that the communication script has at least $n$-bit of entropy, and thus it is at least $n$-bit long. 
+The idea of the second lower bound is to show that for any extractor, given a communication script of length less than $n$ in the PIR protocol, it cannot extract all bits of the database. 
+Therefore, if we now sample a random bit out of the database, the extractor cannot successfully guess the bit with overwhelming probability. 
+This property can then be used to build an Oblivious Transfer protocol.
+
+
+
+
+
+
+\subsection{Unconditional PIR Requires Linear Bandwidth}
+
+The following theorem has been a folklore lower bound and is formalized by Damgård, Larsen and Nielsen~\cite{DLN19}.
+
+\begin{theorem}[\cite{DLN19}]
+1-server PIR scheme with perfect (or statistical) correctness and perfect (or statistical) privacy must have $\Omega(n)$ bandwidth where $n = |\DB|$, which even holds for multi-round protocols. 
+\end{theorem}
+
+We now provide the proof for the perfect PIR schemes. The proof for statistical PIR schemes requires extra steps and can be found in the original paper.
+
+\paragraph{Notations.} Given any database $\DB$ of size $n$, any client query $i\in[n]$,    
+we denote the PIR protocol's communication script as $\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$ (if it's multi-round, we just concatenate all the exchanged messages).
+Here, $r_1$ and $r_2$ are the random coins consumed by the server and the client, respectively.
+By the definition of perfect correctness, there exists an algorithm $\Coutput$, such that $\Coutput\left(\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle, i, r_2\right)=\DB[i]$ with probability 1.
+That is, the $\Coutput$ is the client-side algorithm to construct the final answer in the PIR protocol.
+
+\begin{proof}
+
+
+We want to show that this protocol must have at least $n$ bandwidth and the way we are going to propose an encoding scheme. We are going to see that by perfect privacy and perfect correctness of the PIR scheme, given any possible communication script $C$, a computationally unbounded extractor can extract all original database bits. Then, the communication script $C$ can actually be seen as the codeword for the database, and the decoder just runs the extractor to reconstruct the database. It gives a uniquely decodable scheme and by Shannon's source coding theorem, the expected length of the codeword has be be at least $n$-bit.
+
+We now define the encoding scheme and the decoding scheme. Notice that the encoder and the decoder algorithms do not need to be efficient (polynomially bounded).
+
+\begin{itemize}
+    \item \textit{Encoding}. Given any $n$-bit database $\DB$, the encoding for $\DB$ is the shortest possible communication script $C$ that is compatible with the $\DB$. That is, there exist $r_1,r_2\in \{0,1\}^*, i\in[n]$ such that $\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$.
+
+    \item \textit{Decoding}. Given any code word $C$, the decoder algorithm will reconstruct the $i$-th bit of $\DB$ as follows. The algorithm fixes $i$ and enumerates $r_2$ until $C$ is a possible communication script given the client's inputs are $i,r_2$. Then, the $i$-th bit of $\DB$ is reconstructed by $\Coutput\left(C, i, r_2\right)$.
+\end{itemize}
+
+\begin{claim}
+    The decoding algorithm terminates in finite time.
+\end{claim}
+
+This claim is surprisingly implied by the perfect privacy of the PIR scheme -- given a fixed $\DB$, the perfect privacy requires that any possible communication script $C$ should happen with non-zero probability for all client's query indices $i\in[n]$. Otherwise, the adversary, who acts as the server, can exclude at least one possible index when it sees $C$, resulting in a privacy violation.
+Since $C$ is possible for all possible $i$, the decoding algorithm is guaranteed to find a possible $r_2$ in finite time, such that $C$ is compatible with $i$ and $r_2$.
+
+\begin{claim}
+    The decoding algorithm always decodes correctly.
+\end{claim}
+
+%This claim is implied by the perfect correctness of the PIR scheme.
+Since $C$ is compatible with the original $\DB$ and the client's query $j$, the perfect correctness of the PIR scheme implies that $\Coutput\left(C, i, r_2\right)=\DB[i]$. 
+
+Based on the claims, we show that this encoding-decoding scheme is a uniquely decodable code, i.e., $\forall~\DB\in \{0,1\}^n$, $\Pr[\textsf{Decode}(\textsf{Encode(DB)}]=1$. 
+Then, by Shannon's source coding theorem, we have that 
+\[
+    \E_{\DB\getr\{0,1\}^n}\left[\textsf{Encode}(\DB)\right]\ge H(\DB) = n.
+\]
+
+Here, $H(\DB)$ is the entropy of $\DB$.
+Then, we show that the expected length for the shortest possible communication script $C$ is at least $n$ bits.
+\end{proof}
+
+\begin{remark}
+\cite{DLN19} extended the proof to statistical-correct and statistical-private PIR schemes. 
+\end{remark}
+
+
+%\textcolor{red}{THE FOLLOWING ARE TEMPORALLY NOT NEEDED.}
+
+
+\ignore{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Perfect correctness and perfect privacy imply that the scheme is information theoretic, and doesn't use any cryptographic assumptions.
+
+In the absence of cryptographic assumptions, a single-server PIR scheme cannot achieve sublinear bandwidth. Formally, a PIR scheme requiring perfect correctness and perfect privacy must use at least $n$ bandwidth, where $n$ is the size of the database.
+
+It is known the upper bound (in single-server PIR schemes) \cite{Ishai2013OnTP}. It was seen that for a single round protocols where the client sends a single message to the server, and the server responds with a single message. But the lower  bound proof actually holds even for multi-round protocols, so the protocol doesn't have to be a single round for this lower bound to hold. This result, originally a part of folklore, was formally addressed by \cite{DLN19}. 
+
+Even if the server and client possess unbounded computational power, the lower bound on bandwidth for single-server PIR schemes remains at least $n$, where $n$ is the database size.
+
+
+In this lecture, we focus on the proof for the perfect PIR. 
+Before we dive into the proof, we will model the PIR protocol as follows, as shown in Figure~\ref{fig:PIRprotocol}.
+
+The client initiates the communication and the server responds. The protocol is characterized by ''Next Message'' functions for both client and server. The client also has an output function ($\Coutput$) for determining the result.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \node (Smsgs) [align=center] {$\SNextMsg_1$, \\ $\vdots$ \\ $\SNext+\msg_R$};
+    \node (server) [rectangle, draw, minimum width=2cm, minimum height=2.5cm, right=0.5cm of Smsgs] {Server};
+    \node (client) [rectangle, draw, right=2cm of server, minimum width=2cm, minimum height=2.5cm] {Client};
+    \node (Cmsgs) [align=center, right=0.5cm of client] {$\CNextMsg_1$, \\ $\vdots$ \\ $\CNext+\msg_R$};
+    \node (Coutput) [align=center, right=0.5cm of Cmsgs] {$\Coutput$};
+    \draw [->] ([yshift=10mm]server.east) -- ([yshift=10mm]client.west);
+    \draw [<->] ([yshift=5mm]server.east) -- ([yshift=5mm]client.west);
+    \draw [<-] (server) -- (client);
+    \draw [->] ([yshift=-5mm]server.east) -- ([yshift=-5mm]client.west);
+    \draw [<->] ([yshift=-10mm]server.east) -- ([yshift=-10mm]client.west);
+    \draw [<-] ([yshift=-15mm]server.east) -- ([yshift=-15mm]client.west);
+\end{tikzpicture}
+\caption{Description of the PIR Protocol Interaction}
+\label{fig:PIRprotocol}
+\end{figure}
+
+%\mathbb % macro note1 for multi character
+
+We denote $\Cstp_{i}$ as the (Client's) updated state, $\msgp$ outgoing message, $\Cst$ the (Client's) state, $\msg$, the message received and $\Ccoins$ is Client's random tape. 
+
+To describe the protocol in full, the client also needs an output function, denoted $\Coutput$, that computes the client's output at the end, $\mathbb{C}$ is the entire communication, it can also be called it the entire transcript of the protocol at the end, $q \in [n]$ be the client's query. Eventually it will output some answer $\ans$.
+
+The state and message update process is described by Equation \ref{eq:update}, where $\Cstp_{i}$ and $\msgp$ are computed based on the Clint's current state, message, and coins $(\CNextMsg_{i}, \Cst, \msg, \Ccoins)$. The computation of the $\ans$, as per Equation \ref{eq:answer}, takes as inputs ($\Coutput, C, q, \Ccoins$).
+
+\begin{align}
+\Cstp_{i}, \msgp & \xleftarrow{} (\CNextMsg_{i}, \Cst, \msg, \Ccoins) \label{eq:update} \\
+\ans & \leftarrow (\Coutput, C, q, \Ccoins) \label{eq:answer}
+\end{align}
+
+Equation \ref{eq:update} and Equation \ref{eq:answer} correspond to the canonical form of a protocol and can always normalize the form into this canonical form (i.e. if the client needs to send the server two consecutive messages, can always have the server insert a dummy message in between). 
+
+%min 9.05
+
+\textbf{$\PIR$ to construct an encoding scheme}
+
+We want to show that this protocol must have at least $n$ bandwidth and the way we are going to proposed an encoding scheme. So suppose we can construct a $\PIR$ scheme that has very good bandwidth. 
+
+Consider:
+
+\begin{itemize}
+    \item We fix some $\DB \in \{0,1\}^n$
+    \item Suppose $C$ happens with non zero probability for some query $q \in [n]$
+\end{itemize}
+
+\textbf{Claim:} $\forall$ query $j \in [n]$. $C$ happens with non zero probability.
+
+
+\begin{proof}
+by privacy of the scheme \\
+
+Consider a single-server $\PIR$ scheme that claims to maintain privacy. Assume an adversary (the server) with unbounded computational power).
+
+
+\textbf{Observation of Communication:} The adversary observes a communication pattern which is feasible for a query $q$ but not for another query $j$. \\
+
+\textbf{Brute Force Enumeration:} 
+ Given unbounded computational power, the server can enumerate over all possible random coin configurations of the client. This is feasible because if the client's running time is $q$, it can consume a random string of at least 2 bits. \\
+
+\textbf{Simulation with Different Queries: } The server simulates the client's behavior for different queries and random strings. It substitutes the client's query with $j$ and uses various random strings, denoted as $\Ccoins$, to mimic the client's behavior. \\
+
+\textbf{Simulation with Different Queries: }
+Server's Random Coins Unchanged: The server can retain its own random coins since there exists a transcript or an execution path that resulted in the observed communication.\\
+
+\textbf{Compatibility Check:}For each combination of $(j', \Ccoins)$, where $j'$ is a potential query and $\Ccoins$ is a set of random coins, the server checks whether this pair is compatible with the observed transcript.\\
+
+\textbf{Information Leakage:} If a particular index $j$ is found to be incompatible with the transcript, it can be conclusively ruled out as the client's query. This deduction leaks information, indicating that the client's query cannot be index $j$. \\
+
+Therefore, if such a scenario is possible within the $\PIR$ scheme, it violates the privacy criterion, as the server can deduce certain indices that are not the subject of the client's query, contradicting the premise of perfect privacy.\\
+\end{proof}
+
+
+\textbf{Claim:} Given $C$, one can recover the entire $\DB$.
+
+\begin{proof}
+Suppose we want to know $\DB$ $[j]$. Find $\Ccoins$ s.t. $({j},\Ccoins)$ is compatible with $C$. 
+
+\begin{enumerate}
+    \item Ouput = $\Coutput (C,{j},\Ccoins)$
+    \item By perfect correctness, $\ans = \DB[j]$.
+\end{enumerate}
+
+\end{proof}
+
+\subsubsection{Concept of Perfect Correctness in PIR Schemes:}
+
+\textbf{Real-World Scenario Mapping:}
+Perfect correctness implies that the client's interaction with the server in a $\PIR$ scheme should reflect a realistic scenario. In such a scenario, the client possesses a query (denoted as $j$) and a randomness tape. \\
+
+\textbf{Accuracy of Query Response:}
+ If the client's query is $j$, then under perfect correctness, the response from the server should accurately correspond to the database value at index $j$. This ensures that the query answer is not only precise but also reliable.\\
+
+\subsubsection{Implications of an Attack under Perfect Correctness:}
+
+\textbf{Reconstruction Capability:}
+ An adversary employing the referenced attack strategy (enumeration and compatibility check) can potentially enumerate over all possible queries ($j$).\\
+
+\textbf{Database Reconstruction:} 
+By systematically analyzing each possible query, the adversary can reconstruct the database value at each index, thereby piecing together the entire database.\\
+
+\textbf{Encoding Scheme:}
+
+For already fix $\Scoins$, $\Ccoins$, $q\in [n]$
+
+\begin{itemize}
+    \item \textbf{Encode (\DB)} = $\PIR$ transcript under ($\DB$, $\Scoins$, $\Ccoins$, $q$)
+    \item \textbf{Decode (C)}: use the above method to output $\DB [{j}],  \forall j \in [n]$ 
+\end{itemize}
+    
+Because the communication $C$ can always encode the database, that means the communication has to be at least as long as the the database itself. So here we can apply Shannon's theorem.
+
+%21
+Consider a database $\DB \in \{0,1\}^n$.
+
+\textbf{Assumption:} For a particular query $q \in [n]$, event $C$ occurs with non-zero probability.
+
+\textbf{Claim 1:} For every query $j \in [n]$, event $C$ occurs with non-zero probability.
+
+\begin{proof}
+This follows from the privacy properties of the system.
+\end{proof}
+
+\textbf{Claim 2:} Given event $C$, it is possible to reconstruct the entire database $\DB$.
+
+\begin{proof}
+
+\end{proof}
+
+\begin{enumerate}
+    \item To retrieve $\DB[j]$, identify the set of coin flips ($\Ccoins$) such that the pair $({j}, \Ccoins)$ is consistent with event $C$.
+    \item Compute the output using $\Coutput(C, j, \Ccoins)$
+    \item By perfect correctness, the response is $\DB[j]$.
+\end{enumerate}
+\
+\textbf{Encoding Scheme:}
+
+\begin{enumerate}
+    \item Define fixed variables: $\Scoins$, $\Ccoins$,  $q \in [n]$.
+    \item Encode a database $\DB$ as the $\PIR$ transcript corresponding to  $(\DB, \Scoins, \Ccoins, q)$.
+    \item Decode using event $C$: Apply the referenced method to obtain $DB[{j}] \forall j \in [n]$.
+\end{enumerate}
+
+\textbf{Shannon Theorem:} Let
+\begin{align*}
+\text{Encode} &: X \rightarrow Y \\
+\text{Decode} &: Y \rightarrow X
+\end{align*}
+be a uniquely decodable code, i.e., \(\forall x \in X\),
+\begin{equation*}
+\text{Decode}[\text{Encode}(x)] = x
+\end{equation*}
+
+Then,
+\begin{equation*}
+\underset{x \leftarrow X}{\mathbb{E}}\left[ \lvert \text{Encode}(x) \rvert \right] \geq H(X)
+\end{equation*}
+
+In single-server $\PIR$ within an information-theoretic setting, the communication length is constant and must be equal to the database size, $N$. This implies that achieving non-trivial (sublinear) bandwidth is not possible while maintaining information-theoretic security in such $\PIR$ schemes.
+
+\begin{remark}
+\cite{DLN19} extended the proof to statistical correctness and privacy extended the proof to more communication complexity for statistically secure MPC. 
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+}
+
+%25
+\subsection{$\PIR$ with non-trivial BW implies Oblivious Transfer}
+
+Crescenzo, Malkin, and Ostrovsky~\cite{CMO00} showed that a single-server PIR with non-trivial bandwidth implies Oblivious Transfer (OT). Since Oblivious Transfer implies the existence of One-Way Function (OWF), this essentially says that OWF is needed for any single-server PIR with non-trivial BW.
+In this lecture, we focus on the first step of this proof that shows that a single-server PIR with non-trivial bandwidth implise an honest-receiver OT.
+
+%\textbf{$\PIR$ with non-trivial BW} $\Rightarrow$ (honest-Bob) Oblivious Transfer.
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+        \node (Alice) at (0,0) {Alice};
+        \node[rectangle, draw, minimum width=2cm, minimum height=3cm] (Protocol) at (3,0) { };
+        \node (Bob) at (6,0) {Bob};
+        \node (BotAlice) at ([yshift=-1cm] Alice) {};
+        \node (BotBob) at ([xshift=0cm, yshift=-1cm] Bob) {}; 
+        \draw[->] (Alice) -- ([yshift=0mm] Protocol.west) node[midway, above] {$a_0, a_1$};
+        \draw[->] (Bob) -- ([yshift=0mm] Protocol.east) node[midway, above] {$b \in \{0,1\}$};
+        \draw[<-] (BotAlice) -- ([yshift=-10mm] Protocol.west) node[midway, above] {$\bot$};
+        \draw[<-] (BotBob) -- ([yshift=-10mm] Protocol.east) node[midway, above] {$a_b$};
+    \end{tikzpicture}
+    \caption{Protocol Illustration}
+    \label{fig:protocol2}
+\end{figure}
+
+\paragraph{A $\binom{2}{1}$-OT protocol between Alice and Bob is as follows:}
+\begin{itemize}
+    \item Alice has two numbers $a_0$ and $a_1$, Bob has a single bit $b$.
+    \item Bob wishes to learn $a_b$  without Alice learning his choice of $b$ (Bob's privacy).
+    \item Moreover, Bob does not learn any information about $a_{1-b}$ (Alice's privacy).
+\end{itemize}
+
+
+\paragraph{Notations:}
+The protocol's execution is denoted as 
+\[
+\begin{pmatrix}
+    \View_{A} \\
+    \View_{B} \\
+    \text{out}_{B} 
+\end{pmatrix}
+=\langle \Alice(1^\lambda, a_0, a_1) \leftrightarrow \Bob(1^\lambda, b)\rangle,
+\]
+where
+\begin{itemize}
+    \item View $A$ is Alice's view, including the random coins and the observed messages;
+    \item View $B$ is Bob's view, including the random coins and the observed messages;
+    \item $\text{out}_{B}$ is Bob's output. 
+\end{itemize}
+
+\begin{definition}[Correctness of OT]
+    Given any $a_0, a_1, b\in \{0,1\}^3$, 
+    $$\Pr[(\cdot,\cdot,\out_B) \get \langle\textsf{Alice}(1^\lambda, a_0, a_1) \leftrightarrow \textsf{Bob}(1^\lambda, b) \rangle: \out_B = a_b \,] = 1 - \negl(\lambda).$$
+\end{definition}
+
+That is, Bob should output the correct bit he tries to fetch with overwhelming probability.
+
+We now see the privacy definitions. We focus on the case where Alice can be malicious and Bob is honest but curious, which means Alice may deviate from the protocol, but Bob follows the protocol honestly and only tries to break the privacy based on his local view.
+
+%\textbf{Alice's Privacy Against an Honest-But-Curious Bob}
+
+\begin{definition}[Sender's privacy against an honest-but-curious receiver]
+
+
+For every uniform probabilistic polynomial-time ($\PPT$) reconstruction algorithm $R$, there exists a negligible function $\negl$ such that for all inputs $a_0,a_1,b\in\{0,1\}$, the following holds:
+
+\[
+\Pr \left[
+\begin{array}{c}
+(a_0,a_1)\getr \{0,1\}^2\\
+(\cdot,\View_B,\cdot) \leftarrow \langle \Alice(1^\lambda, a_0, a_1) \leftrightarrow \Bob(1^\lambda, b)\rangle : \\
+R(1^\lambda, \View_B) = a_{1-b}
+\end{array}
+\right] < \frac{1}{2} + \negl(\lambda)
+\]
+
+\end{definition}
+
+\begin{definition}[Receiver's priavcy against a malicious sender]
+    
+
+There exists a negligible function $\negl$ that for any uniform \PPT adversary $A^*$ representing a malicious sender (Alice) and any uniform \PPT reconstruction algorithm $R^*$, the following holds:
+
+\[
+\Pr \left[
+\begin{array}{c}
+b \getr \{0,1\} \\
+(\View_A, \cdot, \cdot)\leftarrow \langle A^*(1^\lambda, a_0, a_1) \leftrightarrow \Bob(1^\lambda, b)\rangle : \\
+R^*(1^\lambda,\View_A) = b
+\end{array}
+\right] \leq \frac{1}{2} + \negl(\lambda)
+\]
+\end{definition}
+
+\paragraph{Implications of OT.}
+
+The major implication of OT is shown by Kilian~\cite{Kilian88}, and Impagliazzo and Rudich~\cite{IR89}:
+\begin{itemize}
+    \item \cite{Kilian88}: OT is complete for constructing MPC for any computational task (in the presence of a dishonest majority). 
+    \item $
+            \cite{Kilian88} : \text{OT} \overset{\text{Black-box Reduction}}{\implies} \OWF
+            $
+
+    \item $
+        \cite{IR89} : \OWF \overset{\text{Black-box Reduction}}{\not\Rightarrow}\text{OT}
+    $
+            
+\end{itemize}
+
+\begin{theorem} \cite{IR89}
+Constructing OT from one-way functions via black-box reductions is impossible. Such a reduction does not examine the internal structure of the circuit realizing the one-way function.
+\end{theorem}
+
+\ignore{
+
+Non-trivial bandwidth single-server PIR implies OT, suggesting that single-server $\PIR$ requires not only one-way functions but public key operations.\cite{CMO00}
+
+So this is why OT is typically to be believed to be strictly stronger than one way function. For this reason the complexity theoretic result, we are going to show that you know non-trivial $\PIR$ implies OT and suggest that if one want to have non-trivial $\PIR$ in a single server setting, we will need something more than one-way function. We will need essentially public key operations. 
+
+$\PIR$ implies the necessity of some form of public key operation, typically associated with asymmetric key cryptography, as opposed to the symmetric key cryptography.
+}
+
+\begin{remark}
+    In general, PIR is different from OT in the following sense:
+    %PIR: is a special 2-party computation except that it has special requirements. 
+    \begin{enumerate}
+        \item Classical PIR has only one-sided privacy;
+        \item Classical PIR has efficiency requirements on the communication (otherwise it will be trivial to simply download the whole database).
+    \end{enumerate}
+    OT is sometimes referred to as ``symmetric PIR''.
+\end{remark}
+
+
+
+\paragraph{Constructing OT from PIR~\cite{CMO00}.}
+Crescenzo, Malkin, and  Ostrovsk~\cite{CMO00} showed that $\PIR$ with non-trivial bandwidth implies the possibility of constructing Oblivious Transfer ($\OT$) even with a malicious receiver.
+In this class, we are just going to do the easier version which shows that PIR implies an honest-but-curious Bob OT. 
+
+The construction of OT from $\PIR$, is shown in Figure~\ref{fig:OT-from-PIR}.
+The correctness and Bob's privacy are easy to show by the correctness and the privacy of the PIR scheme. It remains to show Alice's privacy (sender privacy).
+
+The high-level idea is as follows. In the $j$-th repetition of the PIR scheme, since we assume the communication of the PIR scheme is sublinear, Bob cannot learn every index of the database with overwhelming certainty (with a simple argument of information entropy). Then, if Bob samples a random index, the corresponding database entry remains some uncertainty to Bob.
+Moreover, Alice will cover the $a_{1-b}$ bit with all the random database indices chosen by Bob, essentially amplifying the uncertainty.
+Then, Bob cannot recover $a_{1-b}$ with a non-negligible advantage over random guessing.
+We will use the following lemma to show the ``amplification'' effect.
+
+\ignore{
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+        \node (Alice) at (0,0) {Alice};
+        \node[rectangle, draw, minimum width=2cm, minimum height=3cm] (Protocol) at (3,0) {OT};
+        \node (Bob) at (6,0) {Bob};
+        \node (BotAlice) at ([yshift=-1cm] Alice) { };
+        \node (BotBob) at ([xshift=0cm, yshift=-1cm] Bob) { }; 
+        \draw[->] (Alice) -- ([yshift=0mm] Protocol.west) node[midway, above] {$a_0, a_1$};
+        \draw[->] (Bob) -- ([yshift=0mm] Protocol.east) node[midway, above] {$b$};
+        \draw[<-] (BotAlice) -- ([yshift=-10mm] Protocol.west) node[midway, above] {$\bot$};
+        \draw[<-] (BotBob) -- ([yshift=-10mm] Protocol.east) node[midway, above] {$a_b$};
+    \end{tikzpicture}
+    \caption{Construction of $\OT$ from $\PIR$}
+    \label{fig:OTfromPIR}
+\end{figure}
+}
+
+
+\begin{figure}
+
+\begin{minipage}{\textwidth}
+\begin{mdframed}
+\paragraph{Phase 1.} 
+Repeat the following process $m$ times (indexed by $j$):
+\begin{itemize}
+    \item Alice samples $\DB_j \getr \{0,1\}^k$
+    \item Bob samples $ i_j \getr [k]$
+    \item Alice and Bob execute the PIR protocol acting as the server and the client, respectively. Let $x_j$ be Bob's output.
+\end{itemize}
+
+\paragraph{Phase 2.} 
+\begin{itemize}
+    \item Bob samples \( i'_1, \ldots, i'_m \stackrel{\$}{\leftarrow} [k]^m \)
+    \item Bob sends the following tuples to Alice:
+        \[
+        \left\{
+          \begin{array}{ll}
+            (i_1, \ldots, i_m), (i'_1, \ldots, i'_m), & \text{if } b = 0 \\
+            (i'_1, \ldots, i'_m)(i_1, \ldots, i_m), & \text{if } b = 1
+          \end{array}
+        \right.
+        \]
+    \item Alice parses the message as $(t^0_1, \ldots, t^0_m), (t^1_1, \ldots, t^1_m)$.
+    \item Alice returns these two bits to Bob:
+    \[
+    c_0\get a_0\oplus \DB_{j}[t^0_1] \oplus \dots \oplus \DB_{j}[t^0_m]
+    \]
+
+    \[
+    c_1\get a_0\oplus \DB_{j}[t^1_1] \oplus \dots \oplus \DB_{j}[t^1_m]
+    \]
+    
+    \item  Bob can reconstruct $a_b$ from $c_b$ because it knows $x_1=\DB[i^b_1],\dots,x_m=\DB[i^b_m]$.
+    
+\end{itemize}
+
+\end{mdframed}
+\end{minipage}
+\caption{Constructing an honest-but-curious Bob OT from PIR. \label{fig:OT-from-PIR}}
+%\caption{Detailed description of \name.\label{fig:single-server}}
+\end{figure}
+
+%1.05
+
+\ignore{
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Correctness:} easy \\
+\textbf{Bob's privacy:} easy follows from the privacy of the $\PIR$ theme. \\
+\textbf{Alice's privacy:} Most interesting proof. \\
+\textbf{Intuition:}$| \Comm \leq | \DB| = K$. \\
+\textbf{Key:} Show that Bob can guess $\DB_i[\text{random index}]$ with at most $ 1-\delta$ probability, where $\delta^(1)$ is some constant (bounded away from 1 by a constant). \\
+
+The communication, denoted $\Comm$ is much shorter than the database database size itself, $K$ of the $\PIR$ protocol. This means is that this communication is unable to encode the entire database, even if Bob is an unbounded attacker, i.e. has unbounded computation power.
+E.g. sample a random index, there is a chance that this a random index, the database at that index is sufficiently random to Bob (It gives some intuition, but the proof is incorrect). 
+
+Suppose the communication is $\frac{K}{2}$. It's half of the database database length. Incorrectly speaking, one can learn half of the database, and the other half is still random. But that's not necessarily the case, because one can learn a little bit of information about every bit. Consequently, in an XOR operation, if any bit remains unknown or partially known, the outcome retains randomness. Thus, the naive assumption of complete knowledge of half the database and complete ignorance of the other half is inaccurate; knowledge may be distributed as partial information across all bits and thus this proof is incorrect.
+
+So this is where the information theory part of the argument comes in.
+The the key of the proof is to show that, no matter what reconstruction algorithm Bob runs, Bob can ask each database at a random index with only constant probability.
+}
+
+%1:10
+
+
+
+\begin{lemma}
+    Suppose $X_1,\dots,X_n$ are binary random variables such that for each $i$, $\Pr[X_i = 1] = \frac{1}{2}+\delta,  \ \delta \in( -\frac{1}{2}, \frac{1}{2})$.
+    Then, we have that 
+    \[
+    \Pr[X_i \oplus... \oplus X_n = 1] = \frac{1}{2}+\delta(2 \delta)^{n-1}.
+    \]
+\end{lemma}
+
+\ignore{
+Given \( \Pr[X_i = 0] = \frac{1}{2} + \delta \) for each index $i$  with $\delta \in \left(-\frac{1}{2}, \frac{1}{2}\right)$, the probability after XORing $n$ such indices is $\Pr[X_1 \oplus \ldots \oplus X_n = 0] = \frac{1}{2} + \delta(2\delta)^{n-1}$. This indicates that the bias, or advantage of $\delta$ diminishes exponentially as more indices are XORed, leading to a distribution approaching uniformity as $n$ increases.\footnote{we can see that if $\delta$ is negligible in a security parameter while $|XY|$ is polynomial, then the difference in conditional entropies is negligible.\cite{94650e30cc8d11df8cb9000ea68e967b}}
+}
+
+\begin{proof}
+\text{Base Case (n = 1):}
+For \(n = 1\), the statement simplifies to $\Pr[X_1 = 1] = \frac{1}{2} + \delta$, which is true by definition.
+
+\text{Inductive Step:}
+Assume the lemma is true for \(n\), i.e., $\Pr[X_1 \oplus \ldots \oplus X_n = 1] = \frac{1}{2} + \delta(2\delta)^{n-1}$. We need to prove it for $n + 1$.
+
+\text{Given:}
+\[
+\frac{1}{2} + \gamma_{n+1} = \left(\frac{1}{2} + \gamma_{n}\right) \left(\frac{1}{2} + \delta\right) + \left(\frac{1}{2} - \gamma_{n}\right) \left(\frac{1}{2} - \delta\right)
+\]
+
+\text{Expanding this, we get:}
+\[
+\frac{1}{2} + \gamma_{n+1} = \frac{1}{4} + \frac{\gamma_{n}}{2} + \frac{\delta}{2} + \gamma_{n}\delta + \frac{1}{4} - \frac{\gamma_{n}}{2} - \frac{\delta}{2} + \gamma_{n}\delta
+\]
+
+\[
+\gamma_{n+1} = 2\gamma_{n}\delta
+\]
+
+\text{By the inductive hypothesis,} \(\gamma_{n} = \delta(2\delta)^{n-1}\), so:
+\[
+\gamma_{n+1} = 2\delta(2\delta)^{n-1}\delta = \delta(2\delta)^{n}
+\]
+
+\text{Thus,}
+\[
+\Pr[X_1 \oplus \ldots \oplus X_{n+1} = 1] = \frac{1}{2} + \delta(2\delta)^{n}
+\]
+
+\end{proof}
+
+
+
+\ignore{
+%%%%%%%%%%%%%%%%%%%%%%%%%5
+
+The XOR Lemma  in the context of probability and advantage amplification:
+
+\begin{enumerate}
+    \item \textbf{Initial Advantage:} 
+    Let the probability that each $X_i$ (individual copy) equals 0 be $ \frac{1}{2} + \delta $, where $ \delta$ represents a slight advantage over random guessing $\delta$ is a small deviation from $\frac{1}{2}$.
+
+    \item \textbf{XOR Lemma:} 
+    The XOR Lemma quantifies how this advantage is amplified or diminished when XOR operations are applied across multiple copies. Specifically, for the XOR of $n$ copies $X_1, X_2, \ldots, X_n$, the probability that $ X_1 \oplus X_2 \oplus \ldots \oplus X_n = 0 $ is $ \frac{1}{2} + \delta(2\delta)^{n-1}$.
+
+    \item \textbf{Advantage Amplification:} 
+    As $n$ increases, the advantage $\delta$ becomes exponentially smaller, indicating that for large $n$, the XOR of multiple copies approaches a probability close to $\frac{1}{2}$, resembling random guessing.
+
+    \item \textbf{Proof Method:} 
+    The XOR Lemma is proven using induction. The base case is trivially true for $n = 1$. The inductive step involves proving that if the lemma holds for $n$, it also holds for $n+1$. This is achieved by expressing the probability for $n+1$ copies in terms of the probability for $n$ copies and the probability for a single copy, and then simplifying the expression.
+
+    \item \textbf{Application in Proof Strategy:} 
+    The significance of this lemma in broader proofs or strategies is that once it is established that an individual copy yields only a constant advantage for guessing correctly, the focus can shift to analyzing single-copy scenarios. The lemma ensures that this analysis suffices even when considering multiple copies, as the XOR operation dilutes any advantage over multiple copies.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%
+}
+
+
+For the rest of the proof, we only need to show that in a single copy of the PIR scheme, Bob can only guess the random index's value with probability no more than $\frac12+\delta$ with some non-negligible $\delta$, then using the XOR amplification lemma is sufficient to prove the sender's privacy. Given any $i\in[k]$, any PPT reconstruction algorithm $R$, consider the following experiment.
+
+%($Expt$ denotes ''Experiment'')
+\begin{itemize}
+\item
+$\Expt(1^\lambda, k, \coin_A, \coin_B, i, R)$:
+\begin{itemize}
+\item $\DB \stackrel{\$}{\leftarrow}\{0,1\}^k$ 
+    \item $(\cdot,\View_B)\get \langle\PIR.\Alice(1^{\lambda}, \DB, \coin_A) \leftrightarrow \PIR.\Bob(1^{\lambda}, i, \coin_B)\rangle$
+    %\item sample r $\leftarrow \{ R \}$
+    \item $r\getr [k]$;
+    \item output 1 if $R(1^\lambda, \View_B, r, \coin_B) = \DB[r]$
+\end{itemize}
+\end{itemize}
+
+\begin{claim}
+    Let 
+    $p = \Pr[\Expt(1^\lambda, k, \coin_A, \coin_B, i, R)=1]$. Then, 
+    $$H(p) \geq \frac{k-l}{k},$$ where $H(p)$ is the binary entropy of $p$, $k$ is the database size, and $l$ is the communication script length in the PIR scheme.
+\end{claim}
+
+\begin{proof}
+Let $\Comm$ be the communication script in the PIR scheme.
+By definition of entropy, $H(\Comm) \leq l$.
+Denote $\DB=(y_1,\dots,y_k)$. Let $z_j = R (1^\lambda, \View_{B}, j, \coin_B)$ for $j \in [k]$.
+Let $p_j = \Pr[y_j\ne z_j]$ and $p = \frac{1}{k} \sum_{j \in [k]} p_j$.
+
+\noindent By Fano's inequality $^{(\triangle)}$: $$H(p_j) \geq H(y_j | \Comm)$$
+By chain rule$^{(\star)}$: 
+\[
+\quad H(\DB | \Comm) = \sum_{j=1}^{k} H(y_{j} | \Comm, y_{j-1}, \ldots, y_1) \leq \sum_{j=1}^{k} H(y_{j}| \Comm).
+\]
+
+Thus,
+\begin{align*}
+H({\DB}|\Comm) = H({\DB}) - H(\Comm) + H(\Comm |{\DB}) \geq k - H(\Comm)
+\geq k - l,
+\end{align*}
+
+Hence,
+
+$$H(p) = H\left( \frac{1}{k} \sum_{j=1}^{k} p_j \right) \geq^{(\triangle)}  \frac{1}{k} \sum_{j=1}^{k} H(p_j)\geq \frac{1}{k} \sum_{j=1}^{k}\frac{H(y g_j | \Comm)}{k} \geq^{(\star)} \frac{k - l}{k}$$
+Where $\triangle$ and $\star$ denote where each inequality is applied.
+\end{proof}
+
+The full proof can also be seen in \cite{DLN19}
+and for the lemmas 4.5 (absolute difference in entropy between two probability distributions $p$ and $q$ on a finite set $M$ is bounded above by the $L_{1}\text{-norm}$ of their difference) and 4.6 (bounds the entropy of a function and is maximized by the uniform distribution) \cite{669255}.
+
+\section*{Notes}
+
+\subsection*{Conditional Entropy}
+\begin{align*}
+H(Y|X) &= -\sum_{x \in D_X, y \in D_Y} p(x,y) \log_2 \frac{p(x,y)}{p(x)}
+\end{align*}
+
+\subsection*{Entropy}
+Let $X$ be a random variable taking values over a finite domain $D_X$.
+\begin{align*}
+H(X) &= -\sum_{x \in D_X} p(x) \log_2 p(x)
+\end{align*}
+Fact: $0 \leq H(X) \leq \log_2(|D_X|)$
+
+\subsection*{Chain Rule}
+\begin{align*}
+H(Y|X) &= H(X) + H(Y|X) \\
+H(X_1, \ldots, X_n) &= \sum_{i=1}^{n} H(X_i | X_1, \ldots, X_{i-1})
+\end{align*}
+
+\subsection*{Bayes' Theorem}
+\begin{align*}
+H(Y|X) &= H(X|Y) - H(X) + H(Y)
+\end{align*}
+
+\subsection*{Binary Entropy Function}
+For $p \in [0,1]$:
+\begin{align*}
+H(p) &= -p\log_2(p) - (1-p)\log_2(1-p)
+\end{align*}
+
+\subsection*{Concavity of Entropy}
+For $p, q \in [0,1]$ and $0 \leq \lambda \leq 1$:
+\begin{align*}
+H(\lambda p + (1-\lambda)q) &\geq \lambda H(p) + (1-\lambda)H(q)
+\end{align*}
+
+\subsection*{Fano's Inequality}
+Let $X$ and $Y$ be random variables with $X \in D_X$ and $Y \in D_Y$. Let $\hat{X} = f(Y)$ and $p = P(X \neq \hat{X})$.
+\begin{align*}
+H(X|Y) &\leq H(p) + p \log_2(|D_X|-1)
+\end{align*}
