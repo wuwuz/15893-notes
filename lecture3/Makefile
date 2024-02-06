@@ -4,7 +4,7 @@
 LATEX=pdflatex
 TEXFLAGS=
 
-TARGET=lecture3.pdf 
+TARGET=main3.pdf 
 
 all: $(TARGET)
  
