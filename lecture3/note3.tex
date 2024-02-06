@@ -99,9 +99,9 @@ The following theorem has been a folklore lower bound and is formalized by Damg\
 regardless of the number of rounds or client/server computation.
 \end{theorem}
 
-In our lecture, we will only provide the proof for PIR
-schemes with perfect privacy and correctness. However, 
-Damg\r{a}rd, Larsen and Nielsen~\cite{DLN19} generalized the proof to statistical correctness and privacy as well.
+%In our lecture, we will only provide the proof for PIR
+%schemes with perfect privacy and correctness. However, 
+%Damg\r{a}rd, Larsen and Nielsen~\cite{DLN19} generalized the proof to statistical correctness and privacy as well.
 %We now provide the proof for the perfect PIR schemes. The proof for statistical PIR schemes requires extra steps and can be found in the original paper.
 
 \paragraph{Notations.} Given any database $\DB \in \{0, 1\}^n$, any client query $i\in[n]$,    
@@ -162,21 +162,24 @@ encoding scheme.
 Notice that the encoder and the decoder algorithms need not be efficient.
 
 \begin{itemize}
-    \item \textit{Encoding}. 
+    \item $\textsf{Encode}(\DB)$:
 Arbitrarily fix the client and server's random coins $r_1$ and $r_2$,
 and choose an arbitrary query $i \in [n]$, say $i = 1$. 
 Given any $n$-bit database $\DB$, the encoding for $\DB$ is 
 %the shortest possible communication script $C$ that is compatible with the $\DB$. That is, there exist $r_1,r_2\in \{0,1\}^*, i\in[n]$ such that 
 the communication transcript $\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$.
 
-    \item \textit{Decoding}. Given any codeword $C$, 
+    \item $\textsf{Decode}(C)$:
+Given any codeword $C$, 
 the decoder algorithm will reconstruct the $j$-th bit of $\DB$ for any $j \in [n]$ as follows. 
 The algorithm fixes $j$ and enumerates $r'_2$ until $C$ 
-is compatible with $(j, r'_2)$
+is compatible with $(j, r'_2)$.
 %is a possible communication script given the client's inputs are $i,r_2$. 
 Then, the $j$-th bit of $\DB$ is reconstructed by $\Coutput\left(C, j, r'_2\right)$.
 \end{itemize}
 
+
+\ignore{
 \begin{claim}
     The decoding algorithm terminates in finite time.
 \end{claim}
@@ -190,15 +193,23 @@ Since $C$ is possible for all possible $i$, the decoding algorithm is guaranteed
 
 %This claim is implied by the perfect correctness of the PIR scheme.
 Since $C$ is compatible with the original $\DB$ and the client's query $j$, the perfect correctness of the PIR scheme implies that $\Coutput\left(C, i, r_2\right)=\DB[i]$. 
+}
 
-Based on the claims, we show that this encoding-decoding scheme is a uniquely decodable code, i.e., $\forall~\DB\in \{0,1\}^n$, $\Pr[\textsf{Decode}(\textsf{Encode(DB)}]=1$. 
-Then, by Shannon's source coding theorem, we have that 
+Due to \Cref{clm:extract}, the above encoding scheme always 
+correctly decodes. 
+%Based on the claims, we show that this encoding-decoding scheme is a uniquely decodable code, 
+i.e., $\forall~\DB\in \{0,1\}^n$, $\Pr[\textsf{Decode}(\textsf{Encode(DB)}]=1$. 
+Then, by Shannon's source coding theorem, we have the following where 
+$H(\DB)$ denotes the entropy of a randomly sampled $\DB$:
 \[
     \E_{\DB\getr\{0,1\}^n}\left[\textsf{Encode}(\DB)\right]\ge H(\DB) = n.
 \]
 
-Here, $H(\DB)$ is the entropy of $\DB$.
-Then, we show that the expected length for the shortest possible communication script $C$ is at least $n$ bits.
+As a special case, if the communication length of the PIR scheme
+is fixed (i.e., does not depend
+on the server and client's inputs and coins), 
+then it must be at least $n$ bits long.
+%Then, we show that the expected length for the shortest possible communication script $C$ is at least $n$ bits.
 \end{proof}
 
 \begin{remark}
