@@ -72,6 +72,11 @@ In today's lecture, we will prove that
 %In fact, the two lower bounds are highly connected. 
 Even though the second lower bound implies the first one,
 we will still begin by proving the first one since its proof is simpler. 
+The second lower bound shows interesting 
+complexity theorectic implications of PIR: informally speaking,
+we need ``public-key operations'' to construct single-server PIR with 
+non-trivial bandwidth, since OT is believed to be strictly stronger
+than one-way functions (which gives symmetric-key cryptography).
 
 %\paragraph{Overview of proof ideas.}
 The high-level idea of the first lower bound is to show that there exists an extractor, such that given any database $\DB$ and any query $q$, the extractor can extract the whole database given the communication script.
