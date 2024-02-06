@@ -65,7 +65,7 @@ In today's lecture, we will prove that
 
 \begin{enumerate}
     \item \textit{A perfect (or even statistical) PIR scheme without cryptographic assumptions requires linear bandwidth;}
-    \item We will prove a even stronger version of the lower bound, that is, 
+    \item We will prove an even stronger version of the lower bound, that is, 
 \textit{a single-server PIR scheme with non-trivial bandwidth implies Oblivious Transfer (OT)}.
 \end{enumerate}
 
@@ -73,6 +73,7 @@ In today's lecture, we will prove that
 Even though the second lower bound implies the first one,
 we will still begin by proving the first one since its proof is simpler. 
 
+%\paragraph{Overview of proof ideas.}
 The high-level idea of the first lower bound is to show that there exists an extractor, such that given any database $\DB$ and any query $q$, the extractor can extract the whole database given the communication script.
 This shows that the communication script has at least $n$-bit of entropy for a  
 randomly sampled $n$-bit database, 
