@@ -169,12 +169,12 @@ Notice that the encoder and the decoder algorithms need not be efficient.
     \item $\textsf{Encode}(\DB)$:
 Arbitrarily fix the client and server's random coins $r_1$ and $r_2$,
 and choose an arbitrary query $i \in [n]$, say $i = 1$. 
-Given any $n$-bit database $\DB$, the encoding for $\DB$ is 
+Given an $n$-bit database $\DB$, the encoding for $\DB$ is 
 %the shortest possible communication script $C$ that is compatible with the $\DB$. That is, there exist $r_1,r_2\in \{0,1\}^*, i\in[n]$ such that 
 the communication transcript $\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$.
 
     \item $\textsf{Decode}(C)$:
-Given any codeword $C$, 
+Given a codeword $C$, 
 the decoder algorithm will reconstruct the $j$-th bit of $\DB$ for any $j \in [n]$ as follows. 
 The algorithm fixes $j$ and enumerates $r'_2$ until $C$ 
 is compatible with $(j, r'_2)$.
