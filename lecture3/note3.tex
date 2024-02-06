@@ -23,7 +23,7 @@
 \newcommand{\Cst}{\ensuremath{{\sf Cst}}}
 \newcommand{\msg}{\ensuremath{{\sf msg}}}
 \newcommand{\msgp}{\ensuremath{{\sf msg'}}}
-\newcommand{\Coutput}{\ensuremath{{\sf Decode}}}
+\newcommand{\Coutput}{\ensuremath{{\sf Reconstr}}}
 \newcommand{\ans}{\ensuremath{{\sf ans}}}
 \newcommand{\Ccoins}{\ensuremath{{\sf Ccoins}}}
 \newcommand{\Scoins}{\ensuremath{{\sf Scoins}}}
@@ -123,9 +123,19 @@ a randomly chosen $n$-bit database.
 We now define the encoding scheme and the decoding scheme. Notice that the encoder and the decoder algorithms need not be efficient (polynomially bounded).
 
 \begin{itemize}
-    \item \textit{Encoding}. Given any $n$-bit database $\DB$, the encoding for $\DB$ is the shortest possible communication script $C$ that is compatible with the $\DB$. That is, there exist $r_1,r_2\in \{0,1\}^*, i\in[n]$ such that $\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$.
+    \item \textit{Encoding}. 
+Arbitrarily fix the client and server's random coins $r_1$ and $r_2$,
+and choose an arbitrary query $i \in [n]$, say $i = 1$. 
+Given any $n$-bit database $\DB$, the encoding for $\DB$ is 
+%the shortest possible communication script $C$ that is compatible with the $\DB$. That is, there exist $r_1,r_2\in \{0,1\}^*, i\in[n]$ such that 
+the communication transcript $\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$.
 
-    \item \textit{Decoding}. Given any code word $C$, the decoder algorithm will reconstruct the $i$-th bit of $\DB$ as follows. The algorithm fixes $i$ and enumerates $r_2$ until $C$ is a possible communication script given the client's inputs are $i,r_2$. Then, the $i$-th bit of $\DB$ is reconstructed by $\Coutput\left(C, i, r_2\right)$.
+    \item \textit{Decoding}. Given any codeword $C$, 
+the decoder algorithm will reconstruct the $j$-th bit of $\DB$ for any $j \in [n]$ as follows. 
+The algorithm fixes $j$ and enumerates $r_2$ until $C$ 
+is compatible with $(j, r_2)$
+%is a possible communication script given the client's inputs are $i,r_2$. 
+Then, the $j$-th bit of $\DB$ is reconstructed by $\Coutput\left(C, i, r_2\right)$.
 \end{itemize}
 
 \begin{claim}
