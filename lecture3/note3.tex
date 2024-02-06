@@ -70,7 +70,7 @@ In today's lecture, we will prove that
 \end{enumerate}
 
 %In fact, the two lower bounds are highly connected. 
-The high-level idea of the first lower bound is to show that there exists a computationally unbounded extractor, such that given any database $\DB$ and any query $q$, the extractor can extract the whole database given the communication script.
+The high-level idea of the first lower bound is to show that there exists an extractor, such that given any database $\DB$ and any query $q$, the extractor can extract the whole database given the communication script.
 This shows that the communication script has at least $n$-bit of entropy for a 
 randomly sampled $n$-bit database, 
 and thus it is at least $n$-bit long. 
@@ -120,7 +120,7 @@ At a high level, the intuition of the proof is the folowing.
 By perfect privacy and perfect correctness of the PIR scheme, given any possible communication script $C$, a computationally unbounded extractor can extract all original database bits. Then, the communication script $C$ can actually be seen as an encoding for the database, and the decoder just runs the extractor to reconstruct the database. This gives a uniquely decodable scheme and by Shannon's source coding theorem, the expected length of the codeword has be be at least $n$-bit on 
 a randomly chosen $n$-bit database.
 
-We now define the encoding scheme and the decoding scheme. Notice that the encoder and the decoder algorithms do not need to be efficient (polynomially bounded).
+We now define the encoding scheme and the decoding scheme. Notice that the encoder and the decoder algorithms need not be efficient (polynomially bounded).
 
 \begin{itemize}
     \item \textit{Encoding}. Given any $n$-bit database $\DB$, the encoding for $\DB$ is the shortest possible communication script $C$ that is compatible with the $\DB$. That is, there exist $r_1,r_2\in \{0,1\}^*, i\in[n]$ such that $\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$.
