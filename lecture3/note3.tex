@@ -54,24 +54,36 @@
 
 \section{Lower Bounds for PIR}
 
-In recent lectures, the construction of two-server Private Information Retrieval (PIR) schemes with sublinear bandwidth was discussed. The current focus is on the single-server setting, questioning the feasibility of achieving sublinear bandwidth. It was established that under cryptographic assumptions, such as fully homomorphic encryption (FHE), one can indeed achieve essentially constant bandwidth. 
-We now see two lower bounds for single-server PIR. 
+In recent lectures, we showed how to construct a 2-server Private Information Retrieval (PIR) schemes with sublinear bandwidth, without relying on any cryptographic assumptions. 
+One question is whether we can achieve sublinear bandwidth in the single-server setting.
+We know that using cryptography (e.g. fully homomorphic encryption), we can 
+easily get a single-server PIR scheme with constant bandwidth. 
+However, is it possible to get sublinear bandwidth without cryptographic assumptions?
+%The current focus is on the single-server setting, questioning the feasibility of achieving sublinear bandwidth. It was established that under cryptographic assumptions, such as fully homomorphic encryption (FHE), one can indeed achieve essentially constant bandwidth. 
+%We now see two lower bounds for single-server PIR. 
+In today's lecture, we will prove that 
 
 \begin{enumerate}
-    \item \textit{A perfect (or even statistical) PIR scheme without cryptographic assumptions require linear bandwidth;}
-
-    \item \textit{A single-server PIR scheme with non-trivial bandwidth implies Oblivious Transfer.}
-
-
-
+    \item \textit{A perfect (or even statistical) PIR scheme without cryptographic assumptions requires linear bandwidth;}
+    \item We will prove a even stronger version of the lower bound, that is, 
+\textit{a single-server PIR scheme with non-trivial bandwidth implies Oblivious Transfer (OT)}.
 \end{enumerate}
 
-In fact, the two lower bounds are highly connected. 
+%In fact, the two lower bounds are highly connected. 
 The high-level idea of the first lower bound is to show that there exists a computationally unbounded extractor, such that given any database $\DB$ and any query $q$, the extractor can extract the whole database given the communication script.
-This shows that the communication script has at least $n$-bit of entropy, and thus it is at least $n$-bit long. 
-The idea of the second lower bound is to show that for any extractor, given a communication script of length less than $n$ in the PIR protocol, it cannot extract all bits of the database. 
-Therefore, if we now sample a random bit out of the database, the extractor cannot successfully guess the bit with overwhelming probability. 
-This property can then be used to build an Oblivious Transfer protocol.
+This shows that the communication script has at least $n$-bit of entropy for a 
+randomly sampled $n$-bit database, 
+and thus it is at least $n$-bit long. 
+
+The idea of the second lower bound is construct an OT  
+scheme from a PIR scheme 
+with non-trivial bandwidth.
+The challenge in the proof arises from the fact that PIR has only one-sided
+privacy, but OT has two-sided privacy (as explained more later).
+
+%The idea of the second lower bound is to show that for any extractor, given a communication script of length less than $n$ in the PIR protocol, it cannot extract all bits of the database. 
+%Therefore, if we now sample a random bit out of the database, the extractor cannot successfully guess the bit with overwhelming probability. 
+%This property can then be used to build an Oblivious Transfer protocol.
 
 
 
@@ -80,13 +92,17 @@ This property can then be used to build an Oblivious Transfer protocol.
 
 \subsection{Unconditional PIR Requires Linear Bandwidth}
 
-The following theorem has been a folklore lower bound and is formalized by Damgård, Larsen and Nielsen~\cite{DLN19}.
+The following theorem has been a folklore lower bound and is formalized by Damg\r{a}rd, Larsen and Nielsen~\cite{DLN19}.
 
 \begin{theorem}[\cite{DLN19}]
-1-server PIR scheme with perfect (or statistical) correctness and perfect (or statistical) privacy must have $\Omega(n)$ bandwidth where $n = |\DB|$, which even holds for multi-round protocols. 
+1-server PIR scheme with perfect correctness and perfect privacy must have $\Omega(n)$ bandwidth where $n = |\DB|$. Further, this lower bound holds
+regardless of the number of rounds or client/server computation.
 \end{theorem}
 
-We now provide the proof for the perfect PIR schemes. The proof for statistical PIR schemes requires extra steps and can be found in the original paper.
+In our lecture, we will only provide the proof for PIR
+schemes with perfect privacy and correctness. However, 
+Damg\r{a}rd, Larsen and Nielsen~\cite{DLN19} generalized the proof to statistical correctness and privacy as well.
+%We now provide the proof for the perfect PIR schemes. The proof for statistical PIR schemes requires extra steps and can be found in the original paper.
 
 \paragraph{Notations.} Given any database $\DB$ of size $n$, any client query $i\in[n]$,    
 we denote the PIR protocol's communication script as $\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$ (if it's multi-round, we just concatenate all the exchanged messages).
