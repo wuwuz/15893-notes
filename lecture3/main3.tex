@@ -1,15 +1,16 @@
-\documentclass[11pt]{article}
+\documentclass[letterpaper,11pt]{article}
 
 % Packages
-\usepackage{amsmath, amsthm, amssymb}
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
-\usepackage{geometry}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amstext,amsfonts,amssymb}
+\usepackage{cleveref}
 
 %\usepackage{minipage}
 %\usepackage{mdframe}
-\geometry{a4paper, margin=1in}
+%\geometry{letterpaper,margin=1in}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows, positioning}
 
@@ -20,6 +21,14 @@
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{proposition}[theorem]{Proposition}
+%\newtheorem{claim}{Claim}
+
+\definecolor{darkgreen}{RGB}{34, 139, 34}
+\definecolor{darkred}{rgb}{0.5, 0, 0}
+\definecolor{lightblue}{RGB}{0,176,240}
+
+
+\newcommand{\elaine}[1]{{\color{lightblue}[Elaine: #1]}}
 
 \usepackage{enumitem}
 \usepackage{mdframed}

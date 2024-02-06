@@ -71,7 +71,7 @@ In today's lecture, we will prove that
 
 %In fact, the two lower bounds are highly connected. 
 The high-level idea of the first lower bound is to show that there exists an extractor, such that given any database $\DB$ and any query $q$, the extractor can extract the whole database given the communication script.
-This shows that the communication script has at least $n$-bit of entropy for a 
+This shows that the communication script has at least $n$-bit of entropy for a  
 randomly sampled $n$-bit database, 
 and thus it is at least $n$-bit long. 
 
@@ -117,8 +117,33 @@ That is, the $\Coutput$ is the client-side algorithm to construct the final answ
 %by constructing an encoding scheme 
 %and the way we are going to propose an encoding scheme. 
 At a high level, the intuition of the proof is the folowing. 
-By perfect privacy and perfect correctness of the PIR scheme, given any possible communication script $C$, a computationally unbounded extractor can extract all original database bits. Then, the communication script $C$ can actually be seen as an encoding for the database, and the decoder just runs the extractor to reconstruct the database. This gives a uniquely decodable scheme and by Shannon's source coding theorem, the expected length of the codeword has be be at least $n$-bit on 
-a randomly chosen $n$-bit database.
+By perfect privacy and perfect correctness of the PIR scheme, given any possible communication script $C$, a computationally unbounded extractor can extract all original database bits. Then, the communication script $C$ can actually be seen as an encoding for the database, and the decoder just runs the extractor to reconstruct the database. This gives us a uniquely decodable scheme and by Shannon's source coding theorem, the expected length of the codeword has be at least $n$ bits when
+the database is randomly sampled. 
+
+The following claim says that one can extract the entire database from the 
+communication transcript of the PIR.
+\begin{claim}
+Fix some $\DB \in \{0, 1\}^n$.  
+Fix $i \in [n]$, and client and server coins $r_1, r_2$.
+Let $C = 
+\langle \Server(\DB, r_1) \leftrightarrow \Client(i, r_2) \rangle$
+be the transcript of the PIR protocol on $\DB, i, r_1, r_2$.
+Then for any $j \in [n]$, there must 
+exist some $r'_2$ such that $C$ is compatible with $(j, r'_2)$.
+Further, 
+$\Coutput\left(C, i, r_2\right) = \DB[j]$.
+\label{clm:extract}
+\end{claim}
+In the above, the communication trascript $C$ being compatible with $(j, r'_2)$
+means that if we rerun the client's algorithm using input $j$, coins  
+$r'_2$, and the first $(r-1)$ messages it receives in $C$,
+it outputs the same $r$-th outgoing message as in $C$. 
+Further, this holds for any $r$.
+
+\elaine{Mingxun, can you please fix the cleveref? it doesn't work.}
+
+\paragraph{Proof of \Cref{clm:extract}.}
+
 
 We now define the encoding scheme and the decoding scheme. Notice that the encoder and the decoder algorithms need not be efficient (polynomially bounded).
 
@@ -132,10 +157,10 @@ the communication transcript $\langle \Server(\DB, r_1) \leftrightarrow \Client(
 
     \item \textit{Decoding}. Given any codeword $C$, 
 the decoder algorithm will reconstruct the $j$-th bit of $\DB$ for any $j \in [n]$ as follows. 
-The algorithm fixes $j$ and enumerates $r_2$ until $C$ 
-is compatible with $(j, r_2)$
+The algorithm fixes $j$ and enumerates $r'_2$ until $C$ 
+is compatible with $(j, r'_2)$
 %is a possible communication script given the client's inputs are $i,r_2$. 
-Then, the $j$-th bit of $\DB$ is reconstructed by $\Coutput\left(C, i, r_2\right)$.
+Then, the $j$-th bit of $\DB$ is reconstructed by $\Coutput\left(C, j, r'_2\right)$.
 \end{itemize}
 
 \begin{claim}
