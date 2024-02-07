@@ -569,7 +569,7 @@ $\PIR$ implies the necessity of some form of public key operation, typically ass
 %    In general, PIR is different from OT in the following sense:
     %PIR: is a special 2-party computation except that it has special requirements. 
 PIR can also be viewed as a special 2-party computation
-protocol with the following features
+protocol with the following additional features:  
 1) we only need one-sided privacy, 
 and 2) PIR has special efficiency requirements on the communication 
 (otherwise a trivial way is to simply download the whole database).
@@ -596,10 +596,9 @@ from the fact that the PIR scheme is bandwidth-efficient.
 
 
 \paragraph{Constructing OT from PIR~\cite{CMO00}.}
-Crescenzo, Malkin, and  Ostrovsk~\cite{CMO00} showed that $\PIR$ with non-trivial bandwidth implies the possibility of constructing Oblivious Transfer ($\OT$) even with a malicious receiver.
-In this class, we are just going to do the easier version which shows that PIR implies an honest-but-curious Bob OT. 
-
-The construction of OT from $\PIR$, is shown in Figure~\ref{fig:OT-from-PIR}.
+%Crescenzo, Malkin, and  Ostrovsk~\cite{CMO00} showed that $\PIR$ with non-trivial bandwidth implies the possibility of constructing Oblivious Transfer ($\OT$) even with a malicious receiver.
+%In this class, we are just going to do the easier version which shows that PIR implies an honest-but-curious Bob OT. 
+The construction of honest-receiver OT from PIR is shown in Figure~\ref{fig:OT-from-PIR}.
 The correctness and Bob's privacy are easy to show by the correctness and the privacy of the PIR scheme. It remains to show Alice's privacy (sender privacy).
 
 The high-level idea is as follows. In the $j$-th repetition of the PIR scheme, since we assume the communication of the PIR scheme is sublinear, Bob cannot learn every index of the database with overwhelming certainty (with a simple argument of information entropy). Then, if Bob samples a random index, the corresponding database entry remains some uncertainty to Bob.
