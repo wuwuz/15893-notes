@@ -52,7 +52,7 @@
 %\newtheorem{claim}[theorem]{Claim}
 
 
-\section{Lower Bounds for PIR}
+%\section{Lower Bounds for PIR}
 
 In recent lectures, we showed how to construct a 2-server Private Information Retrieval (PIR) schemes with sublinear bandwidth, without relying on any cryptographic assumptions. 
 One question is whether we can achieve sublinear bandwidth in the single-server setting.
@@ -99,7 +99,7 @@ privacy, but OT has two-sided privacy (as explained more later).
 
 
 
-\subsection{Information-Theoretic 1-Server PIR Requires Linear Bandwidth}
+\section{Information-Theoretic 1-Server PIR Requires Linear Bandwidth}
 
 The following theorem has been a folklore lower bound and is formalized by Damg\r{a}rd, Larsen and Nielsen~\cite{DLN19}.
 
@@ -413,7 +413,7 @@ In single-server $\PIR$ within an information-theoretic setting, the communicati
 }
 
 %25
-\subsection{$\PIR$ with non-trivial BW implies Oblivious Transfer}
+\section{Non-Trivial Single-Server PIR Implies Oblivious Transfer}
 
 Crescenzo, Malkin, and Ostrovsky~\cite{CMO00} showed that a single-server PIR with non-trivial bandwidth implies Oblivious Transfer (OT). 
 1-out-of-2 OT can be viewed as a special secure 2-party computation 
@@ -442,6 +442,8 @@ also showed that how to construct {\it malicious-receiver} OT from 1-server PIR
 
 %\textbf{$\PIR$ with non-trivial BW} $\Rightarrow$ (honest-Bob) Oblivious Transfer.
 
+\subsection{Definition of OT}
+
 \begin{figure}[ht]
     \centering
     \begin{tikzpicture}
@@ -459,7 +461,8 @@ also showed that how to construct {\it malicious-receiver} OT from 1-server PIR
     \label{fig:protocol2}
 \end{figure}
 
-\paragraph{A $\binom{2}{1}$-OT protocol between Alice and Bob is as follows:}
+\paragraph{Syntax.}
+A 1-out-of-2 OT between Alice and Bob has the following abstraction: 
 \begin{itemize}
     \item Alice has two bits $a_0$ and $a_1$, Bob has a single bit $b$. Bob wishes
 to learn $a_b$.
@@ -468,7 +471,7 @@ to learn $a_b$.
 \end{itemize}
 
 
-\paragraph{Notations:}
+\paragraph{Notations.}
 The protocol's execution is denoted as 
 \[
 \begin{pmatrix}
@@ -532,6 +535,7 @@ R^*(1^\lambda,\View_A) = b
 \]
 \end{definition}
 
+\ignore{
 \paragraph{Implications of OT.}
 
 The major implication of OT is shown by Kilian~\cite{Kilian88}, and Impagliazzo and Rudich~\cite{IR89}:
@@ -546,10 +550,11 @@ The major implication of OT is shown by Kilian~\cite{Kilian88}, and Impagliazzo 
     $
             
 \end{itemize}
+}
 
-\begin{theorem} \cite{IR89}
-Constructing OT from one-way functions via black-box reductions is impossible. Such a reduction does not examine the internal structure of the circuit realizing the one-way function.
-\end{theorem}
+%\begin{theorem} \cite{IR89}
+%Constructing OT from one-way functions via black-box reductions is impossible. Such a reduction does not examine the internal structure of the circuit realizing the one-way function.
+%\end{theorem}
 
 \ignore{
 
@@ -561,13 +566,31 @@ $\PIR$ implies the necessity of some form of public key operation, typically ass
 }
 
 \begin{remark}
-    In general, PIR is different from OT in the following sense:
+%    In general, PIR is different from OT in the following sense:
     %PIR: is a special 2-party computation except that it has special requirements. 
+PIR can also be viewed as a special 2-party computation
+protocol with the following features
+1) we only need one-sided privacy, 
+and 2) PIR has special efficiency requirements on the communication 
+(otherwise a trivial way is to simply download the whole database).
+
+%Observe that 
+To construct OT from PIR, the main challenge arises from the following: 
     \begin{enumerate}
-        \item Classical PIR has only one-sided privacy;
-        \item Classical PIR has efficiency requirements on the communication (otherwise it will be trivial to simply download the whole database).
-    \end{enumerate}
-    OT is sometimes referred to as ``symmetric PIR''.
+        \item PIR has only {\it one-sided privacy}, that is, the server
+should not learn the client's query but there is no privacy guarantee
+for the server's database; 
+\item However, OT has {\it two-sided privacy}, that is, 
+both Alice and Bob's privacy must be protected.
+   \end{enumerate}
+%For this reason, to construct OT from PIR, the main challenge 
+%is how to prove sender privacy when the underlying PIR does not directly offer it.
+Therefore, the main challenge is how to prove sender privacy when the underlying PIR
+does not directly offer it.
+As you shall see in the proof, sender privacy will
+follow
+from the fact that the PIR scheme is bandwidth-efficient.
+%    OT is sometimes referred to as ``symmetric PIR''.
 \end{remark}
 
 
