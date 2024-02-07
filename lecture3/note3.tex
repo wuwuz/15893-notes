@@ -480,8 +480,8 @@ The protocol's execution is denoted as
 \]
 where
 \begin{itemize}
-    \item View $A$ is Alice's view, including the random coins and the observed messages;
-    \item View $B$ is Bob's view, including the random coins and the observed messages;
+    \item $\View_{A}$ is Alice's view, including Alice's random coins and the protocol transcript;
+    \item $\View_{B}$ is Bob's view, including Bob's random coins and the protocol transcript;
     \item $\text{out}_{B}$ is Bob's output. 
 \end{itemize}
 
@@ -499,7 +499,7 @@ We now see the privacy definitions. We focus on the case where Alice can be mali
 \begin{definition}[Sender's privacy against an honest-but-curious receiver]
 
 
-For every uniform probabilistic polynomial-time ($\PPT$) reconstruction algorithm $R$, there exists a negligible function $\negl$ such that for all inputs $a_0,a_1,b\in\{0,1\}$, the following holds:
+For every probabilistic polynomial-time ($\PPT$) reconstruction algorithm $R$, there exists a negligible function $\negl$ such that for all inputs $a_0,a_1,b\in\{0,1\}$, the following holds:
 
 \[
 \Pr \left[
@@ -513,11 +513,13 @@ R(1^\lambda, \View_B) = a_{1-b}
 
 \end{definition}
 
-\begin{definition}[Receiver's priavcy against a malicious sender]
+\begin{definition}[Receiver's privacy against a malicious sender]
     
 
-There exists a negligible function $\negl$ that for any uniform \PPT adversary $A^*$ representing a malicious sender (Alice) and any uniform \PPT reconstruction algorithm $R^*$, the following holds:
-
+For any \PPT adversary $A^*$ representing a malicious sender (Alice), 
+for any \PPT reconstruction algorithm $R^*$, 
+there exists a negligible function $\negl$ that 
+the following holds:
 \[
 \Pr \left[
 \begin{array}{c}
