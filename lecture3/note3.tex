@@ -415,8 +415,30 @@ In single-server $\PIR$ within an information-theoretic setting, the communicati
 %25
 \subsection{$\PIR$ with non-trivial BW implies Oblivious Transfer}
 
-Crescenzo, Malkin, and Ostrovsky~\cite{CMO00} showed that a single-server PIR with non-trivial bandwidth implies Oblivious Transfer (OT). Since Oblivious Transfer implies the existence of One-Way Function (OWF), this essentially says that OWF is needed for any single-server PIR with non-trivial BW.
-In this lecture, we focus on the first step of this proof that shows that a single-server PIR with non-trivial bandwidth implise an honest-receiver OT.
+Crescenzo, Malkin, and Ostrovsky~\cite{CMO00} showed that a single-server PIR with non-trivial bandwidth implies Oblivious Transfer (OT). 
+1-out-of-2 OT can be viewed as a special secure 2-party computation 
+protocol for a ``selection'' functionality (as formally defined later).
+Kilian showed that OT is complete for realizing secure 
+multi-party computation for any functionality, even in the presence
+of dishonest majority.
+OT is known to imply one-way functions (OWF). 
+OT also implies key exchange, and the famous
+result of Impagliazzo and Rudich showed
+that one cannot construct 
+OT from OWF with a blackbox reduction~\cite{IR89}.
+This gives some evidence that OT is likely strictly stronger than OWF.
+As mentioned, another way to interpret the result
+is that to get 1-server PIR with non-trivial bandwidth, we need 
+``public-key operations''.
+
+%Since Oblivious Transfer implies the existence of One-Way Function (OWF), this essentially says that OWF is needed for any single-server PIR with non-trivial BW.
+%In this lecture, we focus on the first step of this proof that shows that a single-server PIR with non-trivial bandwidth implise an honest-receiver OT.
+
+In our lecture, we will show that 
+1-server PIR with non-trivial bandwidth implies {\it honest-receiver} OT. 
+We note that Crescenzo, Malkin, and Ostrovsky~\cite{CMO00}
+also showed that how to construct {\it malicious-receiver} OT from 1-server PIR 
+(with non-trivial bandwidth).
 
 %\textbf{$\PIR$ with non-trivial BW} $\Rightarrow$ (honest-Bob) Oblivious Transfer.
 
@@ -429,19 +451,20 @@ In this lecture, we focus on the first step of this proof that shows that a sing
         \node (BotAlice) at ([yshift=-1cm] Alice) {};
         \node (BotBob) at ([xshift=0cm, yshift=-1cm] Bob) {}; 
         \draw[->] (Alice) -- ([yshift=0mm] Protocol.west) node[midway, above] {$a_0, a_1$};
-        \draw[->] (Bob) -- ([yshift=0mm] Protocol.east) node[midway, above] {$b \in \{0,1\}$};
+        \draw[->] (Bob) -- ([yshift=0mm] Protocol.east) node[midway, above] {\ \ $b \in \{0,1\}$};
         \draw[<-] (BotAlice) -- ([yshift=-10mm] Protocol.west) node[midway, above] {$\bot$};
         \draw[<-] (BotBob) -- ([yshift=-10mm] Protocol.east) node[midway, above] {$a_b$};
     \end{tikzpicture}
-    \caption{Protocol Illustration}
+    \caption{OT Functionality}
     \label{fig:protocol2}
 \end{figure}
 
 \paragraph{A $\binom{2}{1}$-OT protocol between Alice and Bob is as follows:}
 \begin{itemize}
-    \item Alice has two numbers $a_0$ and $a_1$, Bob has a single bit $b$.
-    \item Bob wishes to learn $a_b$  without Alice learning his choice of $b$ (Bob's privacy).
-    \item Moreover, Bob does not learn any information about $a_{1-b}$ (Alice's privacy).
+    \item Alice has two bits $a_0$ and $a_1$, Bob has a single bit $b$. Bob wishes
+to learn $a_b$.
+    \item Alice should not learn Bob's choice of $b$ (Bob's privacy).
+    \item Bob should not learn $a_{1-b}$ (Alice's privacy).
 \end{itemize}
 
 
