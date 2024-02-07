@@ -599,12 +599,47 @@ from the fact that the PIR scheme is bandwidth-efficient.
 %Crescenzo, Malkin, and  Ostrovsk~\cite{CMO00} showed that $\PIR$ with non-trivial bandwidth implies the possibility of constructing Oblivious Transfer ($\OT$) even with a malicious receiver.
 %In this class, we are just going to do the easier version which shows that PIR implies an honest-but-curious Bob OT. 
 The construction of honest-receiver OT from PIR is shown in Figure~\ref{fig:OT-from-PIR}.
-The correctness and Bob's privacy are easy to show by the correctness and the privacy of the PIR scheme. It remains to show Alice's privacy (sender privacy).
+Basically, Alice samples a random database, and Bob samples a random index,
+and the two run a PIR protocol. This is repeated $m$ times 
+--- let $\DB_1, \ldots, \DB_m$ be the sampled databases and $i_1, \ldots, i_m$ 
+be the indices queried by Bob.
+Next, Bob samples $m$ independent random indices denoted $i'_1, \ldots, i'_m$.
+He sends both the real indices $i_1, \ldots, i_m$
+and the random ones $i'_1, \ldots, i'_m$
+to Alice, and the order in which 
+he sends them depends on Bob's input $b$ of the OT protocol. 
+Alice uses the database values at these indices
+to XOR her inputs $a_0$ and $a_1$ respectively, and sends both answers back to Bob.
+Bob can only decode one of them and reconstruct $a_b$, since it only
+knows the database values at the real indices $i_1, \ldots, i_m$.
 
-The high-level idea is as follows. In the $j$-th repetition of the PIR scheme, since we assume the communication of the PIR scheme is sublinear, Bob cannot learn every index of the database with overwhelming certainty (with a simple argument of information entropy). Then, if Bob samples a random index, the corresponding database entry remains some uncertainty to Bob.
-Moreover, Alice will cover the $a_{1-b}$ bit with all the random database indices chosen by Bob, essentially amplifying the uncertainty.
-Then, Bob cannot recover $a_{1-b}$ with a non-negligible advantage over random guessing.
-We will use the following lemma to show the ``amplification'' effect.
+
+Correctness of the resulting OT follows directly
+from PIR's correctness. 
+It is not hard to show Bob's privacy given the privacy of the underlying PIR.
+The most intersting 
+part of the proof is showing Alice's privacy (i.e., sender privacy).
+To show this, we will 
+make use of the fact that the PIR's communication transcript
+is short, and thus 
+it cannot encode too much information about the entire database.
+This means that for a randomly sampled
+index, (even an unbounded) Bob does know too much information about the 
+database at that index.
+
+The key is to show for any fixed PIR instance, 
+(even an unbounded) Bob cannot correctly 
+predict the database's value 
+at a random index with significant probability.
+If we can show this, we can use the following XOR amplification lemma,
+which informally says that the XOR of $m$ bits 
+each with some uncertainty will amplify the uncertainty exponentially. 
+
+
+%The high-level idea is as follows. In the $j$-th repetition of the PIR scheme, since we assume the communication of the PIR scheme is sublinear, Bob cannot learn every index of the database with overwhelming certainty (with a simple argument of information entropy). Then, if Bob samples a random index, the corresponding database entry remains some uncertainty to Bob.
+%Moreover, Alice will cover the $a_{1-b}$ bit with all the random database indices chosen by Bob, essentially amplifying the uncertainty.
+%Then, Bob cannot recover $a_{1-b}$ with a non-negligible advantage over random guessing.
+%We will use the following lemma to show the ``amplification'' effect.
 
 \ignore{
 \begin{figure}[ht]
@@ -651,13 +686,12 @@ Repeat the following process $m$ times (indexed by $j$):
         \right.
         \]
     \item Alice parses the message as $(t^0_1, \ldots, t^0_m), (t^1_1, \ldots, t^1_m)$.
-    \item Alice returns these two bits to Bob:
+    \item Alice returns the following two bits to Bob:
     \[
-    c_0\get a_0\oplus \DB_{j}[t^0_1] \oplus \dots \oplus \DB_{j}[t^0_m]
+    c_0\get a_0\oplus \DB_{1}[t^0_1] \oplus \dots \oplus \DB_{m}[t^0_m]
     \]
-
     \[
-    c_1\get a_0\oplus \DB_{j}[t^1_1] \oplus \dots \oplus \DB_{j}[t^1_m]
+    c_1\get a_1\oplus \DB_{1}[t^1_1] \oplus \dots \oplus \DB_{m}[t^1_m]
     \]
     
     \item  Bob can reconstruct $a_b$ from $c_b$ because it knows $x_1=\DB[i^b_1],\dots,x_m=\DB[i^b_m]$.
@@ -666,7 +700,7 @@ Repeat the following process $m$ times (indexed by $j$):
 
 \end{mdframed}
 \end{minipage}
-\caption{Constructing an honest-but-curious Bob OT from PIR. \label{fig:OT-from-PIR}}
+\caption{Constructing an honest-receiver OT from PIR. \label{fig:OT-from-PIR}}
 %\caption{Detailed description of \name.\label{fig:single-server}}
 \end{figure}
 
