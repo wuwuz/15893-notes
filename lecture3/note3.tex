@@ -729,10 +729,12 @@ The the key of the proof is to show that, no matter what reconstruction algorith
 
 
 \begin{lemma}
-    Suppose $X_1,\dots,X_n$ are binary random variables such that for each $i$, $\Pr[X_i = 1] = \frac{1}{2}+\delta,  \ \delta \in( -\frac{1}{2}, \frac{1}{2})$.
+    Suppose $X_1,\dots,X_n$ are binary random variables such that for 
+each $i$, $\Pr[X_i = 1] = \frac{1}{2}+\delta_i$ where  $\delta_i \in( -\frac{1}{2}, \frac{1}{2})$.
     Then, we have that 
     \[
-    \Pr[X_i \oplus... \oplus X_n = 1] = \frac{1}{2}+\delta(2 \delta)^{n-1}.
+    \Pr[X_1 \oplus... \oplus X_n = 1] = \frac{1}{2}+ \prod_{i = 1}^n (2\delta_i)
+%\delta(2 \delta)^{n-1}.
     \]
 \end{lemma}
 
@@ -741,12 +743,24 @@ Given \( \Pr[X_i = 0] = \frac{1}{2} + \delta \) for each index $i$  with $\delta
 }
 
 \begin{proof}
-\text{Base Case (n = 1):}
-For \(n = 1\), the statement simplifies to $\Pr[X_1 = 1] = \frac{1}{2} + \delta$, which is true by definition.
+We can prove the statement using an inductive proof.
+\paragraph{Base Case:}
+The base case $\Pr[X_1 = 1] = \frac12 + \delta_1$ holds by definition.
 
-\text{Inductive Step:}
-Assume the lemma is true for \(n\), i.e., $\Pr[X_1 \oplus \ldots \oplus X_n = 1] = \frac{1}{2} + \delta(2\delta)^{n-1}$. We need to prove it for $n + 1$.
-
+\paragraph{Inductive Step:}
+Suppose the statement holds for $\Pr[X_1 \oplus \ldots \oplus X_m = 1]$, we want
+to show that it holds for $\Pr[X_1 \oplus \ldots \oplus X_{m+1}= 1]$.
+Write $\Pr[X_1 \oplus \ldots \oplus X_i = 1] = \frac12 + p_m$.
+By a simple conditional probability calculation, 
+\[
+\Pr[X_1 \oplus \ldots \oplus X_{m+1} = 1] = \left(\frac12+ p_m\right) 
+\cdot \left(\frac12 + \delta_{m+1}\right) + 
+\left(\frac12-p_m\right) \cdot \left(\frac12 - \delta_{m+1}\right)
+\]
+Therefore, 
+$\Pr[X_1 \oplus \ldots \oplus X_{m+1} = 1] = 
+\frac12 + 2p_m \delta_{m+1}$ which gives the lemma.
+\ignore{
 \text{Given:}
 \[
 \frac{1}{2} + \gamma_{n+1} = \left(\frac{1}{2} + \gamma_{n}\right) \left(\frac{1}{2} + \delta\right) + \left(\frac{1}{2} - \gamma_{n}\right) \left(\frac{1}{2} - \delta\right)
@@ -770,6 +784,7 @@ Assume the lemma is true for \(n\), i.e., $\Pr[X_1 \oplus \ldots \oplus X_n = 1]
 \[
 \Pr[X_1 \oplus \ldots \oplus X_{n+1} = 1] = \frac{1}{2} + \delta(2\delta)^{n}
 \]
+}
 
 \end{proof}
 
