@@ -597,7 +597,12 @@ from the fact that the PIR scheme is bandwidth-efficient.
 \subsection{Proof}
 
 We now show that any 1-server PIR scheme for an $n$-bit database
-with at most $n/2$ bandwidth implies OT.
+with at most $n/2$ bandwidth implies OT\footnote{With a little
+more work, we can tighten the parameters
+and show the same theorem for a PIR scheme with $n-1$ bits of communication.
+See Crescenzo et al.~\cite{CMO00}  
+for more details.
+}.
 
 \paragraph{Constructing OT from PIR~\cite{CMO00}.}
 %Crescenzo, Malkin, and  Ostrovsk~\cite{CMO00} showed that $\PIR$ with non-trivial bandwidth implies the possibility of constructing Oblivious Transfer ($\OT$) even with a malicious receiver.
@@ -740,12 +745,12 @@ The the key of the proof is to show that, no matter what reconstruction algorith
 
 
 
-\begin{lemma}
-    Suppose $X_1,\dots,X_n$ are binary random variables such that for 
+\begin{lemma}[XOR lemma]
+    Suppose $X_1,\dots,X_m$ are binary random variables such that for 
 each $i$, $\Pr[X_i = 1] = \frac{1}{2}+\delta_i$ where  $\delta_i \in( -\frac{1}{2}, \frac{1}{2})$.
     Then, we have that 
     \[
-    \Pr[X_1 \oplus... \oplus X_n = 1] = \frac{1}{2}+ \prod_{i = 1}^n (2\delta_i)
+    \Pr[X_1 \oplus... \oplus X_m = 1] = \frac{1}{2}+ \prod_{i = 1}^m (2\delta_i)
 %\delta(2 \delta)^{n-1}.
     \]
 \end{lemma}
@@ -760,18 +765,18 @@ We can prove the statement using an inductive proof.
 The base case $\Pr[X_1 = 1] = \frac12 + \delta_1$ holds by definition.
 
 \paragraph{Inductive Step:}
-Suppose the statement holds for $\Pr[X_1 \oplus \ldots \oplus X_m = 1]$, we want
-to show that it holds for $\Pr[X_1 \oplus \ldots \oplus X_{m+1}= 1]$.
-Write $\Pr[X_1 \oplus \ldots \oplus X_i = 1] = \frac12 + p_m$.
+Suppose the statement holds for $\Pr[X_1 \oplus \ldots \oplus X_k = 1]$, we want
+to show that it holds for $\Pr[X_1 \oplus \ldots \oplus X_{k+1}= 1]$.
+Write $\Pr[X_1 \oplus \ldots \oplus X_k = 1] = \frac12 + p_k$.
 By a simple conditional probability calculation, 
 \[
-\Pr[X_1 \oplus \ldots \oplus X_{m+1} = 1] = \left(\frac12+ p_m\right) 
-\cdot \left(\frac12 + \delta_{m+1}\right) + 
-\left(\frac12-p_m\right) \cdot \left(\frac12 - \delta_{m+1}\right)
+\Pr[X_1 \oplus \ldots \oplus X_{k+1} = 1] = \left(\frac12+ p_k\right) 
+\cdot \left(\frac12 + \delta_{k+1}\right) + 
+\left(\frac12-p_k\right) \cdot \left(\frac12 - \delta_{k+1}\right)
 \]
 Therefore, 
-$\Pr[X_1 \oplus \ldots \oplus X_{m+1} = 1] = 
-\frac12 + 2p_m \delta_{m+1}$ which gives the lemma.
+$\Pr[X_1 \oplus \ldots \oplus X_{k+1} = 1] = 
+\frac12 + 2p_k \delta_{k+1}$ which gives the lemma.
 \ignore{
 \text{Given:}
 \[
@@ -829,14 +834,21 @@ The XOR Lemma  in the context of probability and advantage amplification:
 }
 
 
-For the rest of the proof, we only need to show that 
+\paragraph{Bob cannot correctly guess the database at a random index
+with constant probability.}
+%For the rest of the proof, we only need to 
+It remains to show that 
 for each single copy, after executing the PIR, 
-Bob can correctly guess 
-the database at a random index 
-with probability no more than $\frac12+\delta$ 
-for some constant $\delta$, and the rest of the proof 
-follows from the XOR lemma.
+Bob cannot correctly guess the database at a random index
+with constant probability, 
+%can correctly guess 
+%the database at a random index 
+%with probability no more than $\frac12+\delta$ 
+%for some constant $\delta < 1$ 
+and the rest of the proof 
+follows from the above XOR lemma.
 %with some non-negligible $\delta$, then using the XOR amplification lemma is sufficient to prove the sender's privacy. 
+
 
 Given any $i\in[n]$, any reconstruction algorithm $R$, 
 consider the following experiment.
@@ -861,34 +873,65 @@ consider the following experiment.
 Fix $\lambda, n, \coin_A, \coin_B, i, R$ arbitrarily. Let 
     $p = \Pr[\Expt(1^\lambda, n, \coin_A, \coin_B, i, R)=1]$. Then, 
     $$H(p) \geq \frac{n-l}{n},$$ where $H(p)$ is the binary entropy of $p$, $n$ is the database size, and $l$ is the communication script length in the PIR scheme.
+\label{clm:entropysinglecopy}
 \end{claim}
+As a special case, when 
+the communication length $l = n/2$, 
+$H(p)$ is a constant.  
+This means that Bob cannot correctly reconstruct
+the database at a random index 
+with constant probability, which is what we want.
 
-\begin{proof}
+
+\begin{proof}[Proof of \Cref{clm:entropysinglecopy}]
 Let $\Comm$ be the communication script in the PIR scheme.
 By definition of entropy, $H(\Comm) \leq l$.
-Denote $\DB=(y_1,\dots,y_n)$. Let $z_j = R (1^\lambda, \View_{B}, j, \coin_B)$ for $j \in [n]$.
-Let $p_j = \Pr[y_j\ne z_j]$ and $p = \frac{1}{n} \sum_{j \in [n]} p_j$.
+%Denote $\DB=(y_1,\dots,y_n)$. Let $z_j = R (1^\lambda, \View_{B}, j, \coin_B)$ for $j \in [n]$.
+For $j \in [n]$,  
+let 
+$$p_j = \Pr\left[
+\begin{array}{l}
+\DB \getr \{0, 1\}^n, \\
+(\cdot,\View_B)\get \langle\PIR.\Alice(1^{\lambda}, \DB, \coin_A) \leftrightarrow \PIR.\Bob(1^{\lambda}, i, \coin_B)\rangle\end{array}
+: R (1^\lambda, \View_{B}, j, \coin_B) \ne \DB[j]\right]$$
+Therefore, $p = \frac{1}{n} \sum_{j \in [n]} p_j$.
 
-\noindent By Fano's inequality $^{(\triangle)}$: $$H(p_j) \geq H(y_j | \Comm)$$
-By chain rule$^{(\star)}$: 
-\[
+\vspace{5pt}
+
+By Fano's inequality, %$^{(\triangle)}$: 
+\begin{equation}
+H(p_j) \geq H(y_j | \Comm) %\qquad \qquad \qquad %(\triangle)
+\label{eqn:fano}
+\end{equation}
+By chain rule,
+\begin{equation}
 \quad H(\DB | \Comm) = \sum_{j=1}^{n} H(y_{j} | \Comm, y_{j-1}, \ldots, y_1) \leq \sum_{j=1}^{n} H(y_{j}| \Comm).
-\]
+\label{eqn:chain}
+\end{equation}
 
 Thus,
 \begin{align*}
 H({\DB}|\Comm) = H({\DB}) - H(\Comm) + H(\Comm |{\DB}) \geq n - H(\Comm)
 \geq n - l,
 \end{align*}
+where $H(\Comm | \DB) = 0$ 
+because 
+the transcript $\Comm$ is fully determined by the $\DB$. 
 
 Hence,
-
-$$H(p) = H\left( \frac{1}{n} \sum_{j=1}^{n} p_j \right) \geq^{(\triangle)}  \frac{1}{n} \sum_{j=1}^{n} H(p_j)\geq \frac{1}{n} \sum_{j=1}^{n}\frac{H(y g_j | \Comm)}{n} \geq^{(\star)} \frac{n - l}{n}$$
-Where $\triangle$ and $\star$ denote where each inequality is applied.
+\begin{align*}
+H(p) & = H\left( \frac{1}{n} \sum_{j=1}^{n} p_j \right) & \\ 
+& \geq  \frac{1}{n} \sum_{j=1}^{n} H(p_j) & \text{(Due to concavity)}\\ 
+& \geq \frac{1}{n} \sum_{j=1}^{n}\frac{H(y_j | \Comm)}{n} & \text{(Due to~\ref{eqn:fano})}\\ 
+& \geq \frac{n - l}{n} & \text{(Due to~\ref{eqn:chain})}
+\end{align*}
+%Where $\triangle$ and $\star$ denote where each inequality is applied.
 \end{proof}
 
+\ignore{
 The full proof can also be seen in \cite{DLN19}
 and for the lemmas 4.5 (absolute difference in entropy between two probability distributions $p$ and $q$ on a finite set $M$ is bounded above by the $L_{1}\text{-norm}$ of their difference) and 4.6 (bounds the entropy of a function and is maximized by the uniform distribution) \cite{669255}.
+}
 
 %\section*{Notes}
 
