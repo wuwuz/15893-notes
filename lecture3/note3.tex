@@ -630,6 +630,14 @@ it cannot encode too much information about the entire database.
 This means that for a randomly sampled
 index, (even an unbounded) Bob does know too much information about the 
 database at that index.
+This is also the place where we need to use
+the fact Bob is honest but curious, since we are trusting
+Bob to choose  
+%if Bob chooses 
+the indices $i'_1, \ldots, i'_m$  
+at random.
+%maliciously to be the ones he knows, 
+
 
 The key is to show for any fixed PIR instance, 
 (even an unbounded) Bob cannot correctly 
@@ -821,7 +829,17 @@ The XOR Lemma  in the context of probability and advantage amplification:
 }
 
 
-For the rest of the proof, we only need to show that in a single copy of the PIR scheme, Bob can only guess the random index's value with probability no more than $\frac12+\delta$ with some non-negligible $\delta$, then using the XOR amplification lemma is sufficient to prove the sender's privacy. Given any $i\in[k]$, any PPT reconstruction algorithm $R$, consider the following experiment.
+For the rest of the proof, we only need to show that 
+for each single copy, after executing the PIR, 
+Bob can correctly guess 
+the database at a random index 
+with probability no more than $\frac12+\delta$ 
+for some constant $\delta$, and the rest of the proof 
+follows from the XOR lemma.
+%with some non-negligible $\delta$, then using the XOR amplification lemma is sufficient to prove the sender's privacy. 
+
+Given any $i\in[n]$, any PPT reconstruction algorithm $R$, 
+consider the following experiment.
 
 %($Expt$ denotes ''Experiment'')
 \begin{itemize}
