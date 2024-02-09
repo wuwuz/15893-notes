@@ -838,24 +838,27 @@ for some constant $\delta$, and the rest of the proof
 follows from the XOR lemma.
 %with some non-negligible $\delta$, then using the XOR amplification lemma is sufficient to prove the sender's privacy. 
 
-Given any $i\in[n]$, any PPT reconstruction algorithm $R$, 
+Given any $i\in[n]$, any reconstruction algorithm $R$, 
 consider the following experiment.
 
+\vspace{8pt}
+
 %($Expt$ denotes ''Experiment'')
-\begin{itemize}
-\item
-$\Expt(1^\lambda, n, \coin_A, \coin_B, i, R)$:
+%\begin{itemize}
+%\item
+\noindent
+\underline{$\Expt(1^\lambda, n, \coin_A, \coin_B, i, R)$}:
 \begin{itemize}
 \item $\DB \stackrel{\$}{\leftarrow}\{0,1\}^n$ 
-    \item $(\cdot,\View_B)\get \langle\PIR.\Alice(1^{\lambda}, \DB, \coin_A) \leftrightarrow \PIR.\Bob(1^{\lambda}, i, \coin_B)\rangle$
+\item $(\cdot,\View_B)\get \langle\PIR.\Alice(1^{\lambda}, \DB, \coin_A) \leftrightarrow \PIR.\Bob(1^{\lambda}, i, \coin_B)\rangle$
     %\item sample r $\leftarrow \{ R \}$
     \item $r\getr [n]$;
     \item output 1 if $R(1^\lambda, \View_B, r, \coin_B) = \DB[r]$
 \end{itemize}
-\end{itemize}
+%\end{itemize}
 
 \begin{claim}
-    Let 
+Fix $\lambda, n, \coin_A, \coin_B, i, R$ arbitrarily. Let 
     $p = \Pr[\Expt(1^\lambda, n, \coin_A, \coin_B, i, R)=1]$. Then, 
     $$H(p) \geq \frac{n-l}{n},$$ where $H(p)$ is the binary entropy of $p$, $n$ is the database size, and $l$ is the communication script length in the PIR scheme.
 \end{claim}
