@@ -594,6 +594,10 @@ from the fact that the PIR scheme is bandwidth-efficient.
 \end{remark}
 
 
+\subsection{Proof}
+
+We now show that any 1-server PIR scheme for an $n$-bit database
+with at most $n/2$ bandwidth implies OT.
 
 \paragraph{Constructing OT from PIR~\cite{CMO00}.}
 %Crescenzo, Malkin, and  Ostrovsk~\cite{CMO00} showed that $\PIR$ with non-trivial bandwidth implies the possibility of constructing Oblivious Transfer ($\OT$) even with a malicious receiver.
@@ -668,14 +672,14 @@ each with some uncertainty will amplify the uncertainty exponentially fast.
 \paragraph{Phase 1.} 
 Repeat the following process $m$ times (indexed by $j$):
 \begin{itemize}
-    \item Alice samples $\DB_j \getr \{0,1\}^k$
-    \item Bob samples $ i_j \getr [k]$
+    \item Alice samples $\DB_j \getr \{0,1\}^n$
+    \item Bob samples $ i_j \getr [n]$
     \item Alice and Bob execute the PIR protocol acting as the server and the client, respectively. Let $x_j$ be Bob's output.
 \end{itemize}
 
 \paragraph{Phase 2.} 
 \begin{itemize}
-    \item Bob samples \( i'_1, \ldots, i'_m \stackrel{\$}{\leftarrow} [k]^m \)
+    \item Bob samples \( i'_1, \ldots, i'_m \stackrel{\$}{\leftarrow} [n]^m \)
     \item Bob sends the following tuples to Alice:
         \[
         \left\{
@@ -822,43 +826,43 @@ For the rest of the proof, we only need to show that in a single copy of the PIR
 %($Expt$ denotes ''Experiment'')
 \begin{itemize}
 \item
-$\Expt(1^\lambda, k, \coin_A, \coin_B, i, R)$:
+$\Expt(1^\lambda, n, \coin_A, \coin_B, i, R)$:
 \begin{itemize}
-\item $\DB \stackrel{\$}{\leftarrow}\{0,1\}^k$ 
+\item $\DB \stackrel{\$}{\leftarrow}\{0,1\}^n$ 
     \item $(\cdot,\View_B)\get \langle\PIR.\Alice(1^{\lambda}, \DB, \coin_A) \leftrightarrow \PIR.\Bob(1^{\lambda}, i, \coin_B)\rangle$
     %\item sample r $\leftarrow \{ R \}$
-    \item $r\getr [k]$;
+    \item $r\getr [n]$;
     \item output 1 if $R(1^\lambda, \View_B, r, \coin_B) = \DB[r]$
 \end{itemize}
 \end{itemize}
 
 \begin{claim}
     Let 
-    $p = \Pr[\Expt(1^\lambda, k, \coin_A, \coin_B, i, R)=1]$. Then, 
-    $$H(p) \geq \frac{k-l}{k},$$ where $H(p)$ is the binary entropy of $p$, $k$ is the database size, and $l$ is the communication script length in the PIR scheme.
+    $p = \Pr[\Expt(1^\lambda, n, \coin_A, \coin_B, i, R)=1]$. Then, 
+    $$H(p) \geq \frac{n-l}{n},$$ where $H(p)$ is the binary entropy of $p$, $n$ is the database size, and $l$ is the communication script length in the PIR scheme.
 \end{claim}
 
 \begin{proof}
 Let $\Comm$ be the communication script in the PIR scheme.
 By definition of entropy, $H(\Comm) \leq l$.
-Denote $\DB=(y_1,\dots,y_k)$. Let $z_j = R (1^\lambda, \View_{B}, j, \coin_B)$ for $j \in [k]$.
-Let $p_j = \Pr[y_j\ne z_j]$ and $p = \frac{1}{k} \sum_{j \in [k]} p_j$.
+Denote $\DB=(y_1,\dots,y_n)$. Let $z_j = R (1^\lambda, \View_{B}, j, \coin_B)$ for $j \in [n]$.
+Let $p_j = \Pr[y_j\ne z_j]$ and $p = \frac{1}{n} \sum_{j \in [n]} p_j$.
 
 \noindent By Fano's inequality $^{(\triangle)}$: $$H(p_j) \geq H(y_j | \Comm)$$
 By chain rule$^{(\star)}$: 
 \[
-\quad H(\DB | \Comm) = \sum_{j=1}^{k} H(y_{j} | \Comm, y_{j-1}, \ldots, y_1) \leq \sum_{j=1}^{k} H(y_{j}| \Comm).
+\quad H(\DB | \Comm) = \sum_{j=1}^{n} H(y_{j} | \Comm, y_{j-1}, \ldots, y_1) \leq \sum_{j=1}^{n} H(y_{j}| \Comm).
 \]
 
 Thus,
 \begin{align*}
-H({\DB}|\Comm) = H({\DB}) - H(\Comm) + H(\Comm |{\DB}) \geq k - H(\Comm)
-\geq k - l,
+H({\DB}|\Comm) = H({\DB}) - H(\Comm) + H(\Comm |{\DB}) \geq n - H(\Comm)
+\geq n - l,
 \end{align*}
 
 Hence,
 
-$$H(p) = H\left( \frac{1}{k} \sum_{j=1}^{k} p_j \right) \geq^{(\triangle)}  \frac{1}{k} \sum_{j=1}^{k} H(p_j)\geq \frac{1}{k} \sum_{j=1}^{k}\frac{H(y g_j | \Comm)}{k} \geq^{(\star)} \frac{k - l}{k}$$
+$$H(p) = H\left( \frac{1}{n} \sum_{j=1}^{n} p_j \right) \geq^{(\triangle)}  \frac{1}{n} \sum_{j=1}^{n} H(p_j)\geq \frac{1}{n} \sum_{j=1}^{n}\frac{H(y g_j | \Comm)}{n} \geq^{(\star)} \frac{n - l}{n}$$
 Where $\triangle$ and $\star$ denote where each inequality is applied.
 \end{proof}
 
