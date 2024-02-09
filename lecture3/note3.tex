@@ -935,3 +935,26 @@ and for the lemmas 4.5 (absolute difference in entropy between two probability d
 
 %\section*{Notes}
 
+\begin{remark}
+If it helps, here is an intuitive but {\bf incorrect} way
+to think about the above proof.
+Suppose for a fixed PIR instance,
+the transcript length $l = n/2$.
+Imagine that the communication 
+encodes half of the database. 
+In this case, if the random coin toss selects an index
+$r$ that is not encoded by the transcript, then Bob will not know
+any information about $\DB[r]$. 
+Since we have $m$ copies, chances are, for at least one of the 
+copies, the random coin toss will select an index that is not encoded
+by the transcript. Therefore, the XOR of the $m$ bits will be secure.
+
+While this perspective may provide intuition, it is incorrect
+because the transcript does not have to completely reveal exactly 
+half of the database and 
+hide the other half. For example, the transcript can potentially 
+reveal a little information about every bit. 
+Therefore, to make the intuition correct, we need to use an
+entropy-based argument together with the XOR lemma to complete
+the proof.
+\end{remark}
