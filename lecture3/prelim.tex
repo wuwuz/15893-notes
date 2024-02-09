@@ -1,0 +1,46 @@
+\appendix
+\section{Preliminaries on Entropy}
+
+
+\subsection*{Entropy}
+Let $X$ be a random variable taking values over a finite domain $D_X$.
+\begin{align*}
+H(X) &= -\sum_{x \in D_X} p(x) \log_2 p(x)
+\end{align*}
+Fact: $0 \leq H(X) \leq \log_2(|D_X|)$
+
+\subsection*{Conditional Entropy}
+\begin{align*}
+H(Y|X) &= -\sum_{x \in D_X, y \in D_Y} p(x,y) \log_2 \frac{p(x,y)}{p(x)}
+\end{align*}
+
+
+\subsection*{Chain Rule}
+\begin{align*}
+H(Y|X) &= H(X) + H(Y|X) \\
+H(X_1, \ldots, X_n) &= \sum_{i=1}^{n} H(X_i | X_1, \ldots, X_{i-1})
+\end{align*}
+
+\subsection*{Bayes Rule}
+\begin{align*}
+H(Y|X) &= H(X|Y) - H(X) + H(Y)
+\end{align*}
+
+\subsection*{Binary Entropy Function}
+For $p \in [0,1]$:
+\begin{align*}
+H(p) &= -p\log_2(p) - (1-p)\log_2(1-p)
+\end{align*}
+
+\subsection*{Concavity}
+For $p, q \in [0,1]$ and $0 \leq \lambda \leq 1$:
+\begin{align*}
+H(\lambda p + (1-\lambda)q) &\geq \lambda H(p) + (1-\lambda)H(q)
+\end{align*}
+
+\subsection*{Fano's Inequality}
+Let $X$ and $Y$ be random variables with $X \in D_X$ and $Y \in D_Y$. Let $\hat{X} = f(Y)$ 
+be a predictor of $X$ based on the observations $Y$, and let $p = P(X \neq \hat{X})$.
+\begin{align*}
+H(X|Y) &\leq H(p) + p \log_2(|D_X|-1)
+\end{align*}
