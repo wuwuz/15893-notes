@@ -186,7 +186,7 @@ Notice that if we only want to learn $\Eval(\key, i)$ for a particular $i$, the 
 However, if we want to learn $\Eval(k, i)$ for all $i\in[n]$, the computation cost will be $O(n)$ because we can simply do the expansion on the whole tree. 
 
 
-\paragraph{Generation Algorithm.} The generation algorithm needs to generate two correlated keys, such that when we look at the bit at the $x$-th leaves (say $b^0_{x}$ and $b^1_{x}$) on the tress expnaded by $k_0$ and $k_1$, it must that $b^0_{x}\xor b^1_{x}=P_{x^*}(x)$. In fact, we want to ensure the following stronger properties.
+\paragraph{Generation Algorithm.} The generation algorithm needs to generate two correlated keys, such that when we look at the bit at the $x$-th leaves (say $b^0_{x}$ and $b^1_{x}$) on the trees expnaded by $k_0$ and $k_1$, it must that $b^0_{x}\xor b^1_{x}=P_{x^*}(x)$. In fact, we want to ensure the following stronger properties.
 Say on a particular node, we denote the information expanded by $k_0$ and $k_1$ as $(s_0,b_0)$ and $(s_1,b_1)$, respectively.
 \begin{enumerate}
     \item If the node is on the ``special path'' (i.e., the path from the root to the $x^*$-th leaf), then $b_0\ne b_1$, and $s_0$ and $s_1$ are independent.
