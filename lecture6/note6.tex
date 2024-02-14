@@ -54,14 +54,14 @@ This scheme use pseudorandom generators (PRG). In particular, PRG implies the ex
 
 
 \begin{notation}
-    For $x,y \in\{0,1\}^*$, the point function $P_{x,y}:\{0,1\}^{|{x}|} \rightarrow \{0,1\}^{|{x}|}$
-    is defined by $P_{x,y}(x) = y \ and \ P_{x,y}(x') = 0^{|y|}$ for all $x' \neq x$
+    For $x \in\{0,1\}^*$, the point function $P_{x}:\{0,1\}^{|{x}|} \rightarrow \{0,1\}$
+    is defined by $P_{x^*}(x^*) = 1 \ and \ P_{x^*}(x) = 0$ for all $x \neq x^*$.
 \end{notation}
 
 Boyle, Gilboa and Ishai~\cite{boyle2016function} introduced the concept of distributed point function. 
 We are going to focus on the case of a 2-share binary distributed point function. 
-Essentially, given the full description of the point function $f=P_{x^*}$ (where $f(x^*)=1$ and $f(x)=0$ for all $x\ne x^*$), one can ``secretly share'' the function to two keys $k_0,k_1$. Then, if party $t\in\{0,1\}$ receives $k_t$, it can evaluate the key on all possible location $x$ and get an evaluation of $\Eval(k_t, x)$. 
-It is guaranteed that in every location $x'$, $\Eval(k_0, x)\xor\Eval(k_1, x)=f(x)$.
+Essentially, given the full description of the point function $P_{x^*}$, one can ``secretly share'' the function to two keys $k_0,k_1$. Then, if party $t\in\{0,1\}$ receives $k_t$, it can evaluate the key on all possible location $x$ and get an evaluation of $\Eval(k_t, x)$. 
+It is guaranteed that in every location $x'$, $\Eval(k_0, x)\xor\Eval(k_1, x)=P_{x^*}(x)$.
 Also, each party $t$ has no information about the ``special location'' (i.e., $x^*$) given the key $k_t$.
 
 
@@ -70,7 +70,7 @@ Also, each party $t$ has no information about the ``special location'' (i.e., $x
     \hfill
     \begin{itemize}
         \item $\Gen(1^\lambda,x^*)$: Outputs a pair of keys $k_0,k_1$.
-        \item $\Eval(1^\lambda, k,x)$: Outputs $y \in \{0,1\}^*$
+        \item $\Eval(1^\lambda, k,x)$: Outputs $y \in \{0,1\}$
     \end{itemize}
     \paragraph{Correctness.} $\Pr[k_0,k_1 \leftarrow \Gen(1^\lambda, x^*):\Eval(k_0,x) \oplus \Eval(k_1,x) = P_{x^*}(x)] = 1$.
     \paragraph{Privacy.} Given $t\in\{0,1\}$ and any $x^*\in \{0,1\}^\ell$, there exists a PPT simulator $\Sim$, such that the following experiments are computaionally indistinguishable:
