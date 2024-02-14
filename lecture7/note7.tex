@@ -48,24 +48,29 @@
 \newcommand{\out}{\ensuremath{{\sf out}}}
 \newcommand{\PRF}{\ensuremath{{\sf PRF}}}
 \newcommand{\prob}{\ensuremath{\mathbb{P}}}
+\newcommand{\known}{\ensuremath{{\sf known}}}
+\newcommand{\enc}{\ensuremath{{\sf enc}}}
+\newcommand{\db}{\ensuremath{{\sf DB}}}
+\newcommand{\bbad}{\ensuremath{{\sf b_{bad}}}}
+\newcommand{\bgood}{\ensuremath{{\sf b_{good}}}}
+
 
 \newcommand{\ignore}[1]{}
 
 \setlength{\parindent}{0pt}
-\section{Introduction}
 This is our final lecture on private information retrieval. We will prove a lower bound about the client space and server computation trade-off for preprocessing PIR schemes. For the proof, we will use techniques from complexity theory literature.
 
-\subsection{PIANO}
+\paragraph{PIANO}
 PIANO\cite{piano} is a preprocessing 1-server PIR scheme covered in lecture 5. It uses the client-specific preprocessing model, meaning that each client has a subscription phase with the server, during which it will perform preprocessing. The scheme has the following specs:
 \begin{itemize}
     \item Client Space: $\widetilde{O}(\sqrt{n})$
-    \item Communication BW per Query: $O(\sqrt{n})$
+    \item Communication Bandwidth per Query: $O(\sqrt{n})$
     \item Server/Client Compute per Query: $\widetilde{O}(\sqrt{n})$
 \end{itemize}
 
 Consider the server computation and client space trade-off. For PIANO, this trade-off [Client Space: $\widetilde{O}(\sqrt{n})$, Compute per Query: $\widetilde{O}(\sqrt{n})$] is nearly optimal up to poly-log factors. This is because of the following lower bound.
 
-\section{Space/Computation Lower Bound}
+\paragraph{Space/Computation Lower Bound}
 \begin{claim}
     Given a 1-Server Preprocessing PIR, define variables as follows:
 
@@ -79,22 +84,18 @@ Consider the server computation and client space trade-off. For PIANO, this trad
 \end{claim}
 
 
-This LB holds even for a scheme that supports 1 query, regardless of server space, BW, and amount of preprocessing work. Before proceeding with the proof, we first have to discuss another slightly different problem called Yao's Box Problem \cite{yao}.
+This lower bound holds even for a scheme that supports 1 query, regardless of server space, bandwidth, and amount of preprocessing work. Before proceeding with the proof, we first have to discuss another slightly different problem called Yao's Box Problem \cite{yao}.
 
-\subsection{Yao's Box Problem}
+\section{Yao's Box Problem}
 We have a server with $N$ boxes, each covering a bit. Note that this is not a PIR scheme, because it does not provide any privacy guarantees.
 
-\subsubsection{Preprocessing Phase}
-Client and server can open all bits, and run arbitrary and unbounded computations. 
+\paragraph{Preprocessing Phase}
+Client and server can open all bits, and run arbitrary and unbounded computations. However, we have a constraint that at the end of the preprocessing, client can only store $S$ bits of information.
 
-\textbf{Constraint:} At the end of the preprocessing, client can only store $S$ bits of information.
+\paragraph{Query}
+Client wants to know the i-th bit. We allow the client and server to have unbounded communication and work. We have a constraint that the server can open at most $T$ boxes and it cannot open box $i$.
 
-\subsubsection{Query}
-Client wants to know the i-th bit. We allow the client and server to have unbounded communication and work.
-
-\textbf{Constraint:} Server can open at most $T$ boxes and it cannot open box $i$.
-
-\subsubsection{Upper Bound}
+\paragraph{Upper Bound}
 \begin{enumerate}
     \item Divide the $N$ boxes into $\sqrt{N}$ segments. 
     \item Preprocessing Phase: Have the client store the parity of each segment.
@@ -102,7 +103,7 @@ Client wants to know the i-th bit. We allow the client and server to have unboun
 \end{enumerate}
 Here, $S = \sqrt{N}$ and $T = \sqrt{N} - 1$
 
-\subsubsection{Lower Bound} \label{box_lower}
+\paragraph{Lower Bound} \label{box_lower}
 \begin{theorem}
     $S(T+1) \ge N$ 
 \end{theorem}
@@ -110,72 +111,69 @@ Here, $S = \sqrt{N}$ and $T = \sqrt{N} - 1$
     We will be using an encoding type argument. Consider the following experiment.
     \begin{enumerate}
         \item Run preprocessing
-        \item Define an empty set called $known = \{\}$. In each step $i$, the client finds the smallest $q_i \notin known$, queries $q_i$.
+        \item Define an empty set called $\known = \{\}$. In each step $i$, the client finds the smallest $q_i \notin \known$, queries $q_i$.
 
-        With this step, $known \impliedby known \cup \{q_i\} \cup {\text{all boxes opened during query}}$
-        \item If $known \neq [N]$, break. Otherwise, repeat step 2 again.
+        With this step, $\known \impliedby \known \cup \{q_i\} \cup {\text{all boxes opened during query}}$
+        \item If $\known \neq [N]$, break. Otherwise, repeat step 2 again.
     \end{enumerate}
 
     Let the ``client's hint" denote whatever information that the client stores after the preprocessing phase. The hint is at most $S$ bits long.
     
-    Define the encoding $enc$ for this process as follows: 
-    \[enc = \text{client's hint} + \text{all ``newly opened" boxes in all queries}\]
+    Define the encoding $\enc$ for this process as follows: 
+    \[\enc = \text{client's hint} + \text{all ``newly opened" boxes in all queries}\]
 
     We write ``newly opened" because we do not want to include values that have already been recorded in the encoding.
     \vspace{5mm}
     
-    By Shannon's theorem, we will show that $length(enc) \ge N$.
+    By Shannon's theorem, we will show that $|\enc| \ge N$.
 
     Let $t_1, t_2, ...\ t_k$ be the number of newly opened boxes at each step $i \in [k]$. 
     
     Note here that we have the power of \textbf{plus one}; if I open $t$ boxes, I end up learning $t+1$ new bits. This is because I also learn the value of the query without opening its box.
 
-    Thus, our $known$ set increments with the following pattern.
+    Thus, the $\known$ set increments with the following pattern.
 
     \begin{itemize}
-        \item We newly open $t_1$ boxes: $known$ increments by $t_1 + 1$
-        \item We newly open $t_2$ boxes: $known$ increments by $t_2 + 1$
+        \item We newly open $t_1$ boxes: $\known$ increments by $t_1 + 1$
+        \item We newly open $t_2$ boxes: $\known$ increments by $t_2 + 1$
         \item and so on...
     \end{itemize}
 
-    Thus, we have that $\sum_{i = 1}^k (t_i + 1)\ge N$. Let $t = \frac{\sum_{i = 1}^k t_i}{k}$. Note that $t$ is the average number of boxes opened on each iteration so it must be upper bounded by $T$, the maximum number of boxes that can be opened in an iteration. Since we repeat the steps until $known = [N]$, we have that
+    Thus, we have that $\sum_{i = 1}^k (t_i + 1)\ge N$. Let $t = \frac{\sum_{i = 1}^k t_i}{k}$. Note that $t$ is the average number of boxes opened on each iteration so it must be upper bounded by $T$, the maximum number of boxes that can be opened in an iteration. Since we repeat the steps until $\known = [N]$, we have that
     \[\sum_{i = 1}^k (t_i + 1)\ge N \implies (t+1)k \ge N \implies k\ge \frac{N}{t+1} \tag{1}\]
 
     The encoding size is $S + \sum_{i=1}^k t_k = S + tk$. By Shannon's we have that $S + tk \ge N$. By (1), we have that 
     \begin{align*}
         S + tk &\ge N \\
         &\implies S + t \frac{N}{t+1} \ge N \tag{By (1)}\\
-        &\implies S(t+1) + tN \ge N(t+1) \\
-        &\implies S(t+1) \ge N \\
+        &\implies S(t+1) \ge N \tag{Simplification}\\
         &\implies S(T+1) \ge N \tag{As $t \le T$}
     \end{align*}
 \end{proof}
 
-\subsection{PIR Lower Bound}
+\section{PIR Lower Bound}
 Using our knowledge of Yao's Box Problem, let's know try to prove the PIR lower bound.
 \begin{theorem}
     Suppose we have a 1 server prepossessing PIR with perfect correctness and $negl(n)$ privacy loss with client space $S$ and server computation $T$ per query. Then,
     \[(S+1)(T+1) \ge  N \ \ \cite{CK20}\]
 \end{theorem}
-This lower bound holds even for computationally private schemes. It holds even for a single query, regardless of bandwidth, server space, even when preprocessing can be unbounded.
-
-\textbf{Restriction:} The server stores the original database and nothing else. That is, it does not store any encoding of the database.
+This lower bound holds even for computationally private schemes. It holds even for a single query, regardless of bandwidth, server space, even when preprocessing can be unbounded. However, we have a restriction that the server stores the original database and nothing else. That is, it does not store any encoding of the database.
 
 \vspace{5mm}
 
 For the proof, we will show that a solution to the PIR problem can be used to construct an algorithm to solve a probabilistic version of Yao's Box Problem.
 
+\paragraph{Probabilistic Yao's Box Problem}
 Suppose we have a working PIR scheme. Now, we will construct a solution to probabilistic Yao's Box Problem as follows:
 
 \begin{itemize}
     \item Client's Hint: PIR's hint
-    \item Query for $i \in [N]$: Run PIR for query $i$. If server looks at $DB[i]$, then output ``error".
+    \item Query for $i \in [N]$: Run PIR for query $i$. If server looks at $\db[i]$, then output ``error".
 \end{itemize}
 
 % We stop at 46:00 in the recording.
-We want to show the following: PIRExpt: $i \xleftarrow{\$} [N]$, PIR preprocessing, PIR query on $i$.
-
-\[p =\prob[\text{PIRExpt opens $i$}] \le \frac{T}{N} + negl(N)\]
+We want to show the following. Given that PIRExpt: $i \xleftarrow{\$} [N]$, PIR preprocessing, PIR query on $i$,
+\[p =\prob[\text{PIRExpt opens $i$}] \le \frac{T}{N} + \negl(N)\]
 
 That is, we want to show that if we run a PIR query with the a random index $i$, the probability we open that index is small.
 
@@ -185,38 +183,39 @@ For a fixed $i$, define the following probability $p_i = \prob[\text{PIR on $i$ 
 Assume for the sake of contradiction that  $p > \frac{T}{N} + \mu$, where $\mu$ is non-negligible.
 
 Let $p_{ji} = \prob[\text{PIR on $j$ opens $i$}]$. Since our scheme is private, the different indices should be computationally indistinguishable. Thus, this probability should be equally distributed. As a result,
-\[p_{ji} = \prob[\text{PIR on $j$ opens $i$}] \ge p_i - negl(N)\]
+\[p_{ji} = \prob[\text{PIR on $j$ opens $i$}] \ge p_i - \negl(N)\]
 
 \begin{align*}
     E[\text{server work for PIR on $j$}] &\ge \sum_{i=1}^N p_{ji} \\
-    &\ge \sum_{i=1}^N (p_{i} - negl(N))\\
-    &= Np - negl(N) \tag{By def. of $p$}\\
-    &> T + \mu N - negl(N) \tag{By our AFTSOC assumption}\\ 
+    &\ge \sum_{i=1}^N (p_{i} - \negl(N))\\
+    &= Np - \negl(N) \tag{By def. of $p$}\\
+    &> T + \mu N - \negl(N) \tag{As $p > \frac{T}{N} + \mu$}\\ 
 \end{align*}
 
 Thus, we have a contradiction because the expected number of locations the server needs to look at is strictly greater than $T$. Thus, we have shown that 
 
-\[\prob[\text{PIRExpt opens $i$}] \le \frac{T}{N} + negl(N)\]
+\[\prob[\text{PIRExpt opens $i$}] \le \frac{T}{N} + \negl(N)\]
 
 \vspace{5mm}
 
 Shifting our focus back to Yao's Box problem with probabilistic correctness on random index, the probabilistic correctness is
-\[\prob[i \xleftarrow{\$} \text{correct for $i$}] \ge 1 - \frac{T}{N} - negl(N)\]
+\[\prob[i \xleftarrow{\$} \text{correct for $i$}] \ge 1 - \frac{T}{N} - \negl(N)\]
 
+\paragraph{Encoding Argument}
 Randomness comes from two parts: the preprocessing part (the client's hint), and the query part. With this in mind, we will be using an augmented version of the encoding type argument in \ref{box_lower}.
 
 Consider the following experiment.
 \begin{enumerate}
     \item Run preprocessing, and choose a ``reasonably good hint." Initially, let the encoding be just the hint. We will add to this encoding as we go forward.
-    \item Define an empty set called $known = \{\}$
-    \item In each step $i$, find the smallest $q_i \notin known$. 
+    \item Define an empty set called $\known = \{\}$
+    \item In each step $i$, find the smallest $q_i \notin \known$. 
     \begin{itemize}
         \item If $\exists$ online coins such that query $q_i$ will give the correct answer, choose the lexicographically smallest coin. Execute query.
-        \[knwon \impliedby \cup \{q_i\} \cup \{\text{all newly opened}\}\]
+        \[\known \impliedby \cup \{q_i\} \cup \{\text{all newly opened}\}\]
         Add ``newly opened" to encoding.
         \item Else add $q_i$-th bit to the encoding.
     \end{itemize}
-    \item Repeat until $known = [N]$.
+    \item Repeat until $\known = [N]$.
     
 \end{enumerate}
 
@@ -234,10 +233,10 @@ A hint is bad for $i \in [N]$ if $\prob[\text{query $i$ correct} | \text{hint}] 
 
 Finally, we can reason about the encoding length. 
 
-Suppose the worst case where the hint is bad for exactly $T+1$ locations. Let $b_{bad}$ be the encoding of the ``newly opened" boxes in the bad queries, and $b_{good}$ be the encoding of the ``newly opened boxes in the good queries.
+Suppose the worst case where the hint is bad for exactly $T+1$ locations. Let $\bbad$ be the encoding of the ``newly opened" boxes in the bad queries, and $\bgood$ be the encoding of the ``newly opened boxes in the good queries.
 \begin{itemize}
-    \item $len(b_{bad}) = T + 1$, as each bad iteration adds one bit, and we have $T+1$ iterations.
-    \item To find $len(b_{good})$, we repeat the argument from \ref{box_lower}. Let $t_1, t_2, ...\ t_k$ be the number of newly opened boxes at each good step $i \in [k]$.
+    \item $|\bbad| = T + 1$, as each bad iteration adds one bit, and we have $T+1$ iterations.
+    \item To find $|\bgood|$, we repeat the argument from \ref{box_lower}. Let $t_1, t_2, ...\ t_k$ be the number of newly opened boxes at each good step $i \in [k]$.
 
     By the ``plus one" argument, we have that $\sum_{i = 1}^k (t_i + 1)\ge N - (T + 1)$. We subtract $T + 1$ here because those indices have been handled by the bad iterations.
     
@@ -248,16 +247,15 @@ Suppose the worst case where the hint is bad for exactly $T+1$ locations. Let $b
         &\implies k \ge \frac{N - T - 1}{t+1}
     \end{align*}
 
-    Thus, $len(b_{good}) = tk \ge t\frac{N - T - 1}{t+1}$
+    Thus, $|\bgood| = tk \ge t\frac{N - T - 1}{t+1}$
 \end{itemize}
 
+With the information above, we can mek the following conclusion.
 \begin{align*}
-    len(enc) &= S + len(b_{good}) + len(b_{bad}) \ge N \\
+    |\enc| &= S + |\bgood| + |\bbad| \ge N \\
     &\implies S + t\frac{N - T - 1}{t+1} + T + 1 \ge N \\
-    &\implies S(t+1) + (Nt - Tt - t) + Tt + T + t + 1 \ge Nt + N \\
-    &\implies S(t+1) + T + 1 \ge N\\
-    &\implies S(T+1) + T + 1 \ge N \tag{As $t$ upper bounded by $T$} \\
-    &\implies (S+1)(T+1) \ge N
+    &\implies S(t+1) + T + 1 \ge N \tag{By simplification}\\
+    &\implies (S+1)(T+1) \ge N \tag{As $t$ upper bounded by $T$}
 \end{align*}
 
 \qed
