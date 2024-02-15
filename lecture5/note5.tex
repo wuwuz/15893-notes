@@ -174,6 +174,9 @@ It will do the following:
 \item 
 Find a hint $(\sk^*, p^*)$
 from its hint table such that $q \in {\sf Set}(\sk^*)$.
+If not found (which happens
+with negligible probability due to \Cref{clm:correct}), 
+simply sample a random $\sk^*$ subject to $q \in {\sf Set}(\sk^*)$ and let $p^* =0$.
 \item 
 Let $i = {\sf chunk}(q)$, obtain the next unconsumed
 replacement entry belonging to the $i$-th chunk, denoted $(r, \DB[r])$,
@@ -189,6 +192,13 @@ $p = {\sf parity}(S)$.
 Reconstruct the answer $p \oplus p^* \oplus \DB[r]$ where the client knows $\DB[r]$
 from the replacement entry consumed.
 \end{itemize}
+
+\begin{claim}
+As long as the hint table has $\widetilde{O}(\sqrt{n})$ entries,
+the client can find a hint that matches the query except with negligible (in $n$)
+probability.  
+\label{clm:correct}
+\end{claim}
 
 Checking correctness of the answer is easy and left as an exercise.
 One can also easily verify that the scheme achieves the performance
