@@ -199,6 +199,18 @@ the client can find a hint that matches the query except with negligible (in $n$
 probability.  
 \label{clm:correct}
 \end{claim}
+\begin{proof}
+Assume that the PRF is a random function --- this will only affect
+the probability by a negligible amount.
+The probability that the query $q$ is in a single set is $1/\sqrt{n}$.
+The probability that 
+$q$ is not in any of the $L$ sets is $(1-\frac{1}{\sqrt{n}})^L$.
+For $L = \omega(\sqrt{n} \log n)$, 
+we have 
+$(1-\frac{1}{\sqrt{n}})^L = 
+\left((1-\frac{1}{\sqrt{n}})^{\sqrt{n}}\right)^{\omega(\log n)} = e^{-\omega(\log n)}$
+which is negligible in $n$.
+\end{proof}
 
 Checking correctness of the answer is easy and left as an exercise.
 One can also easily verify that the scheme achieves the performance
