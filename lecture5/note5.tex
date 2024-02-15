@@ -2,9 +2,9 @@
 
 
 
-\section{PIANO: An Extremely Simple PIR}
+%\section{PIANO: An Extremely Simple PIR}
 
-\subsection{Motivation}
+\section{Motivation}
 Recall that in previous lectures, we talked about classical PIR where the server stores the original database ($\mathsf{DB}$) unencoded and there's no preprocessing. Classical PIR requires the server to look through each element of the database, otherwise the server can deduce that the skipped elements are unimportant to the client. Beimel et.~al~\cite{beimel2000reducing} proved that a server in classical PIR must have linear computation per query.
 Linear computation will unlikely 
 scale for many real-world applications, e.g., private DNS and private 
@@ -20,7 +20,7 @@ per query in the preprocessing model.
 %Following this discovery, 
 %Beimel et. al proved that preprocessing can overcome this complexity barrier. In this lecture, we'll understand how they did that.
 
-\subsection{Background}
+\section{Background}
 %As we learned from guest lecturer Wei-Kai Lin, 
 Previous works have considered 
 main models of pre-processing: 
@@ -45,14 +45,14 @@ we will describe a scheme called Piano by Zhou et al.~\cite{zhou2023piano}
 that uses the client-specific preprocessing model.
 
 
-%\subsection{Goals}
+%\section{Goals}
 Piano achieves $O(\sqrt{n})$ server time and $O(\sqrt{n})$ bandwidth per query, 
 assuming $\widetilde{O}(\sqrt{n})$ client space. 
 %The scheme assumes that pseudorandom functions (PRF) exists (One-way Function).
 The only cryptographic primitive Piano relies is pseudorandom functions (PRFs).
 
 
-\subsection{Warmup Scheme: Supporting A Single Query}
+\section{Warmup Scheme: Supporting A Single Query}
 As a warmup, we will show a scheme that supports only one query after the preprocessing. 
 \ignore{
 As a warmup, we will first make some simplifying assumptions: we will
@@ -146,6 +146,8 @@ For each chunk $i \in \{0, \ldots, \sqrt{n}-1\}$, the client
 samples $\widetilde{O}(1)$
 random indices within the chunk; moreover, for each index $r$ sampled,
 it wants to learn ${\sf DB}[r]$.  
+As a result, the client will store $\widetilde{O}(1)$
+replacement entries of the form $(r, \DB[r])$ for each chunk. 
 \end{itemize}
 
 It takes $\widetilde{O}_\lambda(\sqrt{n})$ space to
@@ -160,16 +162,46 @@ only $\widetilde{O}_\lambda(\sqrt{n})$ space.
 \end{claim}
 How to accomplish the above with a single streaming pass is left as an exercise.
 
-\paragraph{Making Queries.}
+\paragraph{Making a query.}
 %A client makes queries in the following way. 
 %Consider a client that wants to query on index $i = 6$. 
 Suppose the client wants to read index
 $q \in \{0, 1, \ldots, n-1\}$.
-It finds a hint $(\sk^*, p^*)$
+It will do the following: 
+\begin{itemize}
+\item 
+Find a hint $(\sk^*, p^*)$
 from its hint table such that $q \in {\sf Set}(\sk^*)$.
+\item 
+Let $i = {\sf chunk}(q)$, obtain the next unconsumed
+replacement entry belonging to the $i$-th chunk, denoted $(r, \DB[r])$,
+where index $r$ belongs
+to the $i$-th chunk.
+\item 
+Let $S = {\sf Set}(\sk^*)$ but 
+replace the query $q$ with $r$. 
+Send $S$ to the server. 
+\item 
+Wait for the server to return 
+$p = {\sf parity}(S)$.
+Reconstruct the answer $p \oplus p^* \oplus \DB[r]$ where the client knows $\DB[r]$
+from the replacement entry consumed.
+\end{itemize}
 
+
+\paragraph{Security of one query.}
+Observe that the set $S$ sent to the server is indisitinguishable
+from a random set obtained by sampling one random index per chunk.  
+In particular, the client first searches for a set subject to containing the query $q$.
+Then, it replaces $q$ with a random index from the same chunk.
+
+\section{Next Step: Supporting A Bounded Number of Random Queries}
+
+
+
+\ignore{
 Suppose the index we want to query is stored in some set $S_2 = (0, 6, 9, 5)$ -- note that this set can be found amongst the $\sqrt{n}$ sets with non-negligible probability. To query on this, we simply sample some random $r$ and send $S^* = (0, r, 9, 5)$ to the server. In return, we get $\mathsf{Parity}(S^*)$. With the help of our hint, we can compute $\mathsf{Parity}(S_2) \oplus \mathsf{Parity}(S^*) \oplus \mathsf{DB}[r] = \mathsf{DB}[i]$.
-
+}
 
 
 
@@ -186,12 +218,13 @@ Suppose the index we want to query is stored in some set $S_2 = (0, 6, 9, 5)$ --
 
 
 
-
-In the preprocessing phase,
+\ignore{In the preprocessing phase,
 the client will randomly sample roughly $\Theta(\sqrt{n}\log n)$ random sets.
 For each set, it samples one random index in each chunk.
 The cilent will then preprocess all the  parities for those sets.
 The preprocessing is done by streamingly download the whole database and dynamically update all the parities.
+}
+
 
 \paragraph{Compressing client hints with PRFs.}
 Naively, to store all the hints, it takes $\Omega(n\log n)$ space.
