@@ -6,6 +6,8 @@
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
+\usepackage{xspace}
+\usepackage[capitalize,noabbrev]{cleveref}
 
 %\usepackage{minipage}
 %\usepackage{mdframe}
@@ -15,6 +17,7 @@
 
 % Theorem Environments
 \newtheorem{theorem}{Theorem}
+\newtheorem{claim}{Claim}
 \newtheorem{remark}{Remark}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
@@ -24,9 +27,14 @@
 \usepackage{enumitem}
 \usepackage{mdframed}
 
+\newcommand{\elaine}[1]{{\color{red} [elaine: #1]}}
+\newcommand{\ignore}[1]{}
+\newcommand{\sk}{\ensuremath{{\sf sk}}\xspace}
+\newcommand{\DB}{\ensuremath{{\sf DB}}\xspace}
+
 % Document Informatio n
 \title{{\Large Cryptography meets algorithms (15893) Lecture Notes}\\[5pt]
-{\bf Lecture 5: PIR → OT and Preprocessing PIR}}
+{\bf Lecture 5: Piano: A Simple Preprocessing PIR Scheme}}
 \author{Scribe: Tanisha Saxena}
 \date{\today}
 
