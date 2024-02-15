@@ -202,7 +202,7 @@ When we replace $q$ with
 a random index from the same chunk, the resulting set
 would have the same distribution as a randomly sampled set.
 
-\section{Next Step: Supporting A Bounded Number of Random Queries}
+\section{Next Step: Supporting a Bounded Number of Random, Distinct Queries}
 The scheme so far can support one query, but 
 an issue arises if the client continues to make more queries.
 
@@ -255,9 +255,41 @@ mentioned above.
 
 
 \paragraph{Refreshing a consumed hint.}
-Once the client consumes some hint $(\sk^*, p^*)$
+During a query for index $q$, 
+suppose the client consumes some hint. %$(\sk^*, p^*)$. 
+It will fetch
+the next unconsumed backup set 
+for chunk $i = {\sf chunk}(q)$.
+along with its parity denoted $(\sk', p')$.
+It will replace the consumed hint with $(\sk' \cup \{q\}, p' \oplus \DB[q])$,
+where $\sk' \cup \{q\}$ is used to mean ``fill in the hole in the backup set represented
+by $\sk'$ with $q$''; further, 
+$p' \oplus \DB[q]$ is the correct parity of the set when we fill in the hole with $q$.
+The client knows $\DB[q]$ because it has just reconstructed the answer to the present query.
+
+Note that now in this scheme, 
+each hint can be of the form $(\sk, p)$, or $(\sk \cup \{q\}, p)$, depending on whether
+it has been refreshed or not.
 
 
+\paragraph{Why bounded, random and distinct
+queries.}
+The scheme so far will work as long as we do not exhaust
+the replacement entries and the backup sets.
+
+Suppose there are at most $\sqrt{n}$ queries after the proprocessing,
+and moreover, all queries are random and distinct.
+We can think of the $\sqrt{n}$ chunks
+as $\sqrt{n}$ bins, and 
+each query will land in a random bin.
+By Chernoff bound,  
+except with negligible probability, 
+no bin will receive more than super-logarithmically many queries.
+This is why we provisioned $\widetilde{O}(1)$ queries (i.e., superlogarithmically many)
+per chunk during preprocessing. 
+
+\section{Supporting Unbounded and Arbitrary Queries}
+ 
 \section{TO Edit}
 
 
