@@ -70,7 +70,8 @@ into $\sqrt{n}$ chunks of size $\sqrt{n}$.
 We assume $n$ is a perfect square.
 
 \begin{center}
-    \includegraphics[scale=0.6]{chunks}
+    \includegraphics[scale=0.6]{chunks}\\
+{\bf Figure:} The database indices are divided into $\sqrt{n}$ chunks of size $\sqrt{n}$. 
 \end{center}
 
 \paragraph{Random set.}
@@ -80,7 +81,8 @@ each of the $\sqrt{n}$ chunks, as illustrated in the picture below.
 
 
 \begin{center}
-    \includegraphics[scale=0.6]{piano-sample}
+    \includegraphics[scale=0.6]{piano-sample}\\
+{\bf Figure:} We sample a random set of size $\sqrt{n}$ by sampling one random index per chunk.
 \end{center}
 
 Given a random set $S$ sampled according to the above procedure,
@@ -246,6 +248,14 @@ a backup set a random set except for leaving a hole in chunk $i$.
 Each backup set (for some chunk $i$) 
 can also be described with a PRF key $\sk$, except that 
 we will never have to evaluate $\PRF_{\sk}(i)$.
+
+\newpage
+\begin{center}
+    \includegraphics[scale=0.6]{piano-backupset}\\
+{\bf Figure:} %The database indices are divided into $\sqrt{n}$ chunks of size $\sqrt{n}$. 
+A backup set for chunk $0$ contains a random index per chunk except for chunk $0$. 
+\end{center}
+
 
 
 The client also wants to learn and store the parities of all backup sets
