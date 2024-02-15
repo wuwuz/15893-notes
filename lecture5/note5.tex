@@ -124,7 +124,7 @@ the chunk that index $j$ belongs to.
 
 
 \paragraph{Preprocessing.}
-The client wants to learn and store the following information during the preprocessing:  
+The client wants to prepare and store the following information during the preprocessing:  
 \begin{itemize}
 \item 
 {\bf Hint table.}
@@ -188,15 +188,77 @@ Reconstruct the answer $p \oplus p^* \oplus \DB[r]$ where the client knows $\DB[
 from the replacement entry consumed.
 \end{itemize}
 
+Checking correctness of the answer is easy and left as an exercise.
 
 \paragraph{Security of one query.}
 Observe that the set $S$ sent to the server is indisitinguishable
-from a random set obtained by sampling one random index per chunk.  
+from a randomly sampled set (i.e., sampling one random index per chunk).  
 In particular, the client first searches for a set subject to containing the query $q$.
-Then, it replaces $q$ with a random index from the same chunk.
+If the PRF were a random function, then this set would have the same distribution as
+``sampling a random set subject to 
+containing $q$''.
+When we replace $q$ with 
+%Then, it replaces $q$ with 
+a random index from the same chunk, the resulting set
+would have the same distribution as a randomly sampled set.
 
 \section{Next Step: Supporting A Bounded Number of Random Queries}
+The scheme so far can support one query, but 
+an issue arises if the client continues to make more queries.
 
+The question is, 
+once we make a query, 
+what happens to the hint that is consumed? 
+If we keep the hint, then the next time the same hint
+is consumed, e.g., due to a different query, the server  
+can learn the query index $q$ that was scooped out earlier.  
+If we simply remove the hint, it skews the distribution of the sets 
+in the hint table.
+Specifically, the remaining sets have slightly lower
+probability of containing the query $q$. 
+This will also cause slight information leakage 
+in future queries.
+
+To avoid information leakage over multiple queries, 
+the idea is the following. 
+Imagine that the PRF were a random function.
+Recall that the consumed set has the same distribution
+as ``a randomly sampled set subject to containing the query $q$''.
+When it is consumed, 
+we want to replace it with a freshly sampled
+set subject to containing $q$ --- of course, we will also need to know the parity
+of this new set to maintain the correctness of the scheme. 
+
+To achieve this, the client will also prepare  
+some backup sets as mentioned below.
+
+\paragraph{Backup sets.}
+During preprocessing, 
+for each chunk, the client will prepare 
+$\widetilde{O}(1)$ number of backup sets.
+A backup
+set for a chunk $i \in \{0, \ldots, \sqrt{n}-1\}$ 
+is sampled as follows:
+sample one random index 
+for every chunk $j \neq i$.
+One can imagine that 
+a backup set a random set except for leaving a hole in chunk $i$.
+Each backup set (for some chunk $i$) 
+can also be described with a PRF key $\sk$, except that 
+we will never have to evaluate $\PRF_{\sk}(i)$.
+
+
+The client also wants to learn and store the parities of all backup sets
+during preprocessing.
+This can be accomplished in the same streaming pass 
+mentioned above.
+
+
+\paragraph{Refreshing a consumed hint.}
+Once the client consumes some hint $(\sk^*, p^*)$
+
+
+\section{TO Edit}
 
 
 \ignore{
