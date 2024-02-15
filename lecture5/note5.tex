@@ -52,6 +52,8 @@ assuming $\widetilde{O}(\sqrt{n})$ client space.
 The only cryptographic primitive Piano relies is pseudorandom functions (PRFs).
 
 
+
+
 \section{Warmup Scheme: Supporting A Single Query}
 As a warmup, we will show a scheme that supports only one query after the preprocessing. 
 \ignore{
@@ -421,3 +423,21 @@ And as easily as that, we have removed the bounded and random queries restrictio
 \paragraph{Applications}
 This scheme is much faster than non-processing PIR schemes. Because of that, it has many applications for fast secrecy. For example, \href{https://haveibeenpwned.com/}{haveibeenpwned.com}, a website that checks if a user's password has been in a data breach, would be able to more efficiently run a search on a user's password without actually ever knowing what the password is.
 }
+
+
+\section{Concluding Remarks}
+
+Note that it may initially come off as surprising that we can get a scheme like Piano 
+using only PRFs --- recall that the existence of PRFs is equivalent to
+the existence of one-way functions. 
+In an earlier lecture, we learned
+that classical PIR with sublinear bandwidth implies oblivious transfer, 
+which
+cannot be constructed in a blackbox manner from one-way functions.
+One reason why we can get such a result is because
+Piano allows preprocessing phase
+with linear bandwidth. However, the cost of the preprocessing can be  
+amortized over future queries.
+
+
+
