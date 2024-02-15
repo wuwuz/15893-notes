@@ -191,6 +191,10 @@ from the replacement entry consumed.
 \end{itemize}
 
 Checking correctness of the answer is easy and left as an exercise.
+One can also easily verify that the scheme achieves the performance
+bounds claimed earlier.
+
+
 
 \paragraph{Security of one query.}
 Observe that the set $S$ sent to the server is indisitinguishable
@@ -300,7 +304,43 @@ replacement entries and backup sets
 per chunk during preprocessing. 
 
 \section{Supporting Unbounded and Arbitrary Queries}
- 
+
+Given a bounded scheme supporting $\sqrt{n}$ queries, we can make it unbounded
+using a simple pipelining idea: i.e., 
+we can perform 
+the next phase's preprocessing in the current phase of $\sqrt{n}$ queries --- specifically,
+this work can be spread equally among the queries of the current phase.
+
+\begin{center}
+    \includegraphics[scale=0.6]{piano-pipeline.pdf}\\[-10pt]
+{\bf Figure}: use pipelining to support an unbounded number of queries.
+\end{center}
+
+
+The random query assumption is needed
+only for load balancing, such that we do not run out of 
+replacement entries and backup sets during each phase.
+We can get rid of the random query assumption 
+by applying a public random permutation 
+$\pi$
+to the database indices upfront.
+As long as the query generation process is independent
+of the choice of $\pi$, the load balancing guarantees still hold.
+In practice, we can use a pseudorandom permutation (PRP) 
+instead of a completely random permutation $\pi$.
+
+Finally, to get rid of the distinctness assumption, 
+we can rely on the following simple idea. 
+%We can easily remove the ``distinctness'' assumption using the following  
+%idea: 
+The client caches the answers to all queries in the current phase, which
+requires only $O(\sqrt{n})$ space.
+If a query is a duplicate copy of some query already made in the current phase,
+the client simply looks up the answer locally, and it instead issues
+a random query  
+distinct from all queries in the current phase.
+
+\ignore{
 \section{TO Edit}
 
 
@@ -358,3 +398,4 @@ And as easily as that, we have removed the bounded and random queries restrictio
 
 \paragraph{Applications}
 This scheme is much faster than non-processing PIR schemes. Because of that, it has many applications for fast secrecy. For example, \href{https://haveibeenpwned.com/}{haveibeenpwned.com}, a website that checks if a user's password has been in a data breach, would be able to more efficiently run a search on a user's password without actually ever knowing what the password is.
+}
