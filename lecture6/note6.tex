@@ -174,9 +174,9 @@ Security follows from the security of the DPF.
 \end{figure*}
 
 
-Now we see how to construct this efficient 2-share binary DPF, based on a \Prg \ G:
+Now we see how to construct this efficient 2-share binary DPF, based on a \Prg~$G$:
  $$G: \{0,1\}^{\lambda} \rightarrow  \{0,1\}^{2\lambda + 2}. $$
-The algorithm is based on a binary tree expansion.
+The algorithm is based on a binary tree expansion idea.
 %Where the series of evaluation results can be visualized as a binary tree.
  
 \paragraph{The key structure.} The $\Gen$ algorithm outputs two keys, $k_0, k_1$. For each key $\key_t$ where $t\in\{0,1\}$, it contains the ``root'' information as a $\lambda$-bit random string $s$ and a bit $b\in\{0,1\}$. It also contains $\log n$ ``correction vectors'' $\CV_1, \dots, \CV_{\log n}$, each of size $2\lambda+2$ bit. $k_0, k_1$ will share the same sets of correction vectors. 
