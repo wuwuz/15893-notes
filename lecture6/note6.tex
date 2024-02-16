@@ -1,3 +1,5 @@
+%!TEX root = main6.tex
+
 \newcommand{\PRF}{\ensuremath{{\sf PRF}}}
 \newcommand{\FHE}{\ensuremath{{\sf FHE}}}
 \newcommand{\Gen}{\ensuremath{{\sf Gen}}}
@@ -30,11 +32,11 @@
 \newcommand{\getr}{\ensuremath{~{\overset{\$}{\leftarrow}}}~}
 \newcommand{\ignore}[1]{}
 
-\section{Distributed Point Function and 2-server PIR with $O_{\lambda}(\log(n))$ Communication ~\cite{boyle2016function}}
+\section{Distributed Point Function and 2-server PIR with $O(\log(n))$ Communication ~\cite{boyle2016function}}
 
 We saw that in the IT-setting, the best known upper bound on the communication of 2-server PIR scheme is by Dvir and Gopi~\cite{dvir20162}.
 The scheme achieves $n^{O(\sqrt{\log \log n / \log n})}$ communication.
-In this lecture, we see that if we are willing to assume that one-way functions (OWF) exist, we can construct a 2-server PIR scheme with $O_\lambda(\log n)$ communication.
+In this lecture, we see that if we are willing to assume that one-way functions (OWF) exist, we can construct a 2-server PIR scheme with $O(\log n)$ communication.
 
 \subsection{Basic Idea}
 This scheme use pseudorandom generators (PRG). In particular, PRG implies the existence of OWF and OWF implies the existence of PRG~\cite{haastad1999pseudorandom}. 
@@ -47,8 +49,8 @@ This scheme use pseudorandom generators (PRG). In particular, PRG implies the ex
         \item \textbf{Expansion:} $\forall n, l(n) > n$.
         \item \textbf{Pseudorandomness:} $\forall$ PPT distinguishers D, $\exists$ negl() s.t.
         $$\left|\Pr[D(r) = 1] - \Pr[D(G(s)) = 1]\right| \leq negl(n)$$ 
-        Where $r \overset{{\scriptscriptstyle\$}}{\leftarrow} \mathcal{U}^{l(n)}$ and
-        $s \overset{{\scriptscriptstyle\$}}{\leftarrow} \mathcal{U}^{n}$.
+        Where $r \overset{{\scriptscriptstyle\$}}{\leftarrow} \{0,1\}^{l(n)}$ and
+        $s \overset{{\scriptscriptstyle\$}}{\leftarrow} \{0,1\}^{n}$.
     \end{itemize}
 \end{definition}
 
@@ -60,7 +62,7 @@ This scheme use pseudorandom generators (PRG). In particular, PRG implies the ex
 
 Boyle, Gilboa and Ishai~\cite{boyle2016function} introduced the concept of distributed point function. 
 We are going to focus on the case of a 2-share binary distributed point function. 
-Essentially, given the full description of the point function $P_{x^*}$, one can ``secretly share'' the function to two keys $k_0,k_1$. Then, if party $t\in\{0,1\}$ receives $k_t$, it can evaluate the key on all possible location $x$ and get an evaluation of $\Eval(k_t, x)$. 
+Essentially, given the full description of the point function $P_{x^*}$, one can ``secretly share'' the function to two keys $k_0,k_1$. Then, if party $t\in\{0,1\}$ receives $k_t$, it can evaluate the function on all possible location $x$ and get an evaluation of $\Eval(k_t, x)$. 
 It is guaranteed that in every location $x'$, $\Eval(k_0, x)\xor\Eval(k_1, x)=P_{x^*}(x)$.
 Also, each party $t$ has no information about the ``special location'' (i.e., $x^*$) given the key $k_t$.
 
@@ -73,9 +75,9 @@ Also, each party $t$ has no information about the ``special location'' (i.e., $x
         \item $\Eval(1^\lambda, k,x)$: Outputs $y \in \{0,1\}$
     \end{itemize}
     \paragraph{Correctness.} $\Pr[k_0,k_1 \leftarrow \Gen(1^\lambda, x^*):\Eval(k_0,x) \oplus \Eval(k_1,x) = P_{x^*}(x)] = 1$.
-    \paragraph{Privacy.} Given $t\in\{0,1\}$ and any $x^*\in \{0,1\}^\ell$, there exists a PPT simulator $\Sim$, such that the following experiments are computaionally indistinguishable:
+    \paragraph{Security.} Given $t\in\{0,1\}$ and any $x^*\in \{0,1\}^{\ell(\lambda)}$, there exists a PPT simulator $\Sim$, such that the following experiments are computationally indistinguishable:
     \begin{itemize}
-        \item $\mathsf{Real}(1^\lambda)$: $k_0,k_1\get  \Gen(1^\lambda, x^*)$ and output $k_t$;
+        \item $\mathsf{Real}(1^\lambda, x^*)$: $k_0,k_1\get  \Gen(1^\lambda, x^*)$ and output $k_t$;
         \item $\mathsf{Ideal}(1^\lambda)$: Output $\Sim(1^\lambda, \ell)$.
     \end{itemize}
 \end{definition}
@@ -133,8 +135,8 @@ Security follows from the security of the DPF.
                 \item Let $s^1_L || b^1_L || s^1_R || b^1_R\get G(s_1)$;
                 \item Let $s^*_L || b^*_L || s^*_R || b^*_R=(s^0_L || b^0_L || s^0_R || b^0_R) \xor (s^1_L || b^1_L || s^1_R || b^1_R)$;
                 \item Sample $r$ as a random $\lambda$-bit random string;
-                \item If $x^*[i]=0$: let $\CV_i =~ r ~|| b^*_L \xor 1 || s^*_R || b^*_R$;\hfill \textit{If the path goes left;} 
-                \item If $x^*[i]=1$: let $\CV_i = s^*_L || b^*_L || ~r ~|| b^*_R \xor 1$;\hfill \textit{If the path goes right}; 
+                \item If $x^*[i]=0$: let $\CV_i =~ r ~|| (b^*_L \xor 1) || s^*_R || b^*_R$;\hfill \textit{If the path goes left;} 
+                \item If $x^*[i]=1$: let $\CV_i = s^*_L || b^*_L || ~r ~|| (b^*_R \xor 1)$;\hfill \textit{If the path goes right}; 
                 
                 \item Expand $(s_0, b_0), (s_1, b_1)$ to their children as the same as the expansion algorithm, using $\CV_i$. Update $(s_0, b_0), (s_1, b_1)$ by replacing them with their children's pairs (only the pairs on the special path).  
             \end{itemize}
@@ -211,7 +213,7 @@ The algorithm is presented in Figure~\ref{fig:DPF} and an example is presented i
 
 \paragraph{Analysis.}
 The correctness can be verified by doing an induction proof from level $1$ to level $\log n$.
-The privacy analysis is referred to~\cite{boyle2016function}. 
+The security analysis is referred to~\cite{boyle2016function}. 
 It is also clear to see that the key size is $\lambda+1+\log n\cdot (2\lambda+2)=O_\lambda(\log n)$.
 
 
