@@ -32,11 +32,15 @@
 \newcommand{\getr}{\ensuremath{~{\overset{\$}{\leftarrow}}}~}
 \newcommand{\ignore}[1]{}
 
-\section{Distributed Point Function and 2-server PIR with $O(\log(n))$ Communication ~\cite{boyle2016function}}
+\newcommand{\elaine}[1]{{\color{red} [elaine: #1]}}
+\newcommand{\mingxun}[1]{{\color{red} [mz: #1]}}
+
+\section{Distributed Point Function and 2-server PIR with $O(\log{n})$ Communication ~\cite{boyle2016function}}
 
 We saw that in the IT-setting, the best known upper bound on the communication of 2-server PIR scheme is by Dvir and Gopi~\cite{dvir20162}.
 The scheme achieves $n^{O(\sqrt{\log \log n / \log n})}$ communication.
 In this lecture, we see that if we are willing to assume that one-way functions (OWF) exist, we can construct a 2-server PIR scheme with $O(\log n)$ communication.
+\mingxun{I am not sure what other sschemes you want to compare to. The IT one seems to be the most appropriate one}
 
 \subsection{Basic Idea}
 This scheme use pseudorandom generators (PRG). In particular, PRG implies the existence of OWF and OWF implies the existence of PRG~\cite{haastad1999pseudorandom}. 
@@ -133,15 +137,25 @@ Security follows from the security of the DPF.
             \begin{itemize}
                 \item Let $s^0_L || b^0_L || s^0_R || b^0_R\get G(s_0)$;
                 \item Let $s^1_L || b^1_L || s^1_R || b^1_R\get G(s_1)$;
-                \item Let $s^*_L || b^*_L || s^*_R || b^*_R=(s^0_L || b^0_L || s^0_R || b^0_R) \xor (s^1_L || b^1_L || s^1_R || b^1_R)$;
+                \item Let $s_L || b_L || s_R || b_R=(s^0_L || b^0_L || s^0_R || b^0_R) \xor (s^1_L || b^1_L || s^1_R || b^1_R)$;
                 \item Sample $r$ as a random $\lambda$-bit random string;
-                \item If $x^*[i]=0$: let $\CV_i =~ r ~|| (b^*_L \xor 1) || s^*_R || b^*_R$;\hfill \textit{If the path goes left;} 
-                \item If $x^*[i]=1$: let $\CV_i = s^*_L || b^*_L || ~r ~|| (b^*_R \xor 1)$;\hfill \textit{If the path goes right}; 
-                
-                \item Expand $(s_0, b_0), (s_1, b_1)$ to their children as the same as the expansion algorithm, using $\CV_i$. Update $(s_0, b_0), (s_1, b_1)$ by replacing them with their children's pairs (only the pairs on the special path).  
+                \item If $x^*[i]=0$: 
+                \begin{itemize}
+                    \item Let $\CV_i =~ r ~|| (b_L \xor 1) || s_R || b_R$; \hfill 
+                    \item Update $(s_0 || b_0) \get (s^0_L || b^0_L) \xor (b_0 \cdot (r ~|| (b_L \xor 1)))$;
+                    \item Update $(s_1 || b_1) \get (s^1_L || b^1_L) \xor (b_1 \cdot (r ~|| (b_L \xor 1)))$;
+                    %\item $(s_1 || b_1) \get (s^1_L || b^1_L) \xor (b_1 \cdot (r ~|| (b^*_L \xor 1)))$;
+                \end{itemize}
+                \item If $x^*[i]=1$: 
+                \begin{itemize}
+                    \item Let $\CV_i = s_L || b_L || ~r ~|| (b_R \xor 1)$;\hfill %\textit{If the path goes right}; 
+                    \item Update $(s_0 || b_0) \get (s^0_R || b^0_L) \xor (b_0 \cdot (r ~|| (b_R \xor 1)))$;
+                    \item Update $(s_1 || b_1) \get (s^1_R || b^1_R) \xor (b_1 \cdot (r ~|| (b_R \xor 1)))$;
+                \end{itemize}
+                %\item Expand $(s_0, b_0), (s_1, b_1)$ to their children as the same as the expansion algorithm, using $\CV_i$. Update $(s_0, b_0), (s_1, b_1)$ by replacing them with their children's pairs (only the pairs on the special path).  
             \end{itemize}
             
-            \paragraph{Output}:
+            \paragraph{Output:}
             \begin{itemize}
                 \item Attach $\CV_1,\dots,\CV_{\log n}$ to $k_0$ and $k_1$.
                 \item Output $k_0,k_1$.
