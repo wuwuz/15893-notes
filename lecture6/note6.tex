@@ -31,6 +31,7 @@
 \newcommand{\key}{\ensuremath{{\sf key}}}
 \newcommand{\getr}{\ensuremath{~{\overset{\$}{\leftarrow}}}~}
 \newcommand{\ignore}[1]{}
+\renewcommand{\root}{\ensuremath{{\sf root}}}
 
 \newcommand{\elaine}[1]{{\color{red} [elaine: #1]}}
 \newcommand{\mingxun}[1]{{\color{red} [mz: #1]}}
@@ -121,6 +122,60 @@ Security follows from the security of the DPF.
     \begin{minipage}{\textwidth}
         \begin{mdframed}
             \begin{center}
+                \textbf{(New Version) Generation Algorithm:} $\Gen(1^\lambda, x^*)$
+            \end{center}
+            
+            \paragraph{Initialization:} 
+            %Repeat the following process $m$ times (indexed by $j$):
+            \begin{itemize}
+                \item Sample $s_0$, $s_1$ as two $\lambda$-bit random strings. 
+                \item Sample a random bit $b_0$. Let $b_1=b_0\xor 1$. 
+                \item Let $\{x^*[1],\dots,x^*[\log n]\}$ be $x^*$'s binary representation.
+                \item Store the roots: let $(\root.s_0,\root.b_0)=(s_0,b_0)$ and $(\root.s_1,\root.b_1)=(s_1,b_1)$.
+            \end{itemize}
+            
+            
+            \paragraph{Constructing correction vectors:} 
+            For $i\in \{1,\dots, \log n\}$: 
+                \begin{itemize}
+                    \item If $x^*[i]=0$, set ${\sf Keep}=L$. Otherwise, set ${\sf Keep}=R$.
+                    \item Sample a random string $r\getr \{0,1\}^{\lambda}$.
+                    \item Set $\CV_i\in\{0,1\}^{2\lambda+2}$ as an unknown variable and build the equation as follows.
+                    \begin{itemize}
+                        \item Let $s^0_L || b^0_L || s^0_R || b^0_R\get G(s_0) \xor (b_0 \cdot \CV_i)$; \hfill \textit{Expanding the first key}
+                        \item Let $s^1_L || b^1_L || s^1_R || b^1_R\get G(s_1) \xor (b_1 \cdot \CV_i)$; \hfill \textit{Expanding the second key}
+                        \item If ${\sf Keep}=L$: set the invariant as 
+                        \begin{align*}
+                            (s^0_L || b^0_L || s^0_R || b^0_R) \xor (s^1_L || b^1_L || s^1_R || b^1_R) = (r || 1 || 0^{\lambda} || 0).
+                        \end{align*}
+                       
+                        \item If ${\sf Keep}=R$: set the invariant as 
+                        \begin{align*}
+                            (s^0_L || b^0_L || s^0_R || b^0_R) \xor (s^1_L || b^1_L || s^1_R || b^1_R) = (0^{\lambda} || 0 || r || 1).
+                        \end{align*}
+                        \hfill \textit{(Force the ${\sf Keep}$ direction to be different and the other direction to be identical.)}
+                    \end{itemize}
+                    \item Solve the equation based on the invariant to get $\CV_i$. The equation is always solvable.
+                    \item Update $(s_0, b_0) \get (s^0_{\sf Keep}, b^0_{\sf Keep})$;
+                    \item Update $(s_1, b_1) \get (s^1_{\sf Keep}, b^1_{\sf Keep})$;
+                \end{itemize}  
+            \paragraph{Output:} Output $k_0, k_1$:
+            \begin{align*}
+                k_0=(\root.s_0, \root.b_0, \CV_1,\dots,\CV_{\log n}) \\
+                k_1=(\root.s_1, \root.b_1, \CV_1,\dots,\CV_{\log n})
+            \end{align*}
+            
+        \end{mdframed}
+    \end{minipage}
+    \caption{The 2-share binary DPF generation algorithm.\label{fig:DPF}}
+    %\caption{Detailed description of \name.\label{fig:single-server}}
+\end{figure}
+
+\begin{figure}
+    
+    \begin{minipage}{\textwidth}
+        \begin{mdframed}
+            \begin{center}
                 \textbf{Generation Algorithm:} $\Gen(1^\lambda, x^*)$
             \end{center}
             
@@ -176,6 +231,7 @@ Security follows from the security of the DPF.
     \includegraphics[scale=0.4]{scribimg_dpftree.png}
     \caption{An example of the DPF construction.\label{fig:example-DPF}}
 \end{figure*}
+
 
 
 Now we see how to construct this efficient 2-share binary DPF, based on a \Prg~$G$:
