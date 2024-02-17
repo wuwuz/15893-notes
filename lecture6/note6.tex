@@ -179,7 +179,7 @@ Now we see how to construct this efficient 2-share binary DPF, based on a \Prg~$
 The algorithm is based on a binary tree expansion idea.
 %Where the series of evaluation results can be visualized as a binary tree.
  
-\paragraph{The key structure.} The $\Gen$ algorithm outputs two keys, $k_0, k_1$. For each key $\key_t$ where $t\in\{0,1\}$, it contains the ``root'' information as a $\lambda$-bit random string $s$ and a bit $b\in\{0,1\}$. It also contains $\log n$ ``correction vectors'' $\CV_1, \dots, \CV_{\log n}$, each of size $2\lambda+2$ bit. $k_0, k_1$ will share the same sets of correction vectors. 
+\paragraph{The key structure.} The $\Gen$ algorithm outputs two keys, $k_0, k_1$. For each key $k_t$ where $t\in\{0,1\}$, it contains the ``root'' information as a $\lambda$-bit random string $s$ and a bit $b\in\{0,1\}$. It also contains $\log n$ ``correction vectors'' $\CV_1, \dots, \CV_{\log n}$, each of size $2\lambda+2$ bit. $k_0, k_1$ will share the same sets of correction vectors. 
 We will see how they are constructed later. 
 
 
@@ -187,19 +187,22 @@ We will see how they are constructed later.
 Given a key containing $s,b$ and $\CV_1,\dots,\CV_{\log n}$, the evaluation algorithm is as follows.
 We consider a binary tree with $\log n + 1$ levels and $n$ leaves (assume $n$ is a power of 2). 
 The root is on the $0$-th level and the leaves are on the $\log n$-th level.
-Each node contains a key $ s \in \{0,1\}^{\lambda}$ (a $\lambda$-bit random string) and a bit $b \in \{0,1\}$. 
-Suppose now we want to expand the information of this node (on level $i-1$) to its two children (on levle $i$), we only need the following one-line expansion algorithm:
+Each node contains a $\lambda$-bit (pseudo)random string $ s \in \{0,1\}^{\lambda}$ and a bit $b \in \{0,1\}$. 
+The root's string and bit are included in the description of the key.
+For all other nodes, their strings and bits will be decided by their parents.
+Given a node on level $(i-1)$, suppose now we want to decide the bits and the strings of its children (on level $i$). 
+We only need the following one-line algorithm:
  $$ s_{L} || b_{L} || s_{R} || b_{R} \leftarrow G(s) \oplus
  \begin{cases} 
     0 & b = 0; \\
     \CV_i & b = 1. \\
  \end{cases}$$
-That is, $s_{L}, b_{L}$ are the information on its left child, and $s_{R}, b_{R}$ are the information on its right child.
-Finally, the bit on the $i$-th leaf will be $\Eval(\key, i)$.
+That is, $s_{L}, b_{L}$ are the string and bit on its left child, and $s_{R}, b_{R}$ are the string and bit on its right child.
+Finally, the bit on the $i$-th leaf will be $\Eval(k, i)$.
 
-Notice that if we only want to learn $\Eval(\key, i)$ for a particular $i$, the computation cost will be $O(\log n)$ calls to the PRG, because we can focus on the path from the $i$-th leaf to the root and ignore other nodes.
+Notice that if we only want to learn $\Eval(k, i)$ for a particular $i$, the computation cost will be $O(\log n)$ calls to the PRG, because we can focus on the path from the root to the $i$-th leaf and ignore other nodes.
 %And on the path we only do $\log n$ expansions.
-However, if we want to learn $\Eval(k, i)$ for all $i\in[n]$, the computation cost will be $O(n)$ because we can simply do the expansion on the whole tree. 
+However, if we want to evaluate $\Eval(k, i)$ for all $i\in[n]$, the computation cost will be $O(n)$ because we can simply do the expansion on the whole tree. 
 
 
 \paragraph{Generation Algorithm.} The generation algorithm needs to generate two correlated keys, such that when we look at the bit at the $x$-th leaves (say $b^0_{x}$ and $b^1_{x}$) on the trees expnaded by $k_0$ and $k_1$, it must that $b^0_{x}\xor b^1_{x}=P_{x^*}(x)$. In fact, we want to ensure the following stronger properties.
@@ -210,15 +213,15 @@ Say on a particular node, we denote the information expanded by $k_0$ and $k_1$ 
     \item Otherwise, $b_0=b_1$ and $s_0=s_1$.
 \end{enumerate}
 
-The properties hold for the leaf nodes, which is sufficient to prove the correctness of the DPF.
-We now see the how do we ensure these properties.
+The properties also hold for the leaf nodes, which is sufficient to prove the correctness of the DPF.
+We now see the how to ensure these properties.
 We have the first lemma, which can be proved by a simple induction argument.
 
 \begin{lemma}
     If on some particular node, $b_0=b_1$ and $s_0=s_1$, then the subtrees expanded based on $(s_0,b_0)$ and $(s_1,b_1)$ will be identical, regardless of $CV_1,\dots,CV_{\log n}$.
 \end{lemma}
 
-This lemma shows that we only need to focus on the ``special path''. We can sample the root information first by sampling two random strings $s_0,s_1$ and let $b_0$ and $b_1$ be two different bits. 
+This lemma shows that we only need to focus on the ``special path''. We can sample the roots first by sampling two random strings $s_0,s_1$ and let $b_0$ and $b_1$ be two different bits. 
 Then, we can just ``simulate'' the expansion process on the special path, and then set up the correction vector according to the target properties. 
 Since on the $i$-th level of the special path, there will be only one side affected by the correction vector (because the bits are different).
 Therefore, we can always set the correction vector to ensure that after applying the correction vector, the children on the special path still have different bits and independent random strings, while the children deviating from the path will become identical.
@@ -235,16 +238,17 @@ It is also clear to see that the key size is $\lambda+1+\log n\cdot (2\lambda+2)
  \section{Batch-PIR}
 
  \subsection{Motivation}
-    So far, every PIR scheme we have seen only retrieves 1 bit at a time. This works great for yes/no questions,
-    but is cumbersome if we wanted to do anything practical. For instance, to compute Q queries using a naive PIR scheme with $O(n)$ computation, it requires $O(Qn)$ computation.
-    Batch-PIR aims to make PIR more practical by enabling multiple
-    responses for a single query, grouping together multiple responses into one and reduce the
+    So far, every PIR scheme we have seen only retrieves 1 bit at a time. 
+    In many use cases, the client may want to fetch up to $Q$ database entries at the same time. 
+    The navie solution is just to repeat the single-query algorithm $Q$ times.
+    For instance, to compute Q queries using a single-query PIR scheme with $O(n)$ computation, it requires $O(Qn)$ computation.
+    Batch-PIR aims to handle multiple parallel queries at the same time, reducing the
      amortized cost.
      
      
 \subsection{A simple load-balancing scheme}
 
-Given an $n$ bit long database and $Q=o(n)$ queries, we load-balance the database into $\frac{Q}{\log Q}$ buckets -- we use a hash function to hash each database entry to a bucket and place it there.
+Given an $n$ bit long database and $Q=o(n)$ queries, we load-balance the database into $\frac{Q}{\log Q}$ buckets -- we use a hash function to hash each database entry to a bucket (by hashing their index).
 Then, given the $Q$ queries, we again use the hash function to place the queries to the buckets. 
 In expectation, each bucket will have $\log Q$ queries. 
 Based on the balls-into-bins argument, each bucket will have no more than $\lambda \log Q$ queries with $1-\negl(\lambda)$ probability.
