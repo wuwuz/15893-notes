@@ -104,7 +104,11 @@ By definition, $P_x(x) = 1$ and $P_x(x') = 0$ for $x' \neq x$.
 \end{definition}
 
 Boyle, Gilboa and Ishai~\cite{boyle2016function} introduced the concept of distributed point function. 
-We are going to focus on the case of a 2-share binary distributed point function. 
+A distributed point function
+is a functional secret-sharing of a point function.
+In this lecture, 
+we will specifically focus on a 2-way secret sharing of a point function.
+%We are going to focus on the case of a 2-share binary distributed point function. 
 Essentially, given the full description of the point function $P_{x^*}$, one can ``secretly share'' the function to two keys $k_0,k_1$. Then, if party $t\in\{0,1\}$ receives $k_t$, it can evaluate the function on all possible location $x$ and get an evaluation of $\Eval(k_t, x)$. 
 It is guaranteed that in every location $x'$, $\Eval(k_0, x)\xor\Eval(k_1, x)=P_{x^*}(x)$.
 Also, each party $t$ has no information about the ``special location'' (i.e., $x^*$) given the key $k_t$.
