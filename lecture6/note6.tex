@@ -103,7 +103,7 @@ By definition, $P_x(x) = 1$ and $P_x(x') = 0$ for $x' \neq x$.
 %    is defined by $P_{x^*}(x^*) = 1 \ and \ P_{x^*}(x) = 0$ for all $x \neq x^*$.
 \end{definition}
 
-Boyle, Gilboa and Ishai~\cite{boyle2016function} introduced the concept of distributed point function. 
+Boyle, Gilboa and Ishai~\cite{boyle2016function} introduced the concept of a distributed point function. 
 A distributed point function
 is a functional secret-sharing of a point function.
 In this lecture, 
@@ -160,32 +160,50 @@ key $k_L$ or $k_R$
 can be simulated without knowledge
 of the special point $x^*$.
 
-\subsection{2-Server PIR Based on DPF}
+\subsection{DPF $\Longrightarrow$ 2-Server PIR}
 
-Let $\DB \in \{0,1\}^{n}, i \in [n]$ and $\lambda$ be the security parameter.
-Suppose we have an efficient 2-share binary DPF scheme $\DpfGen$ and $\DpfEval$, such that the key length is $O_\lambda(\log n)$ (where $n$ is the size of the input domain), and the evaluation algorithm is efficient. 
-Then, we can have the following 2-server PIR scheme. %n the following, when the context is clear, we will omit $1^\lambda$ in the description.
+Given a DPF scheme henceforth denoted $(\DpfGen, \DpfEval)$, 
+we can construct 
+a 2-server PIR scheme as follows.
+Henceforth we use $\DB \in \{0, 1\}^n$ 
+to denote the database.
+
+%Let $\DB \in \{0,1\}^{n}, i \in [n]$ and $\lambda$ be the security parameter.
+%Suppose we have an efficient 2-share binary DPF scheme $\DpfGen$ and $\DpfEval$, such that the key length is $O_\lambda(\log n)$ (where $n$ is the size of the input domain), and the evaluation algorithm is efficient. 
+%Then, we can have the following 2-server PIR scheme. %n the following, when the context is clear, we will omit $1^\lambda$ in the description.
 
 \begin{enumerate}
-    \item Given the query $i$, \Client computes $(k_0,k_1) \leftarrow \DPF.\Gen(1^\lambda, i)$
-    \item \Client sends $(k_0,k_1)$ to \Server 0 and \Server 1 respectively.
-    \item For $t\in\{0,1\}$, \Server $t$ responds with $y_i \leftarrow \bigoplus_{j\in [n]} \DPF.\Eval(k_t,j)\cdot \DB[j]$;
-    \item \Client computes the answer as $y_0 \oplus y_1$.
+    \item Given the query $i$, the client 
+computes $(k_L,k_R) \leftarrow \DPF.\Gen(1^\lambda, i)$
+    \item The client sends %$(k_L,k_R)$ to 
+$k_L$ to the left server and sends $k_R$ to the right server. 
+%\Server 0 and \Server 1 respectively.
+    \item %For 
+Each server $t \in \{L, R\}$ receives $k_t$, 
+and replies 
+%$t\in\{0,1\}$, \Server $t$ responds with 
+$y_t := \bigoplus_{j\in [n]} \DPF.\Eval(k_t,j)\cdot \DB[j]$;
+    \item the client receives
+$y_L$ and $y_R$ from the two servers respectively, 
+and  outputs $y_L \oplus y_R$.
 \end{enumerate}
 
-\paragraph{Correctness} 
+\paragraph{Correctness.} 
+It is not hard to check that the answer output by the client
+is correct by the DPF's correctness:  
 \begin{align*} 
     y_0 \oplus y_1 & = \left(\bigoplus_{j}\DB[j]\cdot \DpfEval(k_0,j) \right) \oplus \left(\bigoplus_{j}\mathsf{DB}[j]\cdot \DPF.\Eval(k_1,j) \right) \\
     & = \left(\bigoplus_{j}\DB[j]\cdot (\DpfEval(k_0,j)\xor \DPF.\Eval(k_1,j)) \right) \\
     & = \left(\bigoplus_{j}\DB[j]\cdot P_{i}(j)\right) \\
     & = \DB[i].
 \end{align*}
-\paragraph{Security}
-Security follows from the security of the DPF.
+
+\paragraph{Security.}
+Security of the PIR follows directly from the security of the DPF.
 
 
 
-\subsubsection{DPF construction using PRG}
+\subsection{DPF Construction}
 
 
 
@@ -305,8 +323,8 @@ Security follows from the security of the DPF.
 \end{figure*}
 
 
-
-Now we see how to construct this efficient 2-share binary DPF, based on a \Prg~$G$:
+We now show how to construct an efficient DPF, based on a pseudorandom
+generator $G$:
  $$G: \{0,1\}^{\lambda} \rightarrow  \{0,1\}^{2\lambda + 2}. $$
 The algorithm is based on a binary tree expansion idea.
 %Where the series of evaluation results can be visualized as a binary tree.
