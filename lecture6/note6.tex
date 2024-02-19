@@ -107,28 +107,59 @@ Boyle, Gilboa and Ishai~\cite{boyle2016function} introduced the concept of distr
 A distributed point function
 is a functional secret-sharing of a point function.
 In this lecture, 
-we will specifically focus on a 2-way secret sharing of a point function.
-%We are going to focus on the case of a 2-share binary distributed point function. 
-Essentially, given the full description of the point function $P_{x^*}$, one can ``secretly share'' the function to two keys $k_0,k_1$. Then, if party $t\in\{0,1\}$ receives $k_t$, it can evaluate the function on all possible location $x$ and get an evaluation of $\Eval(k_t, x)$. 
-It is guaranteed that in every location $x'$, $\Eval(k_0, x)\xor\Eval(k_1, x)=P_{x^*}(x)$.
-Also, each party $t$ has no information about the ``special location'' (i.e., $x^*$) given the key $k_t$.
+we will specifically focus on a {\it 2-way} secret sharing of a point function.
+Essentially, given some point function $P_{x^*}$, 
+one can ``secretly share'' the function to two keys $k_L,k_R$. 
+Then, for party $t \in \{L, R\}$ which
+receives the key $k_t$, 
+%Then, if party $t\in\{0,1\}$ receives $k_t$, 
+it can evaluate the function on any point $x$ and 
+get a share of the outcome denoted $\Eval(k_t, x)$. 
+It is guaranteed that in every point $x$, 
+$\Eval(k_L, x)\xor\Eval(k_R, x)=P_{x^*}(x)$.
+In other words, it is possible to combine
+the two outcome-shares to reconstruct the  
+evaluation of the point function at any point. 
+Finally, security of the DPF requires that  
+each party $t \in \{L, R\}$ does not learn  
+the ``special point'' (i.e., $x^*$) given its individual key $k_t$.
 
 
-\begin{definition}[2-share binary \Dpf]
-    A DPF is a pair of PPT algorithms (\Gen,\Eval) with the following syntax:
+\begin{definition}[2-share \Dpf]
+    A DPF is a pair of possibly randomized 
+algorithms (\Gen,\Eval) with the following syntax:
     \hfill
     \begin{itemize}
-        \item $\Gen(1^\lambda,x^*)$: Outputs a pair of keys $k_0,k_1$.
-        \item $\Eval(1^\lambda, k,x)$: Outputs $y \in \{0,1\}$
+        \item $\Gen(1^\lambda,x^*)$: Outputs a pair of keys $k_L,k_R$.
+        \item $\Eval(1^\lambda, k,x)$: Outputs the evaluation outcome $y \in \{0,1\}$.
     \end{itemize}
-    \paragraph{Correctness.} $\Pr[k_0,k_1 \leftarrow \Gen(1^\lambda, x^*):\Eval(k_0,x) \oplus \Eval(k_1,x) = P_{x^*}(x)] = 1$.
-    \paragraph{Security.} Given $t\in\{0,1\}$ and any $x^*\in \{0,1\}^{\ell(\lambda)}$, there exists a PPT simulator $\Sim$, such that the following experiments are computationally indistinguishable:
+    \paragraph{Correctness.} 
+Correctness requires that for any $\lambda$, 
+any $\ell$, 
+any $x^*, x \in \{0, 1\}^{\ell}$, 
+\[
+\Pr\left[k_L,k_R \leftarrow \Gen(1^\lambda, x^*):\Eval(k_L,x) \oplus \Eval(k_R,x) = P_{x^*}(x)\right] = 1
+\]
+
+
+\paragraph{Security.} 
+Security requires that 
+there exists a probabilistic polynomial-time simulator $\Sim$, 
+%Given $t\in\{L,R\}$,
+such that 
+for any $\ell = \ell(\lambda)$ that is a polynomial function in $\lambda$, 
+and any $x^*\in \{0,1\}^{\ell(\lambda)}$, 
+the following experiments are computationally indistinguishable
+for either $t \in \{L, R\}$:
     \begin{itemize}
-        \item $\mathsf{Real}(1^\lambda, x^*)$: $k_0,k_1\get  \Gen(1^\lambda, x^*)$ and output $k_t$;
+        \item $\mathsf{Real}(1^\lambda, x^*)$: $k_L,k_R\get  \Gen(1^\lambda, x^*)$ and output $k_t$;
         \item $\mathsf{Ideal}(1^\lambda)$: Output $\Sim(1^\lambda, \ell)$.
     \end{itemize}
 \end{definition}
-
+Intuitively, security requires that the any individual 
+key $k_L$ or $k_R$ 
+can be simulated without knowledge
+of the special point $x^*$.
 
 \subsection{2-server PIR scheme based on DPF}
 
