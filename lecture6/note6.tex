@@ -145,12 +145,11 @@ any $x^*, x \in \{0, 1\}^{\ell}$,
 \paragraph{Security.} 
 Security requires that 
 there exists a probabilistic polynomial-time simulator $\Sim$, 
-%Given $t\in\{L,R\}$,
 such that 
 for any $\ell = \ell(\lambda)$ that is a polynomial function in $\lambda$, 
 and any $x^*\in \{0,1\}^{\ell(\lambda)}$, 
 the following experiments are computationally indistinguishable
-for either $t \in \{L, R\}$:
+for both $t  = L$ and $t = R$: 
     \begin{itemize}
         \item $\mathsf{Real}(1^\lambda, x^*)$: $k_L,k_R\get  \Gen(1^\lambda, x^*)$ and output $k_t$;
         \item $\mathsf{Ideal}(1^\lambda)$: Output $\Sim(1^\lambda, \ell)$.
