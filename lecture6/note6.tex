@@ -74,17 +74,18 @@ which takes in a short random seed and expands
 the seed to a longer pseudorandom string.
 
 \begin{definition}[PRG]
-    Let $l(\cdot)$ be a polynomial and let 
-$G:  \{0,1\}^n \rightarrow \{0,1\}^{l(n)}$ be a deterministic
+    Let $\ell(\cdot)$ be a polynomial and let 
+$G:  \{0,1\}^n \rightarrow \{0,1\}^{\ell(n)}$ be a deterministic
     polynomial-time algorithm. $G$ is a \Prg \ if it has the following properties:
     \hfill
     \begin{itemize}
-        \item \textbf{Expansion:} $\forall n, l(n) > n$.
+        \item \textbf{Expansion:} $\forall n, \ell(n) > n$.
         \item \textbf{Pseudorandomness:} $\forall$ probabilistic polynomial-time distinguisher
 $D$, there exists a negligible function ${\sf negl}(\cdot)$, 
-        $$\left|\Pr[D(r) = 1] - \Pr[D(G(s)) = 1]\right| \leq {\sf negl}(n)$$ 
-        Where $r \overset{{\scriptscriptstyle\$}}{\leftarrow} \{0,1\}^{l(n)}$ and
-        $s \overset{{\scriptscriptstyle\$}}{\leftarrow} \{0,1\}^{n}$.
+        $$\left|\Pr_{r \getr \{0, 1\}^{\ell(n)}}[D(r) = 1] - 
+\Pr_{s \getr \{0, 1\}^{n}}[D(G(s)) = 1]\right| \leq {\sf negl}(n)$$ 
+        %Where $r \overset{{\scriptscriptstyle\$}}{\leftarrow} \{0,1\}^{l(n)}$ and
+        %$s \overset{{\scriptscriptstyle\$}}{\leftarrow} \{0,1\}^{n}$.
     \end{itemize}
 \end{definition}
 
