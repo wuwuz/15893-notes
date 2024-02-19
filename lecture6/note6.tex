@@ -36,12 +36,36 @@
 \newcommand{\elaine}[1]{{\color{red} [elaine: #1]}}
 \newcommand{\mingxun}[1]{{\color{red} [mz: #1]}}
 
-\section{Distributed Point Function and 2-server PIR with $O(\log{n})$ Communication ~\cite{boyle2016function}}
+\section{Distributed Point Function and 2-server PIR with Logarithmic Communication} %~\cite{boyle2016function}}
 
-We saw that in the IT-setting, the best known upper bound on the communication of 2-server PIR scheme is by Dvir and Gopi~\cite{dvir20162}.
-The scheme achieves $n^{O(\sqrt{\log \log n / \log n})}$ communication.
-In this lecture, we see that if we are willing to assume that one-way functions (OWF) exist, we can construct a 2-server PIR scheme with $O(\log n)$ communication.
-\mingxun{I am not sure what other sschemes you want to compare to. The IT one seems to be the most appropriate one}
+In earlier lectures, we learned an information-theoretic 2-server PIR
+scheme 
+by Dvir and Gopi~\cite{dvir20162}, which
+achieves $n^{O(\sqrt{\log \log n / \log n})}$ communication per query. 
+%We saw that in the IT-setting, the best known upper bound on the communication of 2-server PIR scheme is by Dvir and Gopi~\cite{dvir20162}.
+%The scheme achieves $n^{O(\sqrt{\log \log n / \log n})}$ communication.
+In this lecture, 
+we will show how to get a 2-server PIR with logarithmic communication
+%from only one-way functions (OWF).
+relying only on a pseudorandom 
+generator (PRG). This scheme is also interesting from a practical perspective
+since in practice, we can use AES to realize
+the PRG, and modern CPUs have hardware acceleration
+for evaluating AES. 
+
+Recall that 
+from our undergraduate cryptography course, 
+we know that the existence of a PRG
+is equivalent to the existence of a one-way function (OWF).
+Also, from an earlier lecture, we learned that any 1-server
+classical PIR scheme 
+with non-trivial bandwidth implies
+Oblivious Transfer which cannot be constructed
+in a blackbox manner from OWF~\cite{IR89}. 
+Therefore, the scheme we will talk about today is in the 2-server setting.
+
+%that if we are willing to assume that one-way functions (OWF) exist, we can construct a 2-server PIR scheme with $O(\log n)$ communication.
+%\mingxun{I am not sure what other sschemes you want to compare to. The IT one seems to be the most appropriate one}
 
 \subsection{Basic Idea}
 This scheme use pseudorandom generators (PRG). In particular, PRG implies the existence of OWF and OWF implies the existence of PRG~\cite{haastad1999pseudorandom}. 
