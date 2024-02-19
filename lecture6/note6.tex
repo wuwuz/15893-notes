@@ -56,7 +56,7 @@ for evaluating AES.
 Recall that 
 from our undergraduate cryptography course, 
 we know that the existence of a PRG
-is equivalent to the existence of a one-way function (OWF).
+is equivalent to the existence of a one-way function (OWF)~\cite{haastad1999pseudorandom}.
 Also, from an earlier lecture, we learned that any 1-server
 classical PIR scheme 
 with non-trivial bandwidth implies
@@ -67,17 +67,22 @@ Therefore, the scheme we will talk about today is in the 2-server setting.
 %that if we are willing to assume that one-way functions (OWF) exist, we can construct a 2-server PIR scheme with $O(\log n)$ communication.
 %\mingxun{I am not sure what other sschemes you want to compare to. The IT one seems to be the most appropriate one}
 
-\subsection{Basic Idea}
-This scheme use pseudorandom generators (PRG). In particular, PRG implies the existence of OWF and OWF implies the existence of PRG~\cite{haastad1999pseudorandom}. 
+\subsection{Preliminary}
+%This scheme use pseudorandom generators (PRG). In particular, PRG implies the existence of OWF and OWF implies the existence of PRG~\cite{haastad1999pseudorandom}. 
+We will rely on a pseudorandom generator (PRG),
+which takes in a short random seed and expands
+the seed to a longer pseudorandom string.
 
 \begin{definition}[PRG]
-    Let $l(\cdot)$ be a polynomial and G: $ \{0,1\}^n \rightarrow \{0,1\}^{l(n)}$ be a deterministic
-    polynomial time algorithm. G is a \Prg \ if it has the following properties:
+    Let $l(\cdot)$ be a polynomial and let 
+$G:  \{0,1\}^n \rightarrow \{0,1\}^{l(n)}$ be a deterministic
+    polynomial-time algorithm. $G$ is a \Prg \ if it has the following properties:
     \hfill
     \begin{itemize}
         \item \textbf{Expansion:} $\forall n, l(n) > n$.
-        \item \textbf{Pseudorandomness:} $\forall$ PPT distinguishers D, $\exists$ negl() s.t.
-        $$\left|\Pr[D(r) = 1] - \Pr[D(G(s)) = 1]\right| \leq negl(n)$$ 
+        \item \textbf{Pseudorandomness:} $\forall$ probabilistic polynomial-time distinguisher
+$D$, there exists a negligible function ${\sf negl}(\cdot)$, 
+        $$\left|\Pr[D(r) = 1] - \Pr[D(G(s)) = 1]\right| \leq {\sf negl}(n)$$ 
         Where $r \overset{{\scriptscriptstyle\$}}{\leftarrow} \{0,1\}^{l(n)}$ and
         $s \overset{{\scriptscriptstyle\$}}{\leftarrow} \{0,1\}^{n}$.
     \end{itemize}
