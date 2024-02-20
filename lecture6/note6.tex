@@ -590,7 +590,9 @@ In practice, we can use a pseudorandom function $\PRF_k(i)$
 to decide the random bin 
 choice for each database index $i \in [n]$. 
 The key $k$ of the PRF is 
-known to both the client and the server.
+known to both the client and the server\footnote{In fact,
+it is known that an almost 
+$\log$-wise independent hash would suffice~\cite{logwise}.}.
 
 
 We shall assume that the $Q$ queried indices are independent
