@@ -269,23 +269,97 @@ Security of the PIR follows directly from the security of the DPF.
     \begin{subfigure}{0.48\textwidth}
      \includegraphics[width=\textwidth]{DPFtree.pdf}
      \caption{The binary tree structure used in DPF. Each node has a unique label. The path from the root to the $x^*$-th leaf is the ``special path''.}
+\label{fig:tree}
     \end{subfigure}   
     \hfill
      \begin{subfigure}{0.48\textwidth}
         \includegraphics[width=\textwidth]{DPF1.pdf}
         \caption{Expansion on the ``special path''. The construction enforces  the children not on the special path to have identical information, while maintaining the properties on the special path.}
+\label{fig:expand}
     \end{subfigure}
      \caption{Demonstration of DPF construction.\label{fig:dpf-demo}}
      
 \end{figure*}
 
 
-We now show how to construct an efficient DPF, based on a pseudorandom
+We now show how to construct an efficient DPF based on a pseudorandom
 generator $G$:
  $$G: \{0,1\}^{\lambda} \rightarrow  \{0,1\}^{2\lambda + 2}. $$
 The algorithm is based on a binary tree expansion idea.
 %Where the series of evaluation results can be visualized as a binary tree.
- 
+
+\paragraph{Binary tree structure.}
+Suppose we want to evaluate the DPF
+at $n$ points denoted $0, 1, \ldots,  n-1$,
+and we assume that $n$ is a power of $2$.
+
+%To evaluate the DPF at all points $\{0, 1, \ldots, n-1\}$, 
+Imagine that there is a binary tree
+as depicted in \Cref{fig:tree}.
+Each node in the tree has a name:  
+the root's name is empty, and the two children of a node $v$ 
+are named $v||0$ and $v||1$, respectively.
+Henceforth, we say that the root is at {\it depth} $0$, the leaves
+are at depth $\log n$, and so on.
+Each leaf node corresponds to a point in 
+$\{0, 1, \ldots, n-1\}$. In particular, it helps to express
+each point in binary form.
+For a point function $P_{x^*}$, 
+the path from the root to the leaf node $x^*$ 
+is called the special path highlighted in {\color{red}red}
+in the figure. 
+
+\paragraph{Key structure and evaluation algorithm.}
+The DPF's $\Gen$ algorithm outputs two keys
+$k_L = ((s_L, b_L), {\CV})$ and $k_R = ((s_R, b_R), {\CV})$,
+where 
+\begin{itemize}[leftmargin=7mm]
+\item $s_L$ and $s_R$ are both $\lambda$-bit PRG seeds;
+\item 
+$b_L, b_R\in \{0, 1\}$ are flags indicating whether 
+correction is necessary during the key expansion (see use
+of the correction vector later in the algorithm). It
+is guaranteed that $b_L \neq b_R$; 
+and 
+\item 
+$\CV = (\CV_1, \ldots, \CV_{\log n})$ 
+is a correction vector.
+\end{itemize}
+
+We will focus on the left server's perspective
+for describing the evaluation algorithm. 
+The right server's algorithm is the same except
+that its input is $k_R$ instead of $k_L$.
+Imagine that initially, the root of the tree is associated
+with the pair $(s_L, b_L)$ which comes from $k_L$. 
+Starting from the root, we will perform a key expansion
+to compute a pair $(s_L^v, b_L^v)$
+for every node $v$ in the tree.
+ Each coordinate of the correction  
+vector $\CV_1, \ldots, \CV_{\log n}$ 
+will be consumed at each different level of the tree during the key expansion
+process. 
+
+More specifically, suppose some node $v$ has the pair
+$(s_L^v, b_L^v)$, we can compute
+the corresponding values at its two children $v||0$ and $v||1$ as follows
+where $d$ denotes the depth of the two children:
+\[ 
+(s_L^{v||0}, b_L^{v||0}), (s_L^{v||1}, b_L^{v||1}) \leftarrow G(s_L^v) \oplus
+ \begin{cases} 
+    {\bf 0} & \text{ if } b_L^v = 0; \\
+    \CV_d &  \text { if } b_L^v= 1. \\
+ \end{cases}
+\]
+Notice that the correction component $\CV_d$ is only used if $b_L^v =1$.
+
+At the end of the expansion process, 
+for each leaf node $x$, let $b_L^x$ and $b_R^x$ be
+the two bits associated with the leaf $x$ 
+output by the left and right servers, respectively. 
+The outcome of the DPF at point $x$ is then $b_L^x \oplus b_R^x$. 
+
+
 \paragraph{The key structure.} The $\Gen$ algorithm outputs two keys, $k_L, k_R$. For each key $k_t$ where $t\in\{0,1\}$, it contains the ``root'' information as a $\lambda$-bit random string $s$ and a bit $b\in\{0,1\}$. It also contains $\log n$ ``correction vectors'' $\CV_1, \dots, \CV_{\log n}$, each of size $2\lambda+2$ bit. $k_L, k_R$ will share the same sets of correction vectors. 
 We will see how they are constructed later. 
 
