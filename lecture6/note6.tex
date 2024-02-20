@@ -542,18 +542,24 @@ are indistinguishable from fresh random strings.
 %\elaine{prove security?}
 
 
- \section{Batch-PIR}
+ \section{Batch PIR}
 
  \subsection{Motivation}
     So far, every PIR scheme we have seen only retrieves 1 bit at a time. 
     In many use cases, the client may want to fetch up to $Q$ database entries at the same time. 
     The navie solution is just to repeat the single-query algorithm $Q$ times.
-    For instance, to compute Q queries using a single-query PIR scheme with $O(n)$ computation, it requires $O(Qn)$ computation.
-    Batch-PIR aims to handle multiple parallel queries at the same time, reducing the
-     amortized cost.
+If each instance
+requires $O(n)$ computation for example,
+then together all $Q$ instances 
+would require $O(n \cdot Q)$ computation.
+%    For instance, to compute $Q$ queries using a single-query PIR scheme with $O(n)$ computation, it requires $O(Qn)$ computation.
+Batch PIR aims to handle a batch of queries at the same time, 
+reducing the amortized cost.
+We shall assume that $Q = o(n)$ since otherwise 
+the server can just send the entire database to the client. 
+
      
-     
-\subsection{A simple load-balancing scheme}
+\subsection{Batch PIR Based on Balls-and-Bins Hashing}
 
 Given an $n$ bit long database and $Q=o(n)$ queries, we load-balance the database into $\frac{Q}{\log Q}$ buckets -- we use a hash function to hash each database entry to a bucket (by hashing their index).
 Then, given the $Q$ queries, we again use the hash function to place the queries to the buckets. 
