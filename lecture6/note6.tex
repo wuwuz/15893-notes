@@ -591,7 +591,9 @@ In practice, we can use a pseudorandom function $\PRF_k(i)$
 to decide the random bin 
 choice for each database index $i \in [n]$. 
 The key $k$ of the PRF is 
-known to both the client and the server.
+known to both the client and the server\footnote{In fact,
+it is known that an almost 
+$\log$-wise independent hash would suffice~\cite{logwise}.}.
 
 
 We shall assume that the $Q$ queried indices are independent
@@ -634,9 +636,9 @@ the following
 As a special case, imagine that $k = \log^2 n$, 
 and $Q = \sqrt{n}$. Further, suppose that  
 ${\sf C}(m) = O(1)$, 
-and ${\sf T}(m) = O(n)$, e.g., 
+and ${\sf T}(m) = O(m)$, e.g., 
 imagine an underlying PIR scheme based on fully homomorphic
-encryption.
+encryption (FHE).
 In this case, 
 the batch PIR consumes only $\widetilde{O}(n)$  
 server computation for answering all $Q = \sqrt{n}$ queries where $\widetilde{O}(\cdot)$ hides polylogarithmic factors.
