@@ -555,13 +555,102 @@ would require $O(n \cdot Q)$ computation.
 %    For instance, to compute $Q$ queries using a single-query PIR scheme with $O(n)$ computation, it requires $O(Qn)$ computation.
 Batch PIR aims to handle a batch of queries at the same time, 
 reducing the amortized cost.
-We shall assume that $Q = o(n)$ since otherwise 
-the server can just send the entire database to the client. 
 
+We assume that $Q = o(n)$ since otherwise 
+the server can just send the entire database to the client. 
+We also assume that $Q \geq \log^c n$ for some constant $c > 1$, since if
+the batch size is too small, 
+it is not too expensive to just do $Q$-fold repetition of a PIR scheme. 
+It might help your understanding if you think of the special 
+case when $Q = \sqrt{n}$.
      
 \subsection{Batch PIR Based on Balls-and-Bins Hashing}
 
-Given an $n$ bit long database and $Q=o(n)$ queries, we load-balance the database into $\frac{Q}{\log Q}$ buckets -- we use a hash function to hash each database entry to a bucket (by hashing their index).
+\begin{fact}
+If we throw 
+$n$ balls into $n/k$ bins where $k = \omega(\log n)$,  
+then except with negligible in $n$ probability, 
+no bin will receive more than $2k$ balls.
+\label{fct:ballsbins}
+\end{fact}
+The above fact can be proven through a simple application
+of Chernoff bound, and then taking union bound over all bins.
+
+\paragraph{Batch PIR based on balls-and-bins hashing.}
+%Suppose the batch size $Q = o(n)$.
+Given an $n$-bit database, imagine that we randomly throw each element
+into $\frac{Q}{k}$ bins where %$\lambda$ is a security parameter.
+$k = \omega(\log n)$.
+The expected number of elements per bin is 
+$n k /Q$. 
+By \Cref{fct:ballsbins},
+except with negligible in $n$ probability,
+no bin will exceed $2 n k /Q$ elements.
+In practice, we can use a pseudorandom function $\PRF_k(i)$
+to decide the random bin 
+choice for each database index $i \in [n]$. 
+The key $k$ of the PRF is 
+known to both the client and the server.
+
+
+We shall assume that the $Q$ queried indices are independent
+of the coins that determine the bin choices for each database index.
+In this case, among the $Q$ queries, 
+ the expected number of queries  
+that land in each bin 
+is $k$. 
+By \Cref{fct:ballsbins}, 
+no bin will receive more than $2k$ queries.
+
+The idea of the batch PIR scheme
+is to perform $2k$ PIR queries for each bin.  
+If a bin receives strictly less than $2k$ queries, we can always
+pad with fake queries such that each bin has exactly $2k$ queries.
+We need this padding for security, 
+because the client cannot reveal  
+to the server how many queries land in each bin, otherwise
+it will leak some partial information about the 
+distribution of the queries\footnote{On the other hand, the number of database elements
+that land in each bin may be publicly known.}.
+
+
+Henceforth, let ${\sf C}(m)$ 
+and ${\sf T}(m)$
+denote the per-query bandwidth and server-computation 
+of a PIR scheme on an $m$-bit database, 
+respectively.
+The cost of the above batch
+PIR scheme for making $Q$ queries is upper bounded 
+the following
+\[
+\begin{array}{ll}
+\text{Bandwidth}: & {\sf C}(2nk/Q) \cdot 2k \cdot \frac{Q}{k}  =  O(Q) \cdot {\sf C}(2nk/Q) \\[2pt]
+\text{Server compute}: &   {\sf T}(2nk/Q) \cdot 2k  \cdot \frac{Q}{k}
+= O(Q) \cdot  {\sf T}(2nk/Q) 
+\end{array}
+\]
+
+As a special case, imagine that $k = \log^2 n$, 
+and $Q = \sqrt{n}$. Further, suppose that  
+${\sf C}(m) = O(1)$, 
+and ${\sf T}(m) = O(n)$, e.g., 
+imagine an underlying PIR scheme based on fully homomorphic
+encryption.
+In this case, 
+the batch PIR consumes only $\widetilde{O}(n)$  
+server computation for answering all $Q = \sqrt{n}$ queries where $\widetilde{O}(\cdot)$ hides polylogarithmic factors.
+It is almost as if we answered all $Q$
+queries with the computation overhead of just a single 
+query (ignoring polylogarithmic factors).
+Further, the total bandwidth
+is only $\widetilde{O}(n)$ for answering   
+all $Q = \sqrt{n}$ queries. The bandwidth is not too much worse
+than a simple $Q$-fold repetition of the underlying PIR.
+
+
+
+\ignore{
+and $Q=o(n)$ queries, we load-balance the database into $\frac{Q}{\log Q}$ buckets -- we use a hash function to hash each database entry to a bucket (by hashing their index).
 Then, given the $Q$ queries, we again use the hash function to place the queries to the buckets. 
 In expectation, each bucket will have $\log Q$ queries. 
 Based on the balls-into-bins argument, each bucket will have no more than $\lambda \log Q$ queries with $1-\negl(\lambda)$ probability.
@@ -576,7 +665,7 @@ Moreover, say the underlying single-query PIR computation cost is linear in the 
 We are making $\lambda \log Q$ queries to each bucket, and the total size of the buckets is just $n$. 
 Therefore, the total computation cost is $O(\lambda \log Q n)$. 
 So if $Q>\lambda \log Q$, this simple scheme saves computation.
-
+}
 
      
      
