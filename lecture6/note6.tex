@@ -529,7 +529,7 @@ is indistinguishable from random.
 Further, by construction, $s_L^{v||0} \xor r = s_R^{v||0}$
 where $r \getr \{0, 1\}^\lambda$ is a fresh random string
 of length $\lambda$ sampled by the client\footnote{
-Note that we first use the pseudorandomness of $G(s_R^v)$ to prove the pseudorandomness of $\CV_d$ and then use the $r$'s randomness to prove the $s_R^{v||0}$'s randomness, so there's enough randomness.}.
+Note that we first use the pseudorandomness of $G(s_R^v)$ to prove the pseudorandomness of $\CV_d$ and then use $r$'s randomness to prove $s_R^{v||0}$'s randomness, so there's enough randomness.}.
 This means that 
 given $(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$, 
 both $\CV_d$ and $s_R^{v||0}$
