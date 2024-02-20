@@ -208,61 +208,6 @@ Security of the PIR follows directly from the security of the DPF.
 
 
 \begin{figure}
-    
-    \begin{minipage}{\textwidth}
-        \begin{mdframed}
-            \begin{center}
-                \textbf{(New Version) Generation Algorithm:} $\Gen(1^\lambda, x^*)$
-            \end{center}
-            
-            \paragraph{Initialization:} 
-            %Repeat the following process $m$ times (indexed by $j$):
-            \begin{itemize}
-                \item Sample $s_0$, $s_1$ as two $\lambda$-bit random strings. 
-                \item Sample a random bit $b_0$. Let $b_1=b_0\xor 1$. 
-                \item Let $\{x^*[1],\dots,x^*[\log n]\}$ be $x^*$'s binary representation.
-                \item Store the roots: let $(\root.s_0,\root.b_0)=(s_0,b_0)$ and $(\root.s_1,\root.b_1)=(s_1,b_1)$.
-            \end{itemize}
-            
-            
-            \paragraph{Constructing correction vectors:} 
-            For $i\in \{1,\dots, \log n\}$: 
-                \begin{itemize}
-                    \item If $x^*[i]=0$, set ${\sf Keep}=L$. Otherwise, set ${\sf Keep}=R$.
-                    \item Sample a random string $r\getr \{0,1\}^{\lambda}$.
-                    \item Set $\CV_i\in\{0,1\}^{2\lambda+2}$ as an unknown variable and build the equation as follows.
-                    \begin{itemize}
-                        \item Let $s^0_L || b^0_L || s^0_R || b^0_R\get G(s_0) \xor (b_0 \cdot \CV_i)$; \hfill \textit{Expanding the first key}
-                        \item Let $s^1_L || b^1_L || s^1_R || b^1_R\get G(s_1) \xor (b_1 \cdot \CV_i)$; \hfill \textit{Expanding the second key}
-                        \item If ${\sf Keep}=L$: set the invariant as 
-                        \begin{align*}
-                            (s^0_L || b^0_L || s^0_R || b^0_R) \xor (s^1_L || b^1_L || s^1_R || b^1_R) = (r || 1 || 0^{\lambda} || 0).
-                        \end{align*}
-                       
-                        \item If ${\sf Keep}=R$: set the invariant as 
-                        \begin{align*}
-                            (s^0_L || b^0_L || s^0_R || b^0_R) \xor (s^1_L || b^1_L || s^1_R || b^1_R) = (0^{\lambda} || 0 || r || 1).
-                        \end{align*}
-                        \hfill \textit{(Force the ${\sf Keep}$ direction to be different and the other direction to be identical.)}
-                    \end{itemize}
-                    \item Solve the equation based on the invariant to get $\CV_i$. The equation is always solvable.
-                    \item Update $(s_0, b_0) \get (s^0_{\sf Keep}, b^0_{\sf Keep})$;
-                    \item Update $(s_1, b_1) \get (s^1_{\sf Keep}, b^1_{\sf Keep})$;
-                \end{itemize}  
-            \paragraph{Output:} Output $k_0, k_1$:
-            \begin{align*}
-                k_0=(\root.s_0, \root.b_0, \CV_1,\dots,\CV_{\log n}) \\
-                k_1=(\root.s_1, \root.b_1, \CV_1,\dots,\CV_{\log n})
-            \end{align*}
-            
-        \end{mdframed}
-    \end{minipage}
-    \caption{The 2-share binary DPF generation algorithm.\label{fig:DPF}}
-    %\caption{Detailed description of \name.\label{fig:single-server}}
-\end{figure}
-
-\begin{figure}
-    
     \begin{minipage}{\textwidth}
         \begin{mdframed}
             \begin{center}
@@ -272,54 +217,66 @@ Security of the PIR follows directly from the security of the DPF.
             \paragraph{Initialization:} 
             %Repeat the following process $m$ times (indexed by $j$):
             \begin{itemize}
-                \item Sample $s_0$, $s_1$ as two $\lambda$-bit random strings. 
-                \item Sample a random bit $b_0$. Let $b_1=b_0\xor 1$.
-                \item Let $k_0 = (s_0, b_0)$ and $k_1=(s_1,b_1)$;
-                \item Let $\{x^*[1],\dots,x^*[\log n]\}$ be $x^*$'s binary representation. 
+                \item Sample $s_L$, $s_R$ as two $\lambda$-bit random strings. 
+                \item Sample a random bit $b_L$. Let $b_R=b_L\xor 1$. 
+                \item Let $\{x^*[1],\dots,x^*[\log n]\}$ be $x^*$'s binary representation.
             \end{itemize}
             
             
-            \paragraph{Constructing correction vectors:} 
-            
-            
-            For $i\in \{1,\dots, \log n\}$: 
-            \begin{itemize}
-                \item Let $s^0_L || b^0_L || s^0_R || b^0_R\get G(s_0)$;
-                \item Let $s^1_L || b^1_L || s^1_R || b^1_R\get G(s_1)$;
-                \item Let $s_L || b_L || s_R || b_R=(s^0_L || b^0_L || s^0_R || b^0_R) \xor (s^1_L || b^1_L || s^1_R || b^1_R)$;
-                \item Sample $r$ as a random $\lambda$-bit random string;
-                \item If $x^*[i]=0$: 
+            \paragraph{Constructing correction vectors:}  
+            \begin{itemize}[label={},leftmargin=*]
+                %\renewcommand\labelitemi{}
+                \item Initialize $v$ to be an empty string.
+                \item For $i\in \{1,\dots, \log n\}$: 
+                \item 
                 \begin{itemize}
-                    \item Let $\CV_i =~ r ~|| (b_L \xor 1) || s_R || b_R$; \hfill 
-                    \item Update $(s_0 || b_0) \get (s^0_L || b^0_L) \xor (b_0 \cdot (r ~|| (b_L \xor 1)))$;
-                    \item Update $(s_1 || b_1) \get (s^1_L || b^1_L) \xor (b_1 \cdot (r ~|| (b_L \xor 1)))$;
-                    %\item $(s_1 || b_1) \get (s^1_L || b^1_L) \xor (b_1 \cdot (r ~|| (b^*_L \xor 1)))$;
-                \end{itemize}
-                \item If $x^*[i]=1$: 
-                \begin{itemize}
-                    \item Let $\CV_i = s_L || b_L || ~r ~|| (b_R \xor 1)$;\hfill %\textit{If the path goes right}; 
-                    \item Update $(s_0 || b_0) \get (s^0_R || b^0_L) \xor (b_0 \cdot (r ~|| (b_R \xor 1)))$;
-                    \item Update $(s_1 || b_1) \get (s^1_R || b^1_R) \xor (b_1 \cdot (r ~|| (b_R \xor 1)))$;
-                \end{itemize}
-                %\item Expand $(s_0, b_0), (s_1, b_1)$ to their children as the same as the expansion algorithm, using $\CV_i$. Update $(s_0, b_0), (s_1, b_1)$ by replacing them with their children's pairs (only the pairs on the special path).  
+                    %\item If $x^*[i]=0$, set ${\sf Keep}=L$. Otherwise, set ${\sf Keep}=R$.
+                    \item Sample a random string $r\getr \{0,1\}^{\lambda}$.
+                    \item Set $\CV_i\in\{0,1\}^{2\lambda+2}$ as an unknown variable and build the equation as follows.
+                    \begin{itemize}
+                        \item Let $s^{v||0}_L || b^{v||0}_L || s^{v||1}_L || b^{v||1}_L\get G(s^v_L) \xor (b^v_L \cdot \CV_i)$; \hfill \textit{Expansion on the LHS}
+                        \item Let $s^{v||0}_R || b^{v||0}_R || s^{v||1}_R || b^{v||1}_R\get G(s^v_R) \xor (b^v_R \cdot \CV_i)$; \hfill \textit{Expansion on the RHS}
+                        \item If $x^*[i]=0$: set the invariant as 
+                        \begin{align*}
+                            (s^{v||0}_L || b^{v||0}_L || s^{v||1}_L || b^{v||1}_L) \xor (s^{v||0}_R || b^{v||0}_R || s^{v||1}_R || b^{v||1}_R) = (r || 1 || 0^{\lambda} || 0).
+                        \end{align*}
+                        
+                        \item If $x^*[i]=1$: set the invariant as 
+                        \begin{align*}
+                            (s^{v||0}_L || b^{v||0}_L || s^{v||1}_L || b^{v||1}_L) \xor (s^{v||0}_R || b^{v||0}_R || s^{v||1}_R || b^{v||1}_R) = (0^{\lambda} || 0 || r || 1).
+                        \end{align*}
+                        \hfill \textit{(Force the $x^*[i]$ direction to be different and the other direction to be identical.)}
+                    \end{itemize}
+                    \item Solve the equation based on the invariant to get $\CV_i$. The equation is always solvable.
+                    \item Let $v\get v||x^*[i]$.
+                \end{itemize}  
             \end{itemize}
-            
-            \paragraph{Output:}
-            \begin{itemize}
-                \item Attach $\CV_1,\dots,\CV_{\log n}$ to $k_0$ and $k_1$.
-                \item Output $k_0,k_1$.
-            \end{itemize}
+            \paragraph{Output:} Output $k_L, k_R$ that include the strings and bits on the root and the shared correction vectors:
+            \begin{align*}
+                k_L=(s_L, b_L, \CV_1,\dots,\CV_{\log n}) \\
+                k_R=(s_R, b_R, \CV_1,\dots,\CV_{\log n})
+            \end{align*}
             
         \end{mdframed}
     \end{minipage}
-    \caption{The 2-share binary DPF generation algorithm.\label{fig:DPF}}
+    \caption{The 2-way binary DPF generation algorithm.\label{fig:DPF}}
     %\caption{Detailed description of \name.\label{fig:single-server}}
 \end{figure}
 
 \begin{figure*}
     \centering
-    \includegraphics[scale=0.4]{scribimg_dpftree.png}
-    \caption{An example of the DPF construction.\label{fig:example-DPF}}
+
+    \begin{subfigure}{0.48\textwidth}
+     \includegraphics[width=\textwidth]{DPFtree.pdf}
+     \caption{The binary tree structure used in DPF. Each node has a unique label. The path from the root to the $x^*$-th leaf is the ``special path''.}
+    \end{subfigure}   
+    \hfill
+     \begin{subfigure}{0.48\textwidth}
+        \includegraphics[width=\textwidth]{DPF1.pdf}
+        \caption{Expansion on the ``special path''. The construction enforces  the children not on the special path to have identical information, while maintaining the properties on the special path.}
+    \end{subfigure}
+     \caption{Demonstration of DPF construction.\label{fig:dpf-demo}}
+     
 \end{figure*}
 
 
@@ -329,7 +286,7 @@ generator $G$:
 The algorithm is based on a binary tree expansion idea.
 %Where the series of evaluation results can be visualized as a binary tree.
  
-\paragraph{The key structure.} The $\Gen$ algorithm outputs two keys, $k_0, k_1$. For each key $k_t$ where $t\in\{0,1\}$, it contains the ``root'' information as a $\lambda$-bit random string $s$ and a bit $b\in\{0,1\}$. It also contains $\log n$ ``correction vectors'' $\CV_1, \dots, \CV_{\log n}$, each of size $2\lambda+2$ bit. $k_0, k_1$ will share the same sets of correction vectors. 
+\paragraph{The key structure.} The $\Gen$ algorithm outputs two keys, $k_L, k_R$. For each key $k_t$ where $t\in\{0,1\}$, it contains the ``root'' information as a $\lambda$-bit random string $s$ and a bit $b\in\{0,1\}$. It also contains $\log n$ ``correction vectors'' $\CV_1, \dots, \CV_{\log n}$, each of size $2\lambda+2$ bit. $k_L, k_R$ will share the same sets of correction vectors. 
 We will see how they are constructed later. 
 
 
@@ -337,45 +294,61 @@ We will see how they are constructed later.
 Given a key containing $s,b$ and $\CV_1,\dots,\CV_{\log n}$, the evaluation algorithm is as follows.
 We consider a binary tree with $\log n + 1$ levels and $n$ leaves (assume $n$ is a power of 2). 
 The root is on the $0$-th level and the leaves are on the $\log n$-th level.
-Each node contains a $\lambda$-bit (pseudo)random string $ s \in \{0,1\}^{\lambda}$ and a bit $b \in \{0,1\}$. 
-The root's string and bit are included in the description of the key.
-For all other nodes, their strings and bits will be decided by their parents.
-Given a node on level $(i-1)$, suppose now we want to decide the bits and the strings of its children (on level $i$). 
-We only need the following one-line algorithm:
- $$ s_{L} || b_{L} || s_{R} || b_{R} \leftarrow G(s) \oplus
+For the $2^i$ nodes on the $i$-th level, we use $i$-bit to label them: the labels are from $\underbrace{0,\dots,0}_{i~\text{bits}}$ to $\underbrace{1,\dots,1}_{i~\text{bits}}$.
+The root is labeled with an empty string.
+See Figure~\ref{fig:dpf-demo} for the demonstration.
+Now given the string $s^v$ and the bit $b^v$ on a node $v\in \{0,1\}^{i-1}$ on the level $i-1$, the strings and the bits on the nodes $v||0$ and $v||1$ are:
+\[ 
+s^{v||0} || b^{v||0} || s^{v||1} || b^{v||1} \leftarrow G(s^v) \oplus
  \begin{cases} 
-    0 & b = 0; \\
-    \CV_i & b = 1. \\
- \end{cases}$$
-That is, $s_{L}, b_{L}$ are the string and bit on its left child, and $s_{R}, b_{R}$ are the string and bit on its right child.
-Finally, the bit on the $i$-th leaf will be $\Eval(k, i)$.
+    0 & b^v = 0; \\
+    \CV_i & b^v= 1. \\
+ \end{cases}
+\]
+That is, $s^{v||0}, b^{v||0}$ are the string and bit on its left child, and $s^{v||1}, b^{v||1}$ are the string and bit on its right child.
+We first use the PRG to expand $s^v$, then if $b^v=1$, we will apply the correction vector to the evaluation results. 
+Finally, given the evaluation point $i\in[n]$, the bit on the $i$-th leaf will be $\Eval(k, i)$.
 
 Notice that if we only want to learn $\Eval(k, i)$ for a particular $i$, the computation cost will be $O(\log n)$ calls to the PRG, because we can focus on the path from the root to the $i$-th leaf and ignore other nodes.
 %And on the path we only do $\log n$ expansions.
-However, if we want to evaluate $\Eval(k, i)$ for all $i\in[n]$, the computation cost will be $O(n)$ because we can simply do the expansion on the whole tree. 
+However, if we want to evaluate $\Eval(k, i)$ for all $i\in[n]$, the computation cost will be $O(n)$ because we can simply do the evaluation on the whole tree. 
 
 
-\paragraph{Generation Algorithm.} The generation algorithm needs to generate two correlated keys, such that when we look at the bit at the $x$-th leaves (say $b^0_{x}$ and $b^1_{x}$) on the trees expnaded by $k_0$ and $k_1$, it must that $b^0_{x}\xor b^1_{x}=P_{x^*}(x)$. In fact, we want to ensure the following stronger properties.
-Say on a particular node, we denote the information expanded by $k_0$ and $k_1$ as $(s_0,b_0)$ and $(s_1,b_1)$, respectively.
+\paragraph{Generation Algorithm.} The generation algorithm needs to generate two correlated keys, such that when we look at the bit at the $x$-th leaves on the left server and the right server, (say $b^{x}_{L}$ and $b^{x}_{R}$), it must that $b^{x}_{L}\xor b^{x}_{R}=P_{x^*}(x)$. In fact, we want to ensure the following stronger properties.
+Say on a particular node $v$, we denote the information evaluated by the left server and the right server as $(s^v_L,b^v_L)$ and $(s^v_R,b^v_R)$, respectively.
+We also denote the path from the root to the $x^*$-th leaf as the ``special path''.
+
 \begin{enumerate}
-    \item If the node is on the ``special path'' (i.e., the path from the root to the $x^*$-th leaf), then $b_0\ne b_1$, and $s_0$ and $s_1$ are independent.
+    \item If the node $v$ is on the special path (i.e., $v$ is a prefix of the binary representation of $x^*$), then $b^v_L\ne b^v_R$, and $s^v_L$ and $s^v_R$ are independent.
     
-    \item Otherwise, $b_0=b_1$ and $s_0=s_1$.
+    \item Otherwise, $(s^v_L,b^v_L)=(s^v_R,b^v_R)$.
 \end{enumerate}
 
-The properties also hold for the leaf nodes, which is sufficient to prove the correctness of the DPF.
+The properties also hold for the leaf nodes, which is sufficient to prove the correctness of the DPF. 
 We now see the how to ensure these properties.
 We have the first lemma, which can be proved by a simple induction argument.
 
 \begin{lemma}
-    If on some particular node, $b_0=b_1$ and $s_0=s_1$, then the subtrees expanded based on $(s_0,b_0)$ and $(s_1,b_1)$ will be identical, regardless of $CV_1,\dots,CV_{\log n}$.
+    If on some particular node $v$, $(s^v_L,b^v_L)=(s^v_R,b^v_R)$, then the information on the subtrees of $v$ will be identical, regardless of $\CV_1,\dots,\CV_{\log n}$. That is, for every $v'$ that has prefix $v$, $(s^{v'}_L,b^{v'}_L)=(s^{v'}_R,b^{v'}_R)$. 
 \end{lemma}
 
-This lemma shows that we only need to focus on the ``special path''. We can sample the roots first by sampling two random strings $s_0,s_1$ and let $b_0$ and $b_1$ be two different bits. 
+This lemma shows that we only need to focus on the ``special path''. We can sample the roots first by sampling two random strings $s_L,s_R$ and let $b_L$ and $b_R$ be two different bits. 
 Then, we can just ``simulate'' the expansion process on the special path, and then set up the correction vector according to the target properties. 
-Since on the $i$-th level of the special path, there will be only one side affected by the correction vector (because the bits are different).
-Therefore, we can always set the correction vector to ensure that after applying the correction vector, the children on the special path still have different bits and independent random strings, while the children deviating from the path will become identical.
-The algorithm is presented in Figure~\ref{fig:DPF} and an example is presented in Figure~\ref{fig:example-DPF}.
+Given a node $v$ on the special path ($v$ is a prefix of $x^*$), say $v$ is on the $i-1$ level.
+Now assuming the correction vector $\CV_i$ is a \textit{variable} to be determined.
+We can still following the evaluation algorithm, but all the expansion results, $s^{v||0}_L, b^{v||0}_L, s^{v||1}_L, b^{v||1}_L$, $s^{v||0}_R, b^{v||0}_R, s^{v||1}_R, b^{v||1}_R$, will be temporally some linear expressions of the variable $\CV_i$.
+Then, we can enforce the invariants.
+Say $v||0$ is still the prefix of $x$ (the other case is symmetric). We require that 
+\begin{itemize}
+    \item \textit{Invariant on the special path.} 1) The xor-sum of $s^{v||0}_L$ and $s^{v||0}_R$ is a freshly sample random string $r$ (ensuring they are independent); 2) $b^{v||0}_L$ and $b^{v||0}_L$ are different.
+    \item \textit{Invariant on other nodes.} $(s^{v||1}_L,b^{v||1}_L)=(s^{v||1}_R,b^{v||1}_R)$.
+\end{itemize}
+Now these invariants set up a simple linear equation and we can easily solve the value of $\CV_i$.
+The equation is always solvable because $b^v_L$ and $b^v_R$ are different.
+Thus, the $\CV_i$ will always and only affect the expansion on the one side.
+Note that the second invariant just enforces that the whole subtree of $v||1$ will be identical, and we just need to go to the child $v||0$ and derive $\CV_{i+1}$ based on $s^{v||0}_L, b^{v||0}_L$ and $s^{v||0}_R, b^{v||0}_R$.
+We run this algorithm from level $1$ to level $\log n$ and get $\CV_1,\dots,\CV_{\log n}$.
+The algorithm is presented in Figure~\ref{fig:DPF} and an example is presented in Figure~\ref{fig:dpf-demo}.
 
 
 \paragraph{Analysis.}
