@@ -325,6 +325,8 @@ are satisfied:
                     \begin{enumerate}
                         \item[(1)] Let $(s^{v||0}_L, b^{v||0}_L), (s^{v||1}_L, b^{v||1}_L) \get G(s^v_L) \xor (b^v_L \cdot \CV_d)$; \hfill \textit{//~Expansion on the LHS}
                         \item[(2)] Let $(s^{v||0}_R, b^{v||0}_R), (s^{v||1}_R, b^{v||1}_R) \get G(s^v_R) \xor (b^v_R \cdot \CV_d)$; \hfill \textit{//~Expansion on the RHS}
+
+\vspace{2pt}
                         \item[(3a)] If $x^*[d]=0$: add the following constraint: 
                         \begin{align*}
                             (s^{v||0}_L, b^{v||0}_L, s^{v||1}_L, b^{v||1}_L) \xor (s^{v||0}_R, b^{v||0}_R, s^{v||1}_R, b^{v||1}_R) = (r, 1, 0^{\lambda}, 0).
@@ -484,6 +486,25 @@ The correctness can be verified by
 inductively checking that the aforementioned invariants hold
 at every level.  
 %doing an induction proof from level $1$ to level $\log n$.
+
+Security can also be proven inductively.
+For the base case, observe that the terms $(s_L, b_L)$  are random
+and independent of $s_R$. 
+%Now, suppose that $(s_L, b_L, \CV_1, \ldots, \CV_i)$
+%are 
+
+To see left-server security, observe
+that each $\CV_d = 
+(s_L^{v||0}, b_L^{v||0}, s_L^{v||1}, b_L^{v||1}) \xor 
+(s_R^{v||0}, b_R^{v||0}, s_R^{v||1}, b_R^{v||1}) \xor 
+\mu$
+where $\mu = (r, 1, 0, 0)$ or $\mu = (0, 0, r, 1)$,
+and $v$ is the node at depth $d-1$ on the special path.
+Given $(s_L, b_L)$ which is part of the left server's key,
+the terms $(s_R^{v||0}, b_R^{v||0}, s_R^{v||1}, b_R^{v||1})$
+are indistinguishable from random. 
+
+
 The security analysis is referred to~\cite{boyle2016function}. 
 \elaine{prove security?}
 It is not hard to see that 
