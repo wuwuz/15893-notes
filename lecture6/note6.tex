@@ -508,8 +508,9 @@ since the other direction is symmetric.
 Let $v = x^*[:d-1]$, observe
 that 
 \[\CV_d = 
-(s_L^{v||0}, b_L^{v||0}, s_L^{v||1}, b_L^{v||1}) \xor 
-(s_R^{v||0}, b_R^{v||0}, s_R^{v||1}, b_R^{v||1}) \xor 
+G(s^v_L) \xor G(s^v_R) \xor  
+%(s_L^{v||0}, b_L^{v||0}, s_L^{v||1}, b_L^{v||1}) \xor 
+%(s_R^{v||0}, b_R^{v||0}, s_R^{v||1}, b_R^{v||1}) \xor 
 %\begin{cases}
 (r, 1, 0, 0) %& \text{ if } x^*[d] = 0 \\
 %(0, 0, r, 1) & \text{ if } x^*[d] = 1
@@ -518,16 +519,16 @@ that
 By our induction hypothesis, given $(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$,
 $s_R^v$ is indistinguishable from random.
 Due to the security of the PRG, 
-$(s_R^{v||0}, b_R^{v||0}, s_R^{v||1}, b_R^{v||1}) = G(s_R^v)$ 
+$G(s_R^v)$ 
 is indistinguishable from random 
 given $(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$.
 Therefore, given 
 $(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$,
 $\CV_d$ 
 is indistinguishable from random.
-Further, note that $s_R^{v||0} = \CV_d[:\lambda] \xor r$
+Further, by construction, $s_L^{v||0} \xor r = s_R^{v||0}$
 where $r \getr \{0, 1\}^\lambda$ is a fresh random string
-of length $\lambda$.
+of length $\lambda$ sampled by the client.
 This means that 
 given $(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$, 
 both $\CV_d$ and $s_R^{v||0}$
