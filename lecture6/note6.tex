@@ -238,7 +238,7 @@ Henceforth, we say that the root is at {\it depth} $0$, the leaves
 are at depth $\log n$, and so on.
 Each leaf node corresponds to a point in 
 $\{0, 1, \ldots, n-1\}$. In particular, it helps to express
-each point in binary form.
+each point in a binary representation.
 For a point function $P_{x^*}$, 
 the path from the root to the leaf node $x^*$ 
 is called the special path highlighted in {\color{red}red}
@@ -406,6 +406,9 @@ the aforementioned invariants.
 
 The detailed key generation algorithm is specified
 in \Cref{fig:gen}.
+It is not hard to see that 
+the key size is $\lambda+1+\log n\cdot (2\lambda+2)=O_\lambda(\log n)$.
+
 
 
 %\paragraph{The key structure.} The $\Gen$ algorithm outputs two keys, $k_L, k_R$. For each key $k_t$ where $t\in\{0,1\}$, it contains the ``root'' information as a $\lambda$-bit random string $s$ and a bit $b\in\{0,1\}$. It also contains $\log n$ ``correction vectors'' $\CV_1, \dots, \CV_{\log n}$, each of size $2\lambda+2$ bit. $k_L, k_R$ will share the same sets of correction vectors. 
@@ -485,31 +488,58 @@ The algorithm is presented in Figure~\ref{fig:DPF} and an example is presented i
 The correctness can be verified by 
 inductively checking that the aforementioned invariants hold
 at every level.  
+
 %doing an induction proof from level $1$ to level $\log n$.
 
 Security can also be proven inductively.
+We prove left-server security below since right-server security is symmetric.
+Henceforth, we use $x^*[:d]$ to denote the first $d$ bits of the
+binary representation of $x^*$.
 For the base case, observe that the terms $(s_L, b_L)$  are random
 and independent of $s_R$. 
-%Now, suppose that $(s_L, b_L, \CV_1, \ldots, \CV_i)$
-%are 
-
-To see left-server security, observe
-that each $\CV_d = 
+Now, suppose that 
+the joint distribution of $(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$
+and  $s_R^{x^*[:d-1]}$ are indistinguishable from random. 
+We want to inductively prove that 
+the joint distribution of $(s_L, b_L, \CV_1, \ldots, \CV_d)$
+and  $s_R^{x^*[:d]}$ are indistinguishable from random.
+Without loss of generality, assume that $x^*[d] = 0$
+since the other direction is symmetric.
+Let $v = x^*[:d-1]$, observe
+that 
+\[\CV_d = 
 (s_L^{v||0}, b_L^{v||0}, s_L^{v||1}, b_L^{v||1}) \xor 
 (s_R^{v||0}, b_R^{v||0}, s_R^{v||1}, b_R^{v||1}) \xor 
-\mu$
-where $\mu = (r, 1, 0, 0)$ or $\mu = (0, 0, r, 1)$,
-and $v$ is the node at depth $d-1$ on the special path.
-Given $(s_L, b_L)$ which is part of the left server's key,
-the terms $(s_R^{v||0}, b_R^{v||0}, s_R^{v||1}, b_R^{v||1})$
-are indistinguishable from random. 
+%\begin{cases}
+(r, 1, 0, 0) %& \text{ if } x^*[d] = 0 \\
+%(0, 0, r, 1) & \text{ if } x^*[d] = 1
+%\end{cases}
+\]
+By our induction hypothesis, given $(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$,
+$s_R^v$ is indistinguishable from random.
+Due to the security of the PRG, 
+$(s_R^{v||0}, b_R^{v||0}, s_R^{v||1}, b_R^{v||1}) = G(s_R^v)$ 
+is indistinguishable from random 
+given $(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$.
+Therefore, given 
+$(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$,
+$\CV_d$ 
+is indistinguishable from random.
+Further, note that $s_R^{v||0} = \CV_d[:\lambda] \xor r$
+where $r \getr \{0, 1\}^\lambda$ is a fresh random string
+of length $\lambda$.
+This means that 
+given $(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$, 
+both $\CV_d$ and $s_R^{v||0}$
+are indistinguishable from fresh random strings.
+
+%Given $(s_L, b_L)$ which is part of the left server's key,
+%the terms $(s_R^{v||0}, b_R^{v||0}, s_R^{v||1}, b_R^{v||1})$
+%are indistinguishable from random. 
 
 
-The security analysis is referred to~\cite{boyle2016function}. 
-\elaine{prove security?}
-It is not hard to see that 
-the key size is $\lambda+1+\log n\cdot (2\lambda+2)=O_\lambda(\log n)$.
-
+%The security analysis is referred to~\cite{boyle2016function}. 
+%\elaine{prove security?}
 
 
  \section{Batch-PIR}
