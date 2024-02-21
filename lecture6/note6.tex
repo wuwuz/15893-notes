@@ -185,6 +185,8 @@ Security of the PIR follows directly from the security of the DPF.
 
 
 \section{DPF Construction}
+We describe the elegant DPF construction of 
+Boyle, Gilboa, and Ishai~\cite{boyle2016function}.
 
 \begin{figure*}[t]
     \centering
@@ -496,8 +498,9 @@ We prove left-server security below since right-server security is symmetric.
 Henceforth, we use $x^*[:d]$ to denote the first $d$ bits of the
 binary representation of $x^*$.
 Due to the security of the pseudorandom generator $G$,  
-it suffices to prove that if $G(\cdot)$
-were replaced with a random function, 
+it suffices to prove that if $G(s)$
+outputs a truly random string 
+given a random seed $s$, 
 then $(s_L, b_L, \CV_1, \ldots, \CV_d)$
 is a uniform random string. 
 
@@ -516,9 +519,9 @@ Without loss of generality, assume that $x^*[d] = 0$
 since the other direction is symmetric.
 Let $v = x^*[:d-1]$. 
 By our induction hypothesis, given $(s_L, b_L, \CV_1, \ldots, \CV_{d-1})$,
-$s_R^v$ is random.
-If $G$ is a random function, then $G(s_R^v)$ is random 
-given $(s_L$, $b_L$, $\CV_1$, $\ldots$, $\CV_{d-1})$.
+$s_R^v$ is random, and given our assumption on $G$,  
+$G(s_R^v)$ is also random. 
+%given $(s_L$, $b_L$, $\CV_1$, $\ldots$, $\CV_{d-1})$.
 By construction, we have 
 \begin{align*}
 s_R^{v||0} & = G(s_R^v)[:\lambda] \xor b_R^v \cdot \CV_d[:\lambda]\\
