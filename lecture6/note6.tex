@@ -84,7 +84,7 @@ By definition, $P_x(x) = 1$ and $P_x(x') = 0$ for $x' \neq x$.
 %    is defined by $P_{x^*}(x^*) = 1 \ and \ P_{x^*}(x) = 0$ for all $x \neq x^*$.
 \end{definition}
 
-Boyle, Gilboa and Ishai~\cite{boyle2016function} introduced the concept of a distributed point function. 
+Gilboa and Ishai~\cite{dpf} introduced the concept of a distributed point function. 
 A distributed point function
 is a functional secret-sharing of a point function.
 In this lecture, 
@@ -185,8 +185,8 @@ Security of the PIR follows directly from the security of the DPF.
 
 
 \section{DPF Construction}
-We describe the elegant DPF construction of 
-Boyle, Gilboa, and Ishai~\cite{boyle2016function}.
+%We describe the elegant DPF construction of 
+%Boyle, Gilboa, and Ishai~\cite{boyle2016function}.
 
 \begin{figure*}[t]
     \centering
@@ -222,7 +222,9 @@ from two independent random strings.
 We now show how to construct an efficient DPF based on a pseudorandom
 generator $G$:
  $$G: \{0,1\}^{\lambda} \rightarrow  \{0,1\}^{2\lambda + 2}. $$
-The algorithm is based on a binary tree expansion idea.
+%The algorithm is based on a binary tree expansion idea.
+The algorithm is due to 
+Boyle, Gilboa, and Ishai~\cite{boyle2016function}.
 %Where the series of evaluation results can be visualized as a binary tree.
 
 \paragraph{Binary tree structure.}
