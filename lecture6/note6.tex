@@ -17,7 +17,7 @@
 
 \renewcommand{\root}{\ensuremath{{\sf root}}}
 
-\section{Distributed Point Function and 2-server PIR with Logarithmic Communication} %~\cite{boyle2016function}}
+%\section{Distributed Point Function and 2-server PIR with Logarithmic Communication} %~\cite{boyle2016function}}
 
 In earlier lectures, we learned an information-theoretic 2-server PIR
 scheme 
@@ -48,7 +48,7 @@ Therefore, the scheme we will talk about today is in the 2-server setting.
 %that if we are willing to assume that one-way functions (OWF) exist, we can construct a 2-server PIR scheme with $O(\log n)$ communication.
 %\mingxun{I am not sure what other sschemes you want to compare to. The IT one seems to be the most appropriate one}
 
-\subsection{Preliminary: Pseudorandom Generator}
+\section{Preliminary: Pseudorandom Generator}
 %This scheme use pseudorandom generators (PRG). In particular, PRG implies the existence of OWF and OWF implies the existence of PRG~\cite{haastad1999pseudorandom}. 
 We will rely on a pseudorandom generator (PRG),
 which takes in a short random seed and expands
@@ -71,7 +71,7 @@ such that
     \end{itemize}
 \end{definition}
 
-\subsection{Distributed Point Function}
+\section{Distributed Point Function}
 
 \begin{definition}[Point function]
 A point function parametrized by some point $x \in \{0, 1\}^\ell$ 
@@ -141,7 +141,7 @@ key $k_L$ or $k_R$
 can be simulated without knowledge
 of the special point $x^*$.
 
-\subsection{DPF $\Longrightarrow$ 2-Server PIR}
+\section{DPF $\Longrightarrow$ 2-Server PIR}
 
 Given a DPF scheme henceforth denoted $(\DpfGen, \DpfEval)$, 
 we can construct 
@@ -184,7 +184,7 @@ Security of the PIR follows directly from the security of the DPF.
 
 
 
-\subsection{DPF Construction}
+\section{DPF Construction}
 
 \begin{figure*}[t]
     \centering
@@ -542,9 +542,10 @@ are indistinguishable from fresh random strings.
 %\elaine{prove security?}
 
 
+\ignore{
  \section{Batch PIR}
 
- \subsection{Motivation}
+ \section{Motivation}
     So far, every PIR scheme we have seen only retrieves 1 bit at a time. 
     In many use cases, the client may want to fetch up to $Q$ database entries at the same time. 
     The navie solution is just to repeat the single-query algorithm $Q$ times.
@@ -564,7 +565,7 @@ it is not too expensive to just do $Q$-fold repetition of a PIR scheme.
 It might help your understanding if you think of the special 
 case when $Q = \sqrt{n}$.
      
-\subsection{Batch PIR Based on Balls-and-Bins Hashing}
+\section{Batch PIR Based on Balls-and-Bins Hashing}
 
 \begin{fact}
 If we throw 
@@ -671,10 +672,45 @@ So if $Q>\lambda \log Q$, this simple scheme saves computation.
 
      
      
-\subsection{Cuckoo Hashing based scheme~\cite{angel2018pir}}
+\section{Cuckoo Hashing Based Scheme}
 
-Angel et al.~\cite{angel2018pir} proposed SealPIR that uses cuckoo hashing to do batch PIR.
-    
+We can use Cuckoo hashing~\cite{cuckoo} to 
+further improve polylogarithmic factors.
+
+\paragraph{Background on Cuckoo hashing.}
+In Cuckoo hashing, we can hash $m$ distinct items 
+from some universe $U$ 
+into two tables denoted $T$ and $T'$, each of size $m$.
+Let $h(\cdot), h'(\cdot): U \rightarrow [m]$ 
+be two random hash functions. In practice, we can use a PRF
+to instantiate these two hash functions. 
+
+Initially, the table is empty. To insert an item $x \in U$, 
+we first check to see if $T[h(x)]$ is empty. If so, place $x$ there. 
+If not, we evict the item $y$ currently residing
+in $T[h(x)]$, replace it with $x$, and attempt
+to place $y$ in $T'[h'(y)]$. 
+If $T'[h'(y)]$ happens to be free, then we are done. 
+Otherwise, we evict the item $z$  
+currently occupying $T'[h'(y)]$, replace it with $y$, and attempt to place
+$z$ in $T[h(z)]$, and this goes on.
+If there is a cycle during this eviction process, we place
+an item in the cycle  
+in a {\it stash}.
+
+
+Kirsch, Mitzenmacher, and Wieder~\cite{cuckoostash} proved the following theorem:
+\begin{theorem}[\cite{cuckoostash}]
+Suppose that $h$ and $h'$ are random functions.
+Then, 
+the probability that the stash exceeds $s$ is at most
+$m^{c s}$
+for some suitable constant $c > 0$.
+\end{theorem}
+
+
+%proposed SealPIR that uses cuckoo hashing to do batch PIR.
+\ignore{    
     \paragraph{Cuckoo Hashing}
     \begin{definition}[Cuckoo hashing]
         Given $n$ balls, $b$ buckets, and $w$
@@ -687,9 +723,46 @@ that bucket ($x_{\text{old}}$), place $x$ in the bucket, and re-insert $x_{\text
 re-inserting $x_{\text{old}}$ causes another ball to be removed, this process
 continues recursively until we finish the insertion or a maximum number of iterations is achieved.
     \end{definition} \
+}
     
 \paragraph{Batch PIR based on Cuckoo Hashing.}   
-The scheme is as follows.
+Angel et al.~\cite{angel2018pir} 
+proposed the following batch PIR scheme based on Cuckoo hashing. 
+Let $Q$ be the batch size. 
+
+\begin{itemize}[leftmargin=7mm]
+\item 
+{\it Hashing the queries.}
+Given a batch of $Q$ queries, the
+client chooses two hash functions 
+ $h(\cdot): [n] \rightarrow [Q]$ and 
+$h'(\cdot): [n] \rightarrow [Q+1 \ldots 2Q]$. 
+It hashes the $Q$ queries 
+into a table $T$ of size $2Q$ using $h$ and $h'$, 
+and let $S$ be the resulting stash.  
+
+The client sends the description of $h$ and $h'$ to the server.
+In practice, we can use a PRF to realize $h$ and $h'$, so the client
+can choose two random PRF keys 
+and send them to the server.
+
+\item 
+{\it Hashing the database.}
+Given a database $\DB$ with $n$ bits, 
+for each index $i \in [n]$, %into two out of a total of $2Q$ bins. 
+the server places the pair $(i, \DB[i])$
+into two bins indexed $h(i)$ and $h'(i)$, respectively.
+
+\item 
+For each $i \in [2Q]$, the client performs 
+a single PIR query with the server for bin $i$. 
+\elaine{the server's input is...}
+Specifically, if $T[i]$ is occupied, then  
+the client uses the input $T[i]$ for the $i$-th PIR instance. 
+If $T[i]$ is empty, the client uses the index $1$ for the $i$-th PIR instance. 
+
+\end{itemize}
+
 \begin{itemize}
     \item \textbf{Serer encoding.} Given an $n$ bit database, $b$ buckets, and $w$ hash functions, we hash each entry in the database (using their index as the key) to all $w$ candidate buckets and store it there.
     This results in a encoded database that each original entry is replicated $w$ times.
@@ -724,7 +797,7 @@ Then, the computation cost for the $Q$ queries are just $(w+\lambda)n$.
     \caption{An example of the cuckoo hashing based batch PIR. \label{fig:sealpir}}
 \end{figure*}
 
-
+}
 
 
 
@@ -767,7 +840,7 @@ into multiple sub-databases that can be queried simultaneously with PIR. Informa
 A formal definition and construction using reverse hashing can be found on page 6 of ~\cite{angel2018pir}
 
 
-\subsection{The SealPIR scheme}
+\section{The SealPIR scheme}
 
 \paragraph{Intuition} The main idea is to build a \Pbc \ over the PIR database. The only major modifications
 are to GenSchedule and Decode, where the equeries must be modified to be PIR queries. While failures in the query scheduling phase are
