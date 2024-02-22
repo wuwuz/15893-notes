@@ -91,10 +91,10 @@ We require that for any $\DB \in \{0, 1\}^n$, any query $i \in [n]$,
 correctness holds with probability $1$.
 Let ${\sf view}_S(\DB, i)$ 
 denote the server's view during the query phase 
-when we run the PIR scheme (i.e., both the preprocessing and query phases)
-over $\DB$ and $i$.
+when we run the PIR scheme (i.e., preprocessing followed by the query protocol)
+over inputs $\DB$ and $i$.
 For security, we require 
-that for any $\DB \in \{0, 1\}^n$, $i, j \in [n]$,  
+that for any $\DB \in \{0, 1\}^n$, any $i, j \in [n]$,  
 ${\sf view}_S(\DB, i) \approx {\sf view}_S(\DB, j)$
 where $\approx$ means computational indistinguishability.
 
