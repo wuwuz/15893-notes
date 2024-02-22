@@ -57,21 +57,49 @@ We will borrow techniques for proving time-space tradeoff
 from the complexity theory literature.
 
 Specifically, we consider a 1-server preprocessing PIR scheme 
-in which 
-the client and the server 
-first performs some preprocessing over the database $\DB\in \{0, 1\}^n$.
-The preprocessing can perform  
-an unbounded amount 
-of computation, at the end of which 
-the client obtains an $S$-bit hint
-at the end of the preprocessing, and the server stores only the original database
-itself, and no extra information. 
-Then, the client engages in a query protocol with the server,
-to learn the database at some index  
-$i \in [n]$.
+with the following syntax:
+\begin{itemize}[leftmargin=7mm]
+\item {\it Preprocessing algorithm.}
+Suppose there is an unbounded  %, possibly randomized
+preprocessing function denoted 
+${\sf Prep} : \{0, 1\}^n \rightarrow \{0, 1\}^S$ 
+that takes in an $n$-bit database $\DB\in\{0, 1\}^n$ as input,
+and outputs an $S$-bit hint string denoted $h$.
+\item 
+{\it A single query.} 
+The client and the server perform a query protocol.  
+The client takes in $h$ and some index $i \in [n]$ as input, and the 
+server takes 
+the database $\DB\in \{0, 1\}^n$ as input. 
+%Then, the client engages in a query protocol with the server,
+%to learn the database at some index  
+%$i \in [n]$.
 To answer the query, the server is allowed to read at most $T$ locations of the database. 
+\end{itemize}
+In other words, we do not place any restriction
+on the amount of work performed
+during the preprocessing. The only constraints
+are that at the end of the preprocessing: 
+1) the client  
+is allowed to store only the hint $h$; and 2) the server
+is allowed to store only the original database and no extra information.
+
+Both the preprocessing function ${\sf Prep}$
+and the query protocol can be randomized. 
+We require that for any $\DB \in \{0, 1\}^n$, any query $i \in [n]$, 
+correctness holds with probability $1$.
+Let ${\sf view}_S(\DB, i)$ 
+denote the server's view during the query phase 
+when we run the PIR scheme (i.e., both the preprocessing and query phases)
+over $\DB$ and $i$.
+For security, we require 
+that for any $\DB \in \{0, 1\}^n$, $i, j \in [n]$,  
+${\sf view}_S(\DB, i) \approx {\sf view}_S(\DB, j)$
+where $\approx$ means computational indistinguishability.
+
 For such a preprocessing PIR scheme, we will prove a tradeoff
 between $S$ and $T$ as stated in the following theorem: 
+
 
 \begin{theorem}[Time space tradeoff for preprocessing PIR~\cite{CK20}]
     Given a 1-server preprocessing PIR, 
