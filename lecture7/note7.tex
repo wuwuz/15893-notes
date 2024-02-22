@@ -105,7 +105,11 @@ in light of \Cref{thm:lb}.
 
 %This lower bound holds even for a scheme that supports 1 query, regardless of server space, bandwidth, and amount of preprocessing work. 
 
-Before proceeding with the proof, we first have to discuss another slightly different problem called Yao's Box Problem \cite{yao}.
+Before proving \Cref{thm:lb}, 
+we first prove a time-space tradeoff for a classical problem
+called the Yao's box problem~\cite{yao}, and we shall
+see why 
+Yao's box problem is closely related to preprocessing PIR.
 
 \section{Yao's Box Problem}
 We have a server with $N$ boxes, each covering a bit. Note that this is not a PIR scheme, because it does not provide any privacy guarantees.
