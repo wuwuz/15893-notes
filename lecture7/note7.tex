@@ -61,14 +61,14 @@ Specifically, we consider a 1-server preprocessing PIR scheme
 with the following syntax:
 \begin{itemize}[leftmargin=7mm]
 \item {\it Preprocessing algorithm.}
-Suppose there is an unbounded  %, possibly randomized
+Suppose there is a (possibly randomized and unbounded) %, possibly randomized
 preprocessing function denoted 
 ${\sf Prep} : \{0, 1\}^n \rightarrow \{0, 1\}^S$ 
 that takes in an $n$-bit database $\DB\in\{0, 1\}^n$ as input,
 and outputs an $S$-bit hint string denoted $h$.
 \item 
 {\it A single query.} 
-The client and the server perform a query protocol.  
+The client and the server perform a (possibly randomized) query protocol.  
 The client takes in $h$ and some index $i \in [n]$ as input, and the 
 server takes 
 the database $\DB\in \{0, 1\}^n$ as input. 
@@ -85,8 +85,8 @@ are that at the end of the preprocessing:
 is allowed to store only the hint $h$; and 2) the server
 is allowed to store only the original database $\DB$ and no extra information.
 
-Both the preprocessing function ${\sf Prep}$
-and the query protocol can be randomized. 
+%Both the preprocessing function ${\sf Prep}$
+%and the query protocol can be randomized. 
 We require that for any $\DB \in \{0, 1\}^n$, any query $i \in [n]$, 
 correctness holds with probability $1$.
 Let ${\sf view}_S(\DB, i)$ 
