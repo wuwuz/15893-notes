@@ -302,7 +302,7 @@ The outcome of the DPF at point $x$ is then $b_L^x \oplus b_R^x$.
     \begin{minipage}{\textwidth}
         \begin{mdframed}
             \begin{center}
-                \textbf{Generation Algorithm:} $\Gen(1^\lambda, x^*)$
+                \textbf{Key generation algorithm:} $\Gen(1^\lambda, x^*)$
             \end{center}
             
             \paragraph{Initialization:} 
@@ -314,7 +314,7 @@ The outcome of the DPF at point $x$ is then $b_L^x \oplus b_R^x$.
             \end{itemize}
             
             
-            \paragraph{Constructing correction vectors:}  
+            \paragraph{Constructing the correction vector:}  
             \begin{itemize}[label={},leftmargin=*]
                 %\renewcommand\labelitemi{}
                 \item Initialize $v$ to be an empty string.
@@ -327,8 +327,12 @@ The outcome of the DPF at point $x$ is then $b_L^x \oplus b_R^x$.
 $\CV_d\in\{0,1\}^{2\lambda+2}$ such that the following constraints
 are satisfied:
                     \begin{enumerate}
-                        \item[(1)] Let $(s^{v||0}_L, b^{v||0}_L), (s^{v||1}_L, b^{v||1}_L) \get G(s^v_L) \xor (b^v_L \cdot \CV_d)$; \hfill \textit{//~Expansion on the LHS}
-                        \item[(2)] Let $(s^{v||0}_R, b^{v||0}_R), (s^{v||1}_R, b^{v||1}_R) \get G(s^v_R) \xor (b^v_R \cdot \CV_d)$; \hfill \textit{//~Expansion on the RHS}
+                        \item[(1)] Let $(s^{v||0}_L, b^{v||0}_L), (s^{v||1}_L, b^{v||1}_L) \get G(s^v_L) \xor (b^v_L \cdot \CV_d)$; 
+\hfill \textit{//~left server's expansion}
+%\hfill \textit{//~Expansion on the LHS}
+                        \item[(2)] Let $(s^{v||0}_R, b^{v||0}_R), (s^{v||1}_R, b^{v||1}_R) \get G(s^v_R) \xor (b^v_R \cdot \CV_d)$; 
+\hfill \textit{//~right server's expansion}
+%\hfill \textit{//~Expansion on the RHS}
 
 \vspace{2pt}
                         \item[(3a)] If $x^*[d]=0$: add the following constraint: 
