@@ -1,0 +1,28 @@
+\begin{center}
+
+\begin{tikzpicture}[every text node part/.style={align=center}]
+  
+
+  \node[draw=none] (A0) at (-2,2) { $A_0$}; 
+    \node[draw=none] (A1) at (-2,1) { $A_1$}; 
+      \node[draw=none] (A2) at (-2,0) { $A_2$}; 
+
+  \node[draw] (msg) at (-2,-1) { msg}; 
+  \draw[thick] ;
+
+  \node[draw] (fmsg) at (2,-1) { $f$(msg)}; 
+  \draw[thick] ;
+
+  \node[draw] (fct) at (2,1) { $\hat{\mathsf{ct}}$}; 
+  \draw[thick] ;
+
+   
+  % Messages
+  \draw[->,thick] ($(ct)+(0.32,0)$) -- ($(fct)+(-0.35,0)$) node [pos=0.5,above,font=\small] { FHE.Eval$_{\mathsf{pk}}$($f$, ct)};
+  \draw[->,thick] ($(msg)+(0,0.28)$) -- ($(ct)+(0,-0.23)$) node [pos=0.5,left,font=\small] { FHE.Enc$_\mathsf{sk}$($\cdot$)};
+  \draw[->,thick] ($(fct)+(0,-0.28)$) -- ($(fmsg)+(0,0.32)$) node [pos=0.5,right,font=\small] {FHE.Dec$_\mathsf{sk}$($\cdot$)};
+  \draw[->,dashed ,thick] ($(msg)+(0.45,0)$) -- ($(fmsg)+(-0.7,0)$) node [pos=0.5,above,font=\small] { $f$(msg)};
+    
+\end{tikzpicture}
+    
+\end{center}
