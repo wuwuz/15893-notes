@@ -49,33 +49,63 @@
 \newcommand{\bgood}{\ensuremath{{\sf b_{good}}}}
 
 \setlength{\parindent}{0pt}
-This is our final lecture on private information retrieval. We will prove a lower bound about the client space and server computation trade-off for preprocessing PIR schemes. For the proof, we will use techniques from complexity theory literature.
+%This is our final lecture on private information retrieval. 
+In this lecture, we will prove a lower bound about the client space and server computation 
+tradeoff for preprocessing PIR schemes. 
+%For the proof, we will use techniques from complexity theory literature.
+We will borrow techniques for proving time-space tradeoff
+from the complexity theory literature.
 
-\paragraph{PIANO}
-PIANO\cite{piano} is a preprocessing 1-server PIR scheme covered in lecture 5. It uses the client-specific preprocessing model, meaning that each client has a subscription phase with the server, during which it will perform preprocessing. The scheme has the following specs:
-\begin{itemize}
-    \item Client Space: $\widetilde{O}(\sqrt{n})$
-    \item Communication Bandwidth per Query: $O(\sqrt{n})$
-    \item Server/Client Compute per Query: $\widetilde{O}(\sqrt{n})$
+Specifically, we consider a 1-server preprocessing PIR scheme 
+in which 
+the client and the server 
+first performs some preprocessing over the database $\DB\in \{0, 1\}^n$.
+The preprocessing can perform  
+an unbounded amount 
+of computation, at the end of which 
+the client obtains an $S$-bit hint
+at the end of the preprocessing, and the server stores only the original database
+itself, and no extra information. 
+Then, the client engages in a query protocol with the server,
+to learn the database at some index  
+$i \in [n]$.
+To answer the query, the server is allowed to read at most $T$ locations of the database. 
+For such a preprocessing PIR scheme, we will prove a tradeoff
+between $S$ and $T$ as stated in the following theorem: 
+
+\begin{theorem}[Time space tradeoff for preprocessing PIR~\cite{CK20}]
+    Given a 1-server preprocessing PIR, 
+        let $S$ be the client space, and let $T$ be the server compuation per query. 
+    Then,  
+    $(S+1)(T+1) \ge N$. \elaine{TODO: edit the theorem based on what we can prove later}
+\label{thm:lb}
+\end{theorem}
+
+\paragraph{Piano.}
+Recall that in an earlier lecture, 
+we covered Piano~\cite{piano}, a preprocessing 1-server PIR scheme. 
+It uses the client-specific preprocessing model, meaning that each client has a subscription phase with the server, during which it will perform preprocessing. Piano enjoys 
+the following performance bounds:
+\begin{itemize}[leftmargin=7mm]
+    \item Client space: $\widetilde{O}(\sqrt{n})$
+where $\widetilde{O}(\cdot)$ hides a(n  arbitrarily small) superlogarithmic function.
+    \item Communication per query: $O(\sqrt{n})$
+    \item Server computation per query: ${O}(\sqrt{n})$
 \end{itemize}
 
-Consider the server computation and client space trade-off. For PIANO, this trade-off [Client Space: $\widetilde{O}(\sqrt{n})$, Compute per Query: $\widetilde{O}(\sqrt{n})$] is nearly optimal up to poly-log factors. This is because of the following lower bound.
-
-\paragraph{Space/Computation Lower Bound}
-\begin{claim}
-    Given a 1-Server Preprocessing PIR, define variables as follows:
-
-    \begin{itemize}
-        \item $S:$ Client Space
-        \item $T:$ Server Compute per Query
-    \end{itemize}
-
-    Then, 
-    \[(S+1)(T+1) \ge N\]
-\end{claim}
+We can see that Piano achieves optimal 
+client space and server computation tradeoff (up to polylogarithmic factors)
+in light of \Cref{thm:lb}.
+%Consider the server computation and client space trade-off. For PIANO, this trade-off [Client Space: $\widetilde{O}(\sqrt{n})$, Compute per Query: $\widetilde{O}(\sqrt{n})$] is nearly optimal up to poly-log factors. 
 
 
-This lower bound holds even for a scheme that supports 1 query, regardless of server space, bandwidth, and amount of preprocessing work. Before proceeding with the proof, we first have to discuss another slightly different problem called Yao's Box Problem \cite{yao}.
+%This is because of the following lower bound.
+%\paragraph{Space/Computation Lower Bound}
+
+
+%This lower bound holds even for a scheme that supports 1 query, regardless of server space, bandwidth, and amount of preprocessing work. 
+
+Before proceeding with the proof, we first have to discuss another slightly different problem called Yao's Box Problem \cite{yao}.
 
 \section{Yao's Box Problem}
 We have a server with $N$ boxes, each covering a bit. Note that this is not a PIR scheme, because it does not provide any privacy guarantees.
