@@ -48,7 +48,8 @@
 \newcommand{\bbad}{\ensuremath{{\sf b_{bad}}}}
 \newcommand{\bgood}{\ensuremath{{\sf b_{good}}}}
 
-\setlength{\parindent}{0pt}
+%\setlength{\parindent}{0pt}
+
 %This is our final lecture on private information retrieval. 
 In this lecture, we will prove a lower bound about the client space and server computation 
 tradeoff for preprocessing PIR schemes. 
@@ -78,11 +79,11 @@ To answer the query, the server is allowed to read at most $T$ locations of the 
 \end{itemize}
 In other words, we do not place any restriction
 on the amount of work performed
-during the preprocessing. The only constraints
+during preprocessing. The only constraints
 are that at the end of the preprocessing: 
 1) the client  
 is allowed to store only the hint $h$; and 2) the server
-is allowed to store only the original database and no extra information.
+is allowed to store only the original database $\DB$ and no extra information.
 
 Both the preprocessing function ${\sf Prep}$
 and the query protocol can be randomized. 
