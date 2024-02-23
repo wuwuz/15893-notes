@@ -1,17 +1,20 @@
 \documentclass[11pt]{article}
 
 % Packages
-\usepackage{amsmath, amsthm, amssymb}
+\usepackage{amsmath,amsthm,amssymb}
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
-\usepackage{geometry}
+%\usepackage{geometry}
+\usepackage[capitalize,noabbrev]{cleveref}
+
 
 %\usepackage{minipage}
+\usepackage[margin=1in]{geometry}
 %\usepackage{mdframe}
-\geometry{a4paper, margin=1in}
-\usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows, positioning}
+%\geometry{a4paper, margin=1in}
+%\usepackage{tikz}
+%\usetikzlibrary{shapes.geometric, arrows, positioning}
 
 % Theorem Environments
 \newtheorem{theorem}{Theorem}
@@ -40,9 +43,9 @@
 % Only edit the noteX.tex if possible.
 % If you want to define macros, please have them inside the noteX.tex file.
 
-{
+%{
 \input{note7}
-}
+%}
 \bibliographystyle{alpha}
 \bibliography{refs.bib}
 \end{document}
