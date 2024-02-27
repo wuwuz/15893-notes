@@ -688,37 +688,35 @@ inequality.
 
 \begin{fact}
 Let $\epsilon \in (0, 1/2)$. 
-Given a set of $m$ items, 
-pick a subset of size at most $(1/2 - \epsilon)m$. 
+Given a set of $M$ items, 
+pick a subset of size at most $(1/2 - \epsilon)M$. 
 The subset 
-can be encoded using $m \cdot (1- 2.87 \epsilon^2)$ bits. 
+can be encoded using $M \cdot (1- 2.87 \epsilon^2)$ bits. 
 \end{fact}
 \begin{proof}
 The number of ways to choose  
-a subset of size exactly $(1/2 - \epsilon)m$
-among $m$ elements is 
+a subset of size exactly $(1/2 - \epsilon)M$
+among $M$ elements is 
 \begin{align*}
- f = & {m \choose (\frac12 - \epsilon)m }
-= \frac{m!}{\left((\frac12 - \epsilon)m\right)! \cdot \left((\frac12 + \epsilon)m\right)!}\\
- \geq & \frac{\left(\frac{n}{e}\right)^m}{\left(\frac{(\frac12-\epsilon)m}{e}
-\right)^{(\frac12-\epsilon)m} \cdot \left(\frac{(\frac12+\epsilon)m}{e}
-\right)^{(\frac12+\epsilon)m}} & \text{(By Stirling)}\\  
- = & \left(\frac{1}{\frac14- \epsilon^2}\right)^{(\frac12 - \epsilon)m} 
+ f = & {M \choose (\frac12 - \epsilon)M }
+= \frac{M!}{\left((\frac12 - \epsilon)M\right)! \cdot \left((\frac12 + \epsilon)M\right)!}\\
+ \geq & \frac{\left(\frac{n}{e}\right)^M}{\left(\frac{(\frac12-\epsilon)M}{e}
+\right)^{(\frac12-\epsilon)M} \cdot \left(\frac{(\frac12+\epsilon)M}{e}
+\right)^{(\frac12+\epsilon)M}} & \text{(By Stirling)}\\  
+ = & \left(\frac{1}{\frac14- \epsilon^2}\right)^{(\frac12 - \epsilon)M} 
 \cdot 
-\left(\frac{1}{\frac12 + \epsilon}\right)^{2\epsilon m}
-%+ \elaine{FILL}
-%n^{2 \epsilon m}
+\left(\frac{1}{\frac12 + \epsilon}\right)^{2\epsilon M}
 \end{align*}
 Taking $\log_2 $ of the 
 above expression, 
 and then using Taylor expansion, we get that 
-for sufficiently large $m$, 
+for sufficiently large $M$, 
 $\log_2(f) \leq 
 \log_2\left(
-\left(\frac{1}{\frac14- \epsilon^2}\right)^{(\frac12 - \epsilon)m}
+\left(\frac{1}{\frac14- \epsilon^2}\right)^{(\frac12 - \epsilon)M}
 \cdot
-\left(\frac{1}{\frac12 + \epsilon}\right)^{2\epsilon m}
-\right) \leq m \cdot (1 - 2.87\epsilon^2)$.
+\left(\frac{1}{\frac12 + \epsilon}\right)^{2\epsilon M}
+\right) \leq M \cdot (1 - 2.87\epsilon^2)$.
 \end{proof}
 
 
