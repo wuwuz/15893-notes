@@ -557,13 +557,21 @@ simply output ``error''; else,
 output the PIR's reconstructed answer.
 \end{itemize}
 
-%% We stop at 46:00 in the recording.
-To show that
-the above solution to Yao's problem
-has correctness probability  
+\begin{claim}
+The above solution to Yao's box problem
+enjoys correctness
+probability
 $1 - \frac{T}{n} - \negl(n)$
-on a random index $i$,  
-it suffices to prove the following:
+for a random query.
+\end{claim}
+\begin{proof}
+%% We stop at 46:00 in the recording.
+%To show that
+%the above solution to Yao's problem
+%has correctness probability  
+%$1 - \frac{T}{n} - \negl(n)$
+%on a random index $i$,  
+It suffices to prove the following:
 \[
 \Pr\left[
 i \getr [n], \text{run PIR with database $\DB$ and query $i$:}
@@ -571,6 +579,8 @@ i \getr [n], \text{run PIR with database $\DB$ and query $i$:}
 \right]
 \leq \frac{T}{n} + \negl(n)
 \] 
+\elaine{TODO: fill}
+\end{proof}
 
 
 %We want to show the following. Given that PIRExpt: $i \xleftarrow{\$} [N]$, PIR preprocessing, PIR query on $i$,
