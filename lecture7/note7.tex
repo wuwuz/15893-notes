@@ -144,30 +144,110 @@ in light of \Cref{thm:lb}.
 
 %This lower bound holds even for a scheme that supports 1 query, regardless of server space, bandwidth, and amount of preprocessing work. 
 
+\section{Yao's Box Problem}
 Before proving \Cref{thm:lb}, 
 we first prove a time-space tradeoff for a classical problem
 called the Yao's box problem~\cite{yao}, and we shall
 see why 
 Yao's box problem is closely related to preprocessing PIR.
 
-\section{Yao's Box Problem}
-We have a server with $N$ boxes, each covering a bit. Note that this is not a PIR scheme, because it does not provide any privacy guarantees.
+We have a server with $n$ boxes, each covering a bit. 
+Henceforth we use $\DB := (\DB[1], \ldots, \DB[n])$ to denote the $n$ bits.
+Consider the following game:
+\begin{itemize}[leftmargin=5mm]
+\item 
+{\it Preprocessing.}
+During a preprocessing phase, the server and client can 
+perform an unbounded amount of computation. At the end of
+preprocessing, the client obtains an $S$-bit hint $h$;
+the server does not store any extra information
+besides $\DB$ itself where each bit is covered by some box. 
+\item 
+{\it Query.}
+The client wants to find out  
+$\DB[i]$ for some index $i \in [n]$.
+The client and server 
+now engage in some protocol at the end of which the client outputs
+an answer $\beta$.
+The query protocol must satisfy two requirements:
+1) the server is {\it not allowed to open box $i$}
+during the protocol; and 2) the server 
+can open at most $T$ boxes.
+\end{itemize}
 
+We require that the protocol to have perfect correctness,
+i.e., for any $\DB \in \{0, 1\}^n$, 
+any index $i \in [n]$, 
+after performing the preprocessing and 
+the query protocol for index $i$, the client's output $\beta = \DB[i]$ with 
+probability $1$. 
+
+
+Note that unlike PIR, 
+Yao's box problem does not have any privacy requirement.
+In particular, it is perfectly ok for the query 
+index $i$ to be leaked
+to the server.
+
+
+
+\ignore{
 \paragraph{Preprocessing Phase}
 Client and server can open all bits, and run arbitrary and unbounded computations. However, we have a constraint that at the end of the preprocessing, client can only store $S$ bits of information.
 
 \paragraph{Query}
 Client wants to know the i-th bit. We allow the client and server to have unbounded communication and work. We have a constraint that the server can open at most $T$ boxes and it cannot open box $i$.
+}
 
-\paragraph{Upper Bound}
+In the above formulation, $S$ denotes the client space
+at the end of preprocessing, and $T$ can be viewed as a lower bound on the 
+server's running time during the query phase. 
+We care about characterizing the tradeoff between $S$ and $T$,
+that is, the client-space and server-time tradeoff.
+
+Yao~\cite{yao} proved the following theorem:
+
+\begin{theorem}[Yao's box problem]
+$S \cdot T \geq \Omega(n)$. \elaine{TODO: modify the statement
+based on proof}  
+\label{thm:yaobox}
+\end{theorem} 
+
+
+\paragraph{Upper bound.}
+Before proving \Cref{thm:yaobox}, 
+let us first see a simple upper bound that can match 
+the $S\cdot T = \Theta(n)$ tradeoff.
+For simplicity, assume $n$ is a perfect square.
 \begin{enumerate}
-    \item Divide the $N$ boxes into $\sqrt{N}$ segments. 
-    \item Preprocessing Phase: Have the client store the parity of each segment.
-    \item Query Phase ($i$): Server opens every box in $i$'s segment except $i$ and sends the parity back to the client. As the client knows the parity of each segment, it can easily reconstruct the value of bit $i$.
+    \item Divide the $n$ boxes into $\sqrt{n}$ segments. 
+    \item Preprocessing: 
+the client stores the parity of each segment, denoted $p_1, \ldots, p_{\sqrt{n}}$
+respectively.
+    \item Query for index $i \in [n]$: 
+suppose $i$ belongs 
+to the $j$-th segment. 
+The server opens 
+every other box 
+except $i$ in the $j$-th segment,  % $j$, 
+and responds with the parity 
+(denoted $p^*$)
+of all opened bits.
+The client reconstructs %$\DB[i]$
+the answer 
+as $p^* \oplus p_j$.
 \end{enumerate}
-Here, $S = \sqrt{N}$ and $T = \sqrt{N} - 1$
+In this construction, $S = \sqrt{n}$ and $T = \sqrt{n} - 1$.
 
-\paragraph{Lower Bound} \label{box_lower}
+You might have observed that this upper bound for Yao's
+box problem is reminiscient of the  
+Piano PIR scheme~\cite{piano}.
+
+
+\paragraph{Lower bound proof.} 
+We now prove \Cref{thm:yaobox}.
+
+%\label{box_lower}
 \begin{theorem}
     $S(T+1) \ge N$ 
 \end{theorem}
