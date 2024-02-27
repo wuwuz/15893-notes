@@ -558,11 +558,13 @@ output the PIR's reconstructed answer.
 \end{itemize}
 
 \begin{claim}
-The above solution to Yao's box problem
-enjoys correctness
-probability
-$1 - \frac{T}{n} - \negl(n)$
-for a random query.
+Suppose the PIR scheme has perfect
+correctness and negligible privacy loss.  
+Then, 
+the above protocol solves Yao's box problem
+with 
+correctness probability 
+$1 - \frac{T}{n} - \negl(n)$ for a random query.
 \end{claim}
 \begin{proof}
 %% We stop at 46:00 in the recording.
@@ -571,15 +573,48 @@ for a random query.
 %has correctness probability  
 %$1 - \frac{T}{n} - \negl(n)$
 %on a random index $i$,  
-It suffices to prove the following:
+Henceforth, fix an arbitrary $\DB$. 
+Let ${\sf PIRExpt}^{j}$
+denote the random experiment 
+that runs the PIR scheme over database $\DB$ and query $j$.
+let 
 \[
+p_{j, i} := 
 \Pr\left[
-i \getr [n], \text{run PIR with database $\DB$ and query $i$:}
-\text{ server visits $i$}
+\text{ server visits $i$ in ${\sf PIRExpt}^{j}$}
 \right]
+\]
+
+%In the above protocol that solves Yao's problem, 
+%the only situation 
+%that breaks correctness is when a query for $i$ causes the server
+%to visit $i$.
+It suffices to prove 
+the following:
+\begin{equation}
+\Pr\left[
+i \getr [n], %\text{run PIR with database $\DB$ and query $i$:}
+\text{ server visits $i$ in ${\sf PIRExpt}^{i}$}
+\right]
+ = \frac{1}{n} \cdot \sum_{i \in [n]}  p_{i, i}
 \leq \frac{T}{n} + \negl(n)
-\] 
-\elaine{TODO: fill}
+\label{eqn:goal}
+\end{equation} 
+
+We now prove the above inequality.
+The privacy requirement of PIR implies 
+that for any $j, i \in [n]$, 
+$|p_{j, i} - p_{i, i}| \leq \negl'(n)$.
+Since the server can perform at most $T$ amount of work, we have that
+for any $ j \in [n]$, $\sum_{i \in [n]} p_{j, i} \leq T$. 
+Combining the above facts, we have that 
+\[
+T \geq 
+\sum_{i \in [n]} p_{j, i} 
+\geq \sum_{i \in [n]} (p_{i, i} - \negl'(n))
+%\leq T
+\]
+which leads to \Cref{eqn:goal}.
 \end{proof}
 
 
