@@ -304,7 +304,7 @@ let $\known \leftarrow \known
 \end{itemize}
     \end{enumerate}
 
-Define the {\it newly opened} boxes in 
+Define the {\it newly} opened boxes in 
 time step $i$ as follows: 
 all boxes opened in time step $i$ that are not in the ${\sf known}$ 
 set yet. 
@@ -313,7 +313,7 @@ Output an encoding containing the following terms:
 \item 
 The client's hint $h$;
 \item 
-Let $V_i$ be the newly opened values  
+Let $V_i$ be the {\it newly} opened values  
 (in the order they are opened)
 for time step $i$.
 Include $V_1, V_2, \ldots, V_k$ 
@@ -365,13 +365,60 @@ have been discovered.
 Output this reconstructed string.
 \end{enumerate}
 \end{proof}
+Correctness of the  
+decoding is easy to verify: 
+the decoding algorithm opens the same sequence
+of boxes as the encoding algorithm, and for
+every newly opened box, decoding observes the correct
+value from $C$.
+%as long as the decoding
+%algorithm is given the same ${\sf coins}$ 
+%as the encoding algorithm, and the 
+%same hint $h$ that was generated 
+%during the encoding algorithm, the sequence of the boxes
+%opened during decoding will be identical 
+%to those opened during encoding.
 
 
-\elaine{TODO: edit below}
+
+Let $t_1, \ldots, t_k$ be the 
+number of {\it newly} opened boxes
+in each of the $k$ time steps.
+Thus, the number of elements added to $\known$ in time step
+$i$
+is $t_i + 1$.
+We also know that $t_i \leq T$ for all $i \in [k]$, and regardless
+of the choice of $\DB$.
+Henceforth, let $t = \frac{1}{k}\sum_{i \in [k]} t_i$.
+Since the the encoding/decoding algorithm 
+stops as soon as ${\sf known} = [n]$, 
+it means that $\sum_{i\in [k]}(t_i+1) = (t + 1)\cdot k = n$.
+Thus, $k = n/(t+1)$.
+
+The length of the encoding 
+is $S + \sum_{i \in [k]}t_i = S + t \cdot k$.
+Note that $t$ and $k$ are random variables
+that depend on the choice of $\DB$.
+By Shannon's theorem, we know that 
+\[
+\underset{\DB \getr \{0, 1\}^n}{\E} \left[S + t \cdot k  \right] 
+= 
+\underset{\DB \getr \{0, 1\}^n}{\E} \left[S + t \cdot \frac{n}{t+1}  \right] 
+\geq n 
+\]
+Observe that for any $\DB$,
+$\frac{t}{t+1} \leq \frac{T}{T+1}$.
+Thus, we have that 
+\[S + n \cdot \frac{T}{T+1} \geq n\]
+which directly implies that $S(T+1) \geq n$.
+% S (T+1) + n \cdot T \geq n * T + n
+%
+%\elaine{TODO: edit below}
 
 
 
 %\label{box_lower}
+\ignore{
 \begin{theorem}
     $S(T+1) \ge N$ 
 \end{theorem}
@@ -418,6 +465,7 @@ Output this reconstructed string.
         &\implies S(T+1) \ge N \tag{As $t \le T$}
     \end{align*}
 \end{proof}
+}
 
 \section{PIR Lower Bound}
 Using our knowledge of Yao's Box Problem, let's know try to prove the PIR lower bound.
