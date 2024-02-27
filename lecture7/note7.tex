@@ -691,7 +691,7 @@ Let $\epsilon \in (0, 1/2)$.
 Given a set of $m$ items, 
 pick a subset of size at most $(1/2 - \epsilon)m$. 
 The subset 
-can be encoded using $m (1- \Theta(\epsilon^2))$ bits. 
+can be encoded using $m \cdot (1- 2.87 \epsilon^2)$ bits. 
 \end{fact}
 \begin{proof}
 The number of ways to choose  
@@ -718,7 +718,7 @@ $\log_2(f) \leq
 \left(\frac{1}{\frac14- \epsilon^2}\right)^{(\frac12 - \epsilon)m}
 \cdot
 \left(\frac{1}{\frac12 + \epsilon}\right)^{2\epsilon m}
-\right) \leq m \cdot (1 - \Theta(\epsilon^2))$.
+\right) \leq m \cdot (1 - 2.87\epsilon^2)$.
 \end{proof}
 
 
