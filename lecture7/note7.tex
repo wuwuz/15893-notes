@@ -175,7 +175,9 @@ during the protocol; and 2) the server
 can open at most $T$ boxes.
 \end{itemize}
 
-We require that the protocol to have perfect correctness,
+We allow the preprocessing algorithm and query 
+protocol to be possibly randomized.
+We require that the protocol to have {\it perfect correctness},
 i.e., for any $\DB \in \{0, 1\}^n$, 
 any index $i \in [n]$, 
 after performing the preprocessing and 
@@ -245,7 +247,7 @@ box problem is reminiscient of the
 Piano PIR scheme~\cite{piano}.
 
 
-\paragraph{Lower bound (proof of \Cref{thm:yaobox}).} 
+\paragraph{Lower bound.} 
 We now prove \Cref{thm:yaobox}.
 The intuition of the proof is 
 if we can obtain a too-good-to-be-true  
@@ -265,6 +267,11 @@ but also an additional
 bit, namely, the $i$-th bit --- this effectively  
 gains us one bit of advantage.
 
+The formal proof works as below.
+
+\begin{proof}[Proof of \Cref{thm:yaobox}]
+\elaine{FILL}
+\end{proof}
 
 
 
