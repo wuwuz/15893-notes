@@ -640,6 +640,46 @@ tradeoff for 1-server preprocessing PIR.
 
 \subsection{Proof of \Cref{thm:yao-prob}} 
 \label{sec:prob-yao}
+We now prove \Cref{thm:yao-prob}. 
+We present a version of the proof described by De, Trevisan, 
+and Tulsiani~\cite{DTT10}. 
+
+
+\begin{fact}[Extension of Shannon's theorem for codes
+with probabilistic correctness.]
+Suppose there is a randomized encoding procedure
+${\sf Enc}: \{0, 1\}^n \times \{0, 1\}^r \rightarrow \{0, 1\}^m$
+and decoding procedure 
+${\sf Dec}: \{0, 1\}^m \times \{0, 1\}^r \rightarrow \{0, 1\}^n$
+such that 
+\[
+%\Pr_{\substack{r\getr\{0, 1\}^r, \DB \getr \{0, 1\}^n}}\left[
+\Pr\left[
+r\getr\{0, 1\}^r, \DB \getr \{0, 1\}^n:
+{\sf Dec}\left({\sf Enc}(\DB, r), r\right)
+= \DB
+\right]
+\geq \delta
+\]
+Then, $m \geq n - \log(\frac{1}{\delta})$.
+\end{fact}
+\begin{proof}
+There must exist some $r$ such that 
+$\Pr\left[\DB \getr \{0, 1\}^n:
+{\sf Dec}\left({\sf Enc}(\DB, r), r\right)
+= \DB
+\right]\geq \delta$.
+In other words, there is an $r$ such that at least $\delta$ 
+fraction of the databases can decrypt correctly.
+This means that ${\sf Enc}(\DB, r)$
+must attain at least 
+$\delta \cdot 2^n$ values 
+as $\DB$ varies over $\{0, 1\}^n$.
+As the total number of values $\Enc(\cdot, r)$ can attain
+is at most $2^m$, we have that 
+$2^m \geq \delta \cdot 2^n$ which gives us the desired
+inequality.
+\end{proof}
 
 
 \section*{Old TEXT below}
