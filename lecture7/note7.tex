@@ -681,6 +681,37 @@ $2^m \geq \delta \cdot 2^n$ which gives us the desired
 inequality.
 \end{proof}
 
+\begin{lemma}
+Consider a {\bf deterministic}
+protocol $\Pi$ for solving Yao's box problem with 
+client space $S$ and server time $T$. 
+Let $\DB \in \{0, 1\}^n$ be some fixed string 
+such that 
+$\Pi$ gives a correct answer
+on  
+at least $\frac{1}{2} + \epsilon$ 
+fraction of the indices.
+Then, 
+%there is a randomized
+%encoding ${\sf Enc}$ and decoding procedure 
+%${\sf Dec}$ such that 
+${\sf Enc}: \{0, 1\}^n \times \{0, 1\}^r \rightarrow \{0, 1\}^m$
+and decoding procedure
+${\sf Dec}: \{0, 1\}^m \times \{0, 1\}^r \rightarrow \{0, 1\}^n$
+such that
+\[
+\Pr\left[r \getr \{0, 1\}^r: 
+{\sf Dec}\left({\sf Enc}(\DB, r), r\right) \geq 
+\right]
+\Omega(\epsilon/T)
+\]
+Further, the encoding length 
+$m \leq n - \frac{\epsilon^2 n}{10T} + S + O(1)$.
+\end{lemma}
+\begin{proof}
+\elaine{FILL}
+\end{proof}
+
 
 \section*{Old TEXT below}
 \vspace{5mm}
