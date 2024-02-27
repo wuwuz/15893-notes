@@ -209,9 +209,13 @@ that is, the client-space and server-time tradeoff.
 
 Yao~\cite{yao} proved the following theorem:
 
-\begin{theorem}[Yao's box problem]
-$S \cdot (T+1) \geq n$. \elaine{TODO: modify the statement
-based on proof}  
+\begin{theorem}[Yao's box problem] 
+For any protocol that solves Yao's box problem, it must be that 
+$S \cdot (T+1) \geq n$, 
+where $S$ is the client space
+and $T$ is the maximum number of boxes opened during the query. 
+%\elaine{TODO: modify the statement
+%based on proof}  
 \label{thm:yaobox}
 \end{theorem} 
 
