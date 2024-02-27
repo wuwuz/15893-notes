@@ -511,14 +511,16 @@ version of Yao's box problem that allows probalistic
 correctness, as stated below. 
 
 \paragraph{Yao's box problem with probabilistic correctness.}
-Consider the following correctness requirement: 
+We say that some protocol $\Pi$ solves
+Yao's box problem with probabilistic correctness $\delta(n)$,  
+iff 
 for any $\DB\in \{0, 1\}^n$, 
-it must be that 
+it holds that 
 \[
 \Pr\left[
-i \getr [n], \text{run PIR with inputs $\DB$ and $i$} : 
+i \getr [n], \text{run $\Pi$ with $\DB$ and $i$} : 
 \text{output is correct} 
-\right] \geq \delta 
+\right] \geq \delta(n) 
 \]
 
 We can extend the proof to Yao's box problem
@@ -543,6 +545,38 @@ that we need.
 
 \subsection{Preprocessing PIR  $\Longrightarrow$ Yao} 
 \label{sec:pirtoyao}
+Given a preprocessing PIR scheme, 
+we will construct a solution to Yao's box problem (with probablistic
+correctness) as follows:
+
+\begin{itemize}[leftmargin=6mm]
+    \item Client's hint: PIR's hint.
+    \item Query for $i \in [n]$: Run PIR for query $i$. 
+If server is about to look at $\db[i]$, then stop and 
+simply output ``error''; else,
+output the PIR's reconstructed answer.
+\end{itemize}
+
+%% We stop at 46:00 in the recording.
+To show that
+the above solution to Yao's problem
+has correctness probability  
+$1 - \frac{T}{n} - \negl(n)$
+on a random index $i$,  
+it suffices to prove the following:
+\[
+\Pr\left[
+i \getr [n], \text{run PIR with database $\DB$ and query $i$:}
+\text{ server visits $i$}
+\right]
+\leq \frac{T}{n} + \negl(n)
+\] 
+
+
+%We want to show the following. Given that PIRExpt: $i \xleftarrow{\$} [N]$, PIR preprocessing, PIR query on $i$,
+%\[p =\prob[\text{PIRExpt opens $i$}] \le \frac{T}{N} + \negl(N)\]
+
+
 
 
 \subsection{Proof of \Cref{thm:yao-prob}} 
