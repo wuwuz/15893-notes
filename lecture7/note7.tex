@@ -144,7 +144,7 @@ in light of \Cref{thm:lb}.
 
 %This lower bound holds even for a scheme that supports 1 query, regardless of server space, bandwidth, and amount of preprocessing work. 
 
-\section{Yao's Box Problem}
+\section{Warmup: Yao's Box Problem}
 Before proving \Cref{thm:lb}, 
 we first prove a time-space tradeoff for a classical problem
 called the Yao's box problem~\cite{yao}, and we shall
@@ -247,6 +247,28 @@ Piano PIR scheme~\cite{piano}.
 
 \paragraph{Lower bound (proof of \Cref{thm:yaobox}).} 
 We now prove \Cref{thm:yaobox}.
+The intuition of the proof is 
+if we can obtain a too-good-to-be-true  
+tradeoff 
+between $S$ and $T$, then we can construct 
+an encoding of $\DB \in \{0, 1\}^n$ 
+whose length is less than $n$, 
+which violates 
+Shannon's  
+fundamental theorem of information theory.
+Specifically, we can obtain some compression 
+in the encoding 
+by leveraging the following fact: every time 
+we open $T$ boxes not including $i$, we 
+learn not just the values under the $T$ opened boxes 
+but also an additional 
+bit, namely, the $i$-th bit --- this effectively  
+gains us one bit of advantage.
+
+
+
+
+
 
 %\label{box_lower}
 \begin{theorem}
