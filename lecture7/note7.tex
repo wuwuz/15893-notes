@@ -216,7 +216,7 @@ based on proof}
 \end{theorem} 
 
 
-\paragraph{Upper bound.}
+\subsection{Upper Bound}
 Before proving \Cref{thm:yaobox}, 
 let us first see a simple upper bound that can match 
 the $S\cdot T = \Theta(n)$ tradeoff.
@@ -247,7 +247,7 @@ box problem is reminiscient of the
 Piano PIR scheme~\cite{piano}.
 
 
-\paragraph{Lower bound.} 
+\subsection{Lower Bound} 
 We now prove \Cref{thm:yaobox}.
 The intuition of the proof is 
 if we can obtain a too-good-to-be-true  
@@ -270,7 +270,19 @@ gains us one bit of advantage.
 The formal proof works as below.
 
 \begin{proof}[Proof of \Cref{thm:yaobox}]
-\elaine{FILL}
+Suppose we have some protocol for solving Yao's box problem 
+with parameters $S$ and $T$. 
+We fix all the coins in the protocol denoted ${\sf coins}$,
+and we will give ${\sf coins}$ as input to 
+both the encoder and decoder. 
+As long as $\DB$ is randomly sampled independently of ${\sf coins}$,
+we can use Shannon's theorem to argue
+that the encoding length must be at least $n$.
+
+\paragraph{Encoding.}
+
+\paragraph{Decoding.}
+
 \end{proof}
 
 
