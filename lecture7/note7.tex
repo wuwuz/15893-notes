@@ -210,7 +210,7 @@ that is, the client-space and server-time tradeoff.
 Yao~\cite{yao} proved the following theorem:
 
 \begin{theorem}[Yao's box problem]
-$S \cdot T \geq \Omega(n)$. \elaine{TODO: modify the statement
+$S \cdot (T+1) \geq n$. \elaine{TODO: modify the statement
 based on proof}  
 \label{thm:yaobox}
 \end{theorem} 
@@ -219,7 +219,7 @@ based on proof}
 \subsection{Upper Bound}
 Before proving \Cref{thm:yaobox}, 
 let us first see a simple upper bound that can match 
-the $S\cdot T = \Theta(n)$ tradeoff.
+the $S\cdot (T+1) = n$ tradeoff.
 For simplicity, assume $n$ is a perfect square.
 \begin{enumerate}
     \item Divide the $n$ boxes into $\sqrt{n}$ segments each
@@ -366,6 +366,7 @@ Output this reconstructed string.
 \end{proof}
 
 
+\elaine{TODO: edit below}
 
 
 
