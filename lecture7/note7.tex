@@ -685,6 +685,43 @@ $2^m \geq \delta \cdot 2^n$ which gives us the desired
 inequality.
 \end{proof}
 
+
+\begin{fact}
+Let $\epsilon \in (0, 1/2)$. 
+Given a set of $m$ items, 
+pick a subset of size at most $(1/2 - \epsilon)m$. 
+The subset 
+can be encoded using $m (1- \Theta(\epsilon^2))$ bits. 
+\end{fact}
+\begin{proof}
+The number of ways to choose  
+a subset of size exactly $(1/2 - \epsilon)m$
+among $m$ elements is 
+\begin{align*}
+ f = & {m \choose (\frac12 - \epsilon)m }
+= \frac{m!}{\left((\frac12 - \epsilon)m\right)! \cdot \left((\frac12 + \epsilon)m\right)!}\\
+ \geq & \frac{\left(\frac{n}{e}\right)^m}{\left(\frac{(\frac12-\epsilon)m}{e}
+\right)^{(\frac12-\epsilon)m} \cdot \left(\frac{(\frac12+\epsilon)m}{e}
+\right)^{(\frac12+\epsilon)m}} & \text{(By Stirling)}\\  
+ = & \left(\frac{1}{\frac14- \epsilon^2}\right)^{(\frac12 - \epsilon)m} 
+\cdot 
+\left(\frac{1}{\frac12 + \epsilon}\right)^{2\epsilon m}
+%+ \elaine{FILL}
+%n^{2 \epsilon m}
+\end{align*}
+Taking $\log_2 $ of the 
+above expression, 
+and then using Taylor expansion, we get that 
+for sufficiently large $m$, 
+$\log_2(f) \leq 
+\log_2\left(
+\left(\frac{1}{\frac14- \epsilon^2}\right)^{(\frac12 - \epsilon)m}
+\cdot
+\left(\frac{1}{\frac12 + \epsilon}\right)^{2\epsilon m}
+\right) \leq m \cdot (1 - \Theta(\epsilon^2))$.
+\end{proof}
+
+
 \begin{lemma}
 Consider a {\bf deterministic}
 protocol $\Pi$ for solving Yao's box problem with 
