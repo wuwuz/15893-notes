@@ -280,10 +280,13 @@ we can use Shannon's theorem to argue
 that the encoding length must be at least $n$.
 
 \paragraph{Encoding.}
+The encoding algorithm is given ${\sf coins}$ and ${\sf DB}$ as input,
+and constructs an encoding of ${\sf DB}$ as follows.
 %Initially, let ${\sf known} = \emptyset$.
 
     \begin{enumerate}[leftmargin=6mm]
-        \item Seed the protocol with ${\sf coins}$, and 
+        \item Seed the protocol (for solving Yao's box problem) 
+with ${\sf coins}$, and 
 perform preprocessing
 such that the client obtains an $S$-bit hint $h$.
         \item 
@@ -295,7 +298,8 @@ in each time step $i$, the client
 index $q_i \notin \known$, and 
 runs the query protocol for index $q_i$; 
 \item 
-lets $\known \impliedby \known \cup \{q_i\} \cup {\text{all boxes opened during query}}$
+let $\known \leftarrow \known 
+\cup \{q_i\} \cup \{\text{all boxes opened during this query}\}$
 \item if $\known = [n]$, break. %Otherwise, repeat step 2 again.
 \end{itemize}
     \end{enumerate}
@@ -310,15 +314,55 @@ Output an encoding containing the following terms:
 The client's hint $h$;
 \item 
 Let $Q_i$ be the newly opened values  
-in time step $i$. 
+(in the order they are opened)
+for time step $i$.
 Include $Q_1, Q_2, \ldots, Q_k$ 
 in the encoding, where $k$ 
 is the total number of time steps.
 \end{enumerate}
 
 \paragraph{Decoding.}
-
-
+The decoding algorithm is given ${\sf coins}$
+and an encoding $C$ as input, and 
+outputs a decoded string as follows.
+\begin{enumerate}[leftmargin=6mm]
+\item 
+Seed the protocol (for solving Yao's box problem)
+with ${\sf coins}$.  
+Treat
+the first $S$ bits of $C$ as the client's hint, 
+and in the steps below, consume the rest of $C$ bit by bit 
+in a streaming manner.
+\item 
+Initially, let $\known= \emptyset$.
+Every time step $i$, 
+\begin{itemize}[leftmargin=5mm] 
+\item Let $q_i$ be the smallest
+index not in $\known$; 
+\item 
+The client performs a query for $q_i$ with the server.
+Whenever the 
+server needs to open some box: if the box was already
+opened in some earlier time step, use the same opened value 
+as previously learned;  
+else if the box has not been opened, 
+treat the next bit in $C$ 
+as the opened value.
+\item 
+For all newly opened 
+boxes, record the opened values. 
+Additionally, reconstruct the value at queried index $q_i$.
+\item 
+Let $\known \leftarrow \known 
+\cup \{q_i\} \cup \{\text{all boxes opened during this query}\}$; 
+if $\known = [n]$, break. 
+\end{itemize}
+\item 
+At the end of the protocol, ${\sf known} = [n]$, i.e., 
+$n$ indices
+have been reconstructed. 
+Output this reconstructed string.
+\end{enumerate}
 \end{proof}
 
 
