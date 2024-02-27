@@ -467,13 +467,38 @@ which directly implies that $S(T+1) \geq n$.
 \end{proof}
 }
 
-\section{PIR Lower Bound}
-Using our knowledge of Yao's Box Problem, let's know try to prove the PIR lower bound.
-\begin{theorem}
-    Suppose we have a 1 server prepossessing PIR with perfect correctness and $negl(n)$ privacy loss with client space $S$ and server computation $T$ per query. Then,
-    \[(S+1)(T+1) \ge  N \ \ \cite{CK20}\]
+\section{Space-Time Tradeoff for Preprocessing PIR}
+We will next prove a space-time tradeoff for preprocessing PIR.
+Intuitively, the privacy requirement of PIR 
+implies that during a query for some index $i \in [n]$,
+the probability that the server actually visits position $i$
+is rather small.
+This allows us to  
+rely on the space-time tradeoff for Yao's box problem
+to prove a PIR lower bound.
+
+
+\begin{theorem}[Space-time tradeoff for preprocessing PIR~\cite{CK20}]
+    Suppose we have a 1-server prepossessing PIR with perfect correctness and 
+${\sf negl}(n)$ privacy loss 
+where ${\sf negl}(\cdot)$ denotes a negligible function. 
+Let $S$ be the client space and let $T$ be the server computation 
+per query.
+Then,
+    \[(S+1)(T+1) \ge  \Omega(N) \]
+\elaine{TODO: change the statement 
+based on the proof}
 \end{theorem}
 This lower bound holds even for computationally private schemes. It holds even for a single query, regardless of bandwidth, server space, even when preprocessing can be unbounded. However, we have a restriction that the server stores the original database and nothing else. That is, it does not store any encoding of the database.
+
+
+
+More specifically, we actually need a 
+version of Yao's box problem that allows probalistic 
+correctness.
+
+
+
 
 \vspace{5mm}
 
