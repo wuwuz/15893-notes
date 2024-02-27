@@ -280,8 +280,44 @@ we can use Shannon's theorem to argue
 that the encoding length must be at least $n$.
 
 \paragraph{Encoding.}
+%Initially, let ${\sf known} = \emptyset$.
+
+    \begin{enumerate}[leftmargin=6mm]
+        \item Seed the protocol with ${\sf coins}$, and 
+perform preprocessing
+such that the client obtains an $S$-bit hint $h$.
+        \item 
+Initially, let $\known = \{\}$. 
+Repeat the following: 
+in each time step $i$, the client 
+\begin{itemize}[leftmargin=5mm]
+\item finds the smallest 
+index $q_i \notin \known$, and 
+runs the query protocol for index $q_i$; 
+\item 
+lets $\known \impliedby \known \cup \{q_i\} \cup {\text{all boxes opened during query}}$
+\item if $\known = [n]$, break. %Otherwise, repeat step 2 again.
+\end{itemize}
+    \end{enumerate}
+
+Define the {\it newly opened} boxes in 
+time step $i$ as follows: 
+all boxes opened in time step $i$ that are not in the ${\sf known}$ 
+set yet. 
+Output an encoding containing the following terms:
+\begin{enumerate}[leftmargin=6mm]
+\item 
+The client's hint $h$;
+\item 
+Let $Q_i$ be the newly opened values  
+in time step $i$. 
+Include $Q_1, Q_2, \ldots, Q_k$ 
+in the encoding, where $k$ 
+is the total number of time steps.
+\end{enumerate}
 
 \paragraph{Decoding.}
+
 
 \end{proof}
 
