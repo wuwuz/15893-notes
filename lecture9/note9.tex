@@ -410,6 +410,31 @@ Specifically, we can sort the two input buckets such that all
 real elements that want to go left  
 are in the front, all real elements that want to go right are at the end,
 and some dummy elements can be in the middle.
+To bound the cost of all \textsc{mergesplit} operations:
+observe that 
+at each of the $\log B$ layers, we invoke $B/2$ 
+instances of bitonic sort on $2Z$ elements,
+and thus the total cost 
+is roughly 
+\[
+\log B\cdot B/2\cdot 2Z\log^2(2Z)
+\approx 2n\log n\log^2Z.\]
+In particular, if we set $Z = \log^2 n$ which is sufficient
+for getting negligibly small failure probability
+(see \Cref{lem:overflow}), we have that the  
+the above expression becomes $O(n \log n (\log \log n)^2)$.
+
+
+
+The other costs, e.g., 
+cost of 
+preparing the input layer, the cost
+of bucket-wise permutation in the final layer,
+and the cost of dummy removal in the final layer,
+are all asymptotically dominated by the cost
+of the \textsc{mergesplit} operations. 
+
+\ignore{
 %This is done by sorting the real elements with respect to the keys and then padding each of the resulting buckets with dummy elements. 
 In the final layer, the bucket-wise permutation is also done with \textsc{bitonicsort}. Given a bucket, we firstly assign  each  element  with a  $\log n$-bit label. We then obliviously  sort  the  elements  by  their  labels using  \textsc{bitonicsort}.  In total, at each of the $\log B$ layers, we invoke $B/2$ instances of bitonic sort on $2Z$ elements; and we need $B$
 instances of bitonic sort on $Z$ elements  
@@ -419,11 +444,7 @@ Thus the  runtime  is  roughly
 \log B\cdot B/2\cdot 2Z\log^2(2Z)
  + B\cdot Z\log^2(Z)
 \approx 2n\log n\log^2Z.\]
-If we set $Z = \log^2 n$ which is sufficient
-for getting negligibly small failure probability
-(see \Cref{lem:overflow}), we have that the  
-algorithm's runtime is $O(n \log n (\log \log n)^2)$.
-
+}
 
 \paragraph{Success probability.} The above algorithm is guaranteed to output a correct, randomly permuted version of the input sequence if none of the buckets ever overflows (i.e., receives more than $Z$ real elements) during the routing.
 
