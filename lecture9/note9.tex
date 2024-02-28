@@ -380,16 +380,15 @@ For the purpose of construction \textsc{ORP}, we are going to assign each elemen
 
 \includegraphics[scale=0.45]{fig2.png}
 
-\paragraph{Efficiency for Clients with $2Z$ storage.}
+\paragraph{Efficiency for clients with $2Z$ storage.}
 
 If the client has a storage size no less than $2Z$, then they can perform \textsc{mergesplit} and random permute the buckets at the final layer locally. In each of the $\log B = \log \frac{2n}{Z} < \log N$ layers, the $2n$-sized sequence (containing $n$ real elements and $n$ dummy elements) is read  and written once. So oblivious bin assignment and bucket ORP has $4n\log n$ cost (measured
 in terms of reads and writes to memory). 
 
-\paragraph{Efficiency for Clients with constant storage.}
-
+\paragraph{Efficiency for clients with constant storage.}
 With constant-storage clients, we need to implement oblivious \textsc{MergeSplit} using \textsc{bitonicsort}. This is done by sorting the real elements with respect to the keys and then padding each of the resulting buckets with dummy elements. In the final layer, the bucket-wise permutation is also done with \textsc{bitonicsort}. Given a bucket, we firstly assign  each  element  with a  $\log n$-bit label. We then obliviously  sort  the  elements  by  their  labels using  \textsc{bitonicsort}.  In total, at each of the $\log B$ layers, we invoke $B/2$ instances of bitonic sort on $2Z$ elements, thus the  runtime  is  roughly  \[\log B\cdot B/2\cdot 2Z\log^2(2Z))\approx 2n\log n\log^2Z.\]
 
-\paragraph{Success Probability.} The above algorithm is guaranteed to output a correct, randomly permuted version of the input sequence if none of the buckets ever overflows (i.e., receives more than $Z$ real elements) during the routing.
+\paragraph{Success probability.} The above algorithm is guaranteed to output a correct, randomly permuted version of the input sequence if none of the buckets ever overflows (i.e., receives more than $Z$ real elements) during the routing.
 
 \begin{lemma}
     Overflow happens  with  at most $\epsilon(n,Z) =2n/Z\cdot\log(2n/Z)\cdot e^{-Z/6}$ probability.
