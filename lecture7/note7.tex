@@ -145,6 +145,7 @@ in light of \Cref{thm:lb}.
 %This lower bound holds even for a scheme that supports 1 query, regardless of server space, bandwidth, and amount of preprocessing work. 
 
 \section{Warmup: Yao's Box Problem}
+\label{sec:yao}
 Before proving \Cref{thm:lb}, 
 we first prove a time-space tradeoff for a classical problem
 called the Yao's box problem~\cite{yao}, and we shall
@@ -656,6 +657,12 @@ for helping me fix the bug.
 } 
 described by De, Trevisan, 
 and Tulsiani~\cite{DTT10}. 
+The proof requires somewhat more technical
+calculations 
+in comparison with the 
+earlier proof 
+in \Cref{sec:yao}; however, the high-level intuition is still
+the same as before. 
 
 
 
@@ -703,6 +710,7 @@ Given a set of $M$ items,
 pick a subset of size at most $(1/2 - \epsilon)M$. 
 The subset 
 can be encoded using $M \cdot (1- 2.87 \epsilon^2)$ bits. 
+\label{fct:encodeset}
 \end{fact}
 \begin{proof}
 The number of ways to choose  
@@ -761,7 +769,7 @@ such that
 \]
 \elaine{FILL some concrete number}
 Further, the encoding length 
-$m \leq n - \Theta(\frac{n}{10T}) + S$.
+$m \leq n - \Theta(\frac{n}{T}) + S$.
 \end{lemma}
 \begin{proof}
 %\elaine{FILL}
@@ -858,10 +866,44 @@ and \Cref{clm:g0minusg1} and taking union
 bound, we know that  
 with probability at least
 $1-(1-0.65)- (1-0.37) = 0.02$ over the choice of $R$, 
-it holds
-that $|G_0| - |G_1| \geq 0.01n/T$
-and moreover $|G| \geq 0.042n/T$.
+the following two good events hold: 
+\begin{enumerate}[leftmargin=6mm]
+\item  
+$|G_0| - |G_1| \geq 0.01n/T$, and 
+\item 
+$|G| \geq 0.042n/T$.
+\end{enumerate}
+
+Below, we construct the encoding and decoding algorithm.
+We sample some random coins that are shared
+by the encoding and decoding algorithm, 
+and these random coins are used to sample the set $R$.
+
 \paragraph{Encoding.}
+If the choice of $R$ is such that both of the above good events hold, then 
+output the following encoding (otherwise output $\bot$):
+\begin{enumerate}
+\item 
+The client's hint.
+\item 
+Values for the indices in $[n] \backslash R$.
+\item 
+Values for the indices in $R \backslash G$.
+\item 
+The set $G_1$.
+\end{enumerate}
+The client hint is at most $S$ bits.
+The second part requires $n - |R|$ bits,
+the third part requires $|R| - |G|$ bits, 
+and the fourth part requires 
+$|G| - c |G|$
+bits for some constant $c \in (0, 1)$ 
+by \Cref{fct:encodeset} and due to the 
+aforementioned two good
+events.  %$|G_0| - |G_1| \geq 0.01n/T$.
+Therefore, the total encoding size
+is at most 
+$S + n - |R| + |R| - |G| + |G| - c|G| = S + n - c|G| \leq S + n - \Theta(n/T)$.
 
 \paragraph{Decoding.}
 \end{proof}
