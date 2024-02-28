@@ -751,7 +751,7 @@ on
 at least $\frac{3}{4}$ 
 \elaine{note param}
 fraction of the indices.
-\elaine{may need some assumption T much smalller than n}
+%\elaine{may need some assumption T much smalller than n}
 Then, 
 %there is a randomized
 %encoding ${\sf Enc}$ and decoding procedure 
@@ -763,11 +763,12 @@ such that
 \[
 \Pr\left[r \getr \{0, 1\}^r: 
 {\sf Dec}\left({\sf Enc}(\DB, r), r\right) 
-\right]
+ = \DB \right]
 \geq 
-\Omega(1)
+0.02
+%\Omega(1)
 \]
-\elaine{FILL some concrete number}
+%\elaine{FILL some concrete number}
 Further, the encoding length 
 $m \leq n - \Theta(\frac{n}{T}) + S$.
 \end{lemma}
@@ -906,8 +907,43 @@ is at most
 $S + n - |R| + |R| - |G| + |G| - c|G| = S + n - c|G| \leq S + n - \Theta(n/T)$.
 
 \paragraph{Decoding.}
+Given a codeword, if it is not $\bot$, then parse it in the 
+format mentioned above. Set the client's hint accordingly.
+%First, the decoder sets the client's hint to the one 
+All values for $[n] \backslash R$ is directly provided
+by the codeword. The decoder
+can decode the values for $R$
+as follows. 
+For each index $i \in R$, 
+run the query protocol 
+on index $i$. Whenever the protocol wants 
+to query a value outside $R$, we can look up the corresponding
+location in the codeword and provide the value.  
+Now, one of the following cases will happen:
+\begin{enumerate}
+\item 
+The query protocol wants to access a position 
+inside $R$. In this case, $i \in R \backslash G$, and 
+the value at $i$ is already provided
+in the codeword.
+\item   
+The query protocol never accesses a position 
+inside $R$. In this case, $i \in G$, and the query protocol
+will successfully output some value.
+The decoder
+checks if $i \in G_1$. If  $i \notin G_1$, directly output the outcome 
+of the query protocol; else, flip the outcome and output it.
+\end{enumerate}
+ 
+%Correctness of the decoded outcome is easy to verify.
+As long as the encoding algorithm does not output $\bot$,
+it is easy to check that the decoded outcome must be correct.
+Therefore, the probability of correct decoding 
+is at least $0.02$. 
 \end{proof}
 
+
+\elaine{TODO: continue below}
 
 
 \section*{Old TEXT below}
