@@ -478,3 +478,36 @@ Thus the  runtime  is  roughly
 \Cref{lem:overflow}
 shows that it suffices to set $Z$ to be any superlogarithmic 
 function for the failure probability to be negligibly small.
+
+
+\section{Subsequent Improvements of Bucket Oblivious Sort}
+
+We can get rid of the extra $(\log\log n)^2$ factors
+using the following approaches. 
+First, 
+the work of Ramachadran and Shi~\cite{domulticore}
+showed that by using a $\log n$-fanout butterfly network
+and using AKS to realize the $\log n$-way \textsc{mergesplit}
+operator, they can achieve $O(n \log n)$
+cost. 
+Second, Asharov 
+et al.~\cite{bucket}
+showed that if we use linear-time oblivious
+tight compaction~\cite{optorama} to realize the \textsc{mergesplit}
+operator, we can also get $O(n \log n)$ cost.
+However, neither of these approaches result in practical schemes.
+
+The recent work of 
+Gu et al.~\cite{tianyao-sort}
+showed a practical instantiation of Ramachandran and Shi's 
+approach of using a $\log n$-fanout butterfly network~\cite{domulticore}.
+Their approach is practical and achieves $O(n \log n)$ cost --- 
+specifically, 
+they devised 
+a new approach to efficiently realize a multi-way \textsc{mergesplit}. 
+
+
+
+
+
+
