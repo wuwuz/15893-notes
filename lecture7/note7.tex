@@ -759,6 +759,7 @@ such that
 \geq 
 \Omega(1)
 \]
+\elaine{FILL some concrete number}
 Further, the encoding length 
 $m \leq n - \Theta(\frac{n}{10T}) + S$.
 \end{lemma}
@@ -819,13 +820,32 @@ $|G| \geq 0.09n/T - 0.032n/T = 0.058n/T$.
 
 \begin{claim}
 With probability at least \elaine{FILL}, 
-$|G_0| - |G_1| \geq \elaine{FILL}$.
+$|G_0| - |G_1| \geq 0.1\cdot n/T$.
 \end{claim}
 \begin{proof}
+For a fixed $i \in [n]$, the probability that 
+$i$ lands in $R$ and is good is 
+\[
+\frac{1}{10T} \cdot \left(1-\frac{1}{10T}\right)^T
+\in [0.09/T, 0.091/T]
+\]
+Therefore, we have that
+\[
+\E[|G_0| - |G_1|]
+\geq 
+0.09/T \cdot \frac{3n}{4} 
+- 
+0.091/T \cdot \frac{n}{4} 
+\geq 0.044 n/T
+\]
 \elaine{FILL}
 \end{proof}
 
+\paragraph{Encoding.}
+
+\paragraph{Decoding.}
 \end{proof}
+
 
 
 \section*{Old TEXT below}
