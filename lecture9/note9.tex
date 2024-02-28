@@ -53,7 +53,8 @@ In this lecture, we will see two direct constructions of oblivious sorting that 
    \end{remark}
 \end{mdframed}
 
-\section{Bitonic Sort \cite{Batcher}}
+\section{Bitonic Sort}
+We first describe the famous bitonic sort algorithm by Batcher~\cite{Batcher}.
 
 \begin{definition}
     A sequence $A = [A_0, A_1, \cdots, A_n]$ is \textbf{bitonic} if and only if:
@@ -62,10 +63,10 @@ In this lecture, we will see two direct constructions of oblivious sorting that 
         \[A_0 \leq A_1 \leq \cdots \leq A_i \geq A_{i+1} \geq \cdots \geq A_n, \]
         or
 
-        \item There exists a cyclic shift $\pi$ on $A$ such that $\pi(A)$ satisfies the bullet point 1.
+        \item There exists a cyclic shift $\pi$ on $A$ such that $\pi(A)$ satisfies the above requirement 1.
     \end{enumerate}
 
-    We say a bitonic sequence is in the canonical form if it satisfies bullet point 1.
+We say a bitonic sequence is in the canonical form if it satisfies requirement 1.
 \end{definition}
 
 $ $
