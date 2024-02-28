@@ -781,14 +781,15 @@ such that running $\Pi$ on $i$ gives an incorrect answer.
 
 \begin{fact}
 $\E[|R|] = n/10T$. Further, 
-by Chernoff bound, $\Pr[|R| \leq 0.09N/T] \geq \exp(-\Omega(n/T))$.
+by Chernoff bound, $\Pr[|R| \leq 0.09n/T] \geq \exp(-\Omega(n/T))$.
 \label{fct:Rsize}
 \end{fact}
 
 \begin{claim}
 %$\E[|G|] \geq 0.09/T$. 
-$\Pr[|G| > 0.058n/T] \geq 0.48$ for sufficiently large $n$.
+$\Pr[|G| > 0.042n/T] \geq 0.65$ for sufficiently large $n$.
 %\elaine{assumes T at least 2, T much smaller than n -- quantify how small}
+\label{clm:Glarge}
 \end{claim}
 \begin{proof}
 For a fixed $i \in [n]$, the probability that it lands in $R$
@@ -807,20 +808,21 @@ Therefore, the expected number of indices
 that land in $R$ and are bad is at most 
 $0.016 n/T$.
 By Markov Inequality, 
-with probability at most $1/2$, 
+with probability at most $1/3$, 
 the number of indices
 that land in $R$ and are bad exceeds  
-$0.032 n/T$.
+$0.048 n/T$.
 
 Due to \Cref{fct:Rsize}, 
 and taking a union bound, 
-with probability at least $1 - \exp(-\Omega(n/T)) - 1/2$, 
-$|G| \geq 0.09n/T - 0.032n/T = 0.058n/T$.
+with probability at least $1 - \exp(-\Omega(n/T)) - 1/3$, 
+$|G| \geq 0.09n/T - 0.048n/T = 0.042n/T$.
 \end{proof}
 
 \begin{claim}
-With probability at least \elaine{FILL}, 
-$|G_0| - |G_1| \geq 0.1\cdot n/T$.
+With probability at least $0.37$, %\elaine{FILL}, 
+$|G_0| - |G_1| \geq 0.01\cdot n/T$.
+\label{clm:g0minusg1}
 \end{claim}
 \begin{proof}
 For a fixed $i \in [n]$, the probability that 
@@ -838,9 +840,27 @@ Therefore, we have that
 0.091/T \cdot \frac{n}{4} 
 \geq 0.044 n/T
 \]
-\elaine{FILL}
+Therefore,  
+it must be that with probability $p \geq 0.37$, 
+$|G_0| - |G_1| \geq 0.01\cdot n/T$, since otherwise, 
+\[
+\E[|G_0| - |G_1|]
+\leq 
+(p - \exp(-\Omega(n/T))) \cdot 0.09 n/T
+ + (1-p) \cdot 0.01 n/T
++ \exp(-\Omega(n/T)) \cdot n
+< 0.044 n/T
+\]
 \end{proof}
 
+Combining \Cref{clm:Glarge}
+and \Cref{clm:g0minusg1} and taking union
+bound, we know that  
+with probability at least
+$1-(1-0.65)- (1-0.37) = 0.02$ over the choice of $R$, 
+it holds
+that $|G_0| - |G_1| \geq 0.01n/T$
+and moreover $|G| \geq 0.042n/T$.
 \paragraph{Encoding.}
 
 \paragraph{Decoding.}
