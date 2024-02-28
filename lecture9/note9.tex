@@ -387,12 +387,19 @@ in terms of reads and writes to memory).
 
 \paragraph{Efficiency for clients with constant storage.}
 With constant-storage clients, we need to implement oblivious \textsc{MergeSplit} using \textsc{bitonicsort}. 
-Specifically, we can sort it such that all
+Specifically, we can sort the two input buckets such that all
 real elements that want to go left  
 are in the front, all real elements that want to go right are at the end,
 and some dummy elements can be in the middle.
 %This is done by sorting the real elements with respect to the keys and then padding each of the resulting buckets with dummy elements. 
-In the final layer, the bucket-wise permutation is also done with \textsc{bitonicsort}. Given a bucket, we firstly assign  each  element  with a  $\log n$-bit label. We then obliviously  sort  the  elements  by  their  labels using  \textsc{bitonicsort}.  In total, at each of the $\log B$ layers, we invoke $B/2$ instances of bitonic sort on $2Z$ elements, thus the  runtime  is  roughly  \[\log B\cdot B/2\cdot 2Z\log^2(2Z))\approx 2n\log n\log^2Z.\]
+In the final layer, the bucket-wise permutation is also done with \textsc{bitonicsort}. Given a bucket, we firstly assign  each  element  with a  $\log n$-bit label. We then obliviously  sort  the  elements  by  their  labels using  \textsc{bitonicsort}.  In total, at each of the $\log B$ layers, we invoke $B/2$ instances of bitonic sort on $2Z$ elements; and we need $B$
+instances of bitonic sort on $Z$ elements  
+for the bucket-wise permutation in the final layer.
+Thus the  runtime  is  roughly  
+\[
+\log B\cdot B/2\cdot 2Z\log^2(2Z)
+ + B\cdot Z\log^2(Z)
+\approx 2n\log n\log^2Z.\]
 If we set $Z = \log^2 n$ which is sufficient
 for getting negligibly small failure probability
 (see \Cref{lem:overflow}), we have that the  
@@ -403,6 +410,7 @@ algorithm's runtime is $O(n \log n (\log \log n)^2)$.
 
 \begin{lemma}
     Overflow happens  with  at most $\epsilon(n,Z) =2n/Z\cdot\log(2n/Z)\cdot e^{-Z/6}$ probability.
+\label{lem:overflow}
 \end{lemma}
 
 \begin{proof}
@@ -411,5 +419,6 @@ algorithm's runtime is $O(n \log n (\log \log n)^2)$.
     A Chernoff bound  shows that $B_i$ overflows  with  less  than $e^{-Z/6}$ probability. Hence, taking a union  bound  over  all  levels and all buckets, we get that overflow happens with less than $\epsilon(n,Z) := B\cdot \log B\cdot e^{-Z/6}$ probability.
 \end{proof}
 
-
-
+\Cref{lem:overflow}
+shows that it suffices to set $Z$ to be any superlogarithmic 
+function for the failure probability to be negligibly small.
