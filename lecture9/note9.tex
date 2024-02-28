@@ -371,7 +371,7 @@ For the purpose of construction \textsc{ORP}, we are going to assign each elemen
 
     \item Each element is randomly  assigned to one of the $B$ buckets indexed by a key of  $\log B$ bits.
 
-    \item The elements are routed to their respective destinations through a butterfly network, which contains $\log B$ layers that are connected through \textsc{mergesort} operators.
+    \item The elements are routed to their respective destinations through a butterfly network, which contains $\log B$ layers that are connected through \textsc{mergesplit} operators.
 
     \item The \textsc{mergesplit} operator takes two buckets from the $i^{\text{th}}$ level as inputs and reorganize their elements into two buckets for  the $(i+1)^{\text{th}}$ layer, according to the $(i+1)^{\text{th}}$ most significant bit of the elements' keys. i.e., At the $i^{\text{th}}$ level, every $2i$ consecutive buckets are \emph{semi-sorted} by the most significant $i$ bits of the keys.
 
@@ -382,7 +382,7 @@ For the purpose of construction \textsc{ORP}, we are going to assign each elemen
 
 \paragraph{Efficiency for Clients with $2Z$ storage.}
 
-If the client has a storage size no less than $2Z$, then they can perform \textsc{mergesort} and random permute the buckets at the final layer locally. In each of the $\log B = \log \frac{2n}{Z} < \log N$ layers, the $2n$-sized sequence (containing $n$ real elements and $n$ dummy elements) is read  and written once. So oblivious bin assignment and bucket ORP run in $4n\log n$ time. 
+If the client has a storage size no less than $2Z$, then they can perform \textsc{mergesplit} and random permute the buckets at the final layer locally. In each of the $\log B = \log \frac{2n}{Z} < \log N$ layers, the $2n$-sized sequence (containing $n$ real elements and $n$ dummy elements) is read  and written once. So oblivious bin assignment and bucket ORP run in $4n\log n$ time. 
 
 \paragraph{Efficiency for Clients with constant storage.}
 
