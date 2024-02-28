@@ -490,8 +490,9 @@ where ${\sf negl}(\cdot)$ denotes a negligible function.
 Let $S$ be the client space and let $T$ be the server computation 
 per query.
 Then,
-    \[(S+1)(T+1) \ge  \Omega(N) \]
-\elaine{TODO: change the statement based on the proof}
+%    \[(S+1)(T+1) \ge  \Omega(N) \]
+    \[S \cdot T \ge  \Omega(n) \]
+%\elaine{TODO: change the statement based on the proof}
 \label{thm:pir-st}
 \end{theorem}
 This lower bound holds even for computationally private schemes. It holds even for a single query, regardless of bandwidth, 
@@ -533,7 +534,12 @@ to allow probabilistic correctness, as stated
 in the following theorem:
 
 \begin{theorem}[Yao's box problem with probabilistic correctness]
-\elaine{FILL}
+Given a possibly randomized protocol
+that solves Yao's box problem with correctness probability 
+0.8 or higher, 
+let $S$ be the client space and 
+let $T$ be the server time during the query.
+It must be that $S \cdot T \geq \Omega(n)$.
 \label{thm:yao-prob}
 \end{theorem}
 
@@ -979,15 +985,26 @@ to encode the database.
 We say that a $\DB$ is good if 
 $\Pi^{\sf coin}$ 
 is correct on at least $3/4$ of the indices.
+Henceforth, without loss of generality, we may
+assume that $T \in [2, o(n)]$.
 By \Cref{lem:prob-yao-key-lemma}, 
 as long as $\DB$ is good, using the above encoding/decoding procedure, 
-the decoding 
-is correct with probability $0.04$.
+decoding 
+is correct with probability at least $0.04$.
 Further, we know that $0.1$ fraction of the $\DB$s are good.
 Therefore, when we randomly choose $\DB$, the probability of correct
 decoding is at least $0.1 \cdot 0.04 = \Theta(1)$.
 By \Cref{fct:shannonprob}, the length of the encoding 
 is at least $n - \Theta(1)$.
+Therefore, we have that 
+\[
+S + n - \Theta(n/T) \geq n - \Theta(1)
+\]
+which gives us $S \cdot T \geq \Omega(n)$.
+%$T \in [2, o(n)]$
+% S >= Cn/T - C' 
+%S * T >= Cn - C'T 
+% (S + C')T >= \Omega(n)
 
 %\[
 %\Pr\left[\DB \getr \{0, 1\}^n, i \getr [n]: \ 
