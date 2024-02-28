@@ -976,15 +976,16 @@ $\Pi^{\sf coin}$
 gives a correct answer on at least $3/4$ of the indices.
 Since otherwise, 
 $\Pi$ can achieve  
-correctness at most $0.1 \cdot 1 + 0.9 \cdot 3/4 < 0.775$ 
+correctness probability at most $0.1 \cdot 1 + 0.9 \cdot 3/4 < 0.775$ 
 for a random $\DB$ and random index $i \in [n]$ which
 violates the assumption that $\Pi$ has $0.8$ probabilistic correctness.
 
-Now, we can use the above encoding/decoding procedure  
+Now, fixing ${\sf coins}$ ot be the good choice
+as mentioned above, we can use the above encoding/decoding procedure  
 to encode the database. 
 We say that a $\DB$ is good if 
 $\Pi^{\sf coin}$ 
-is correct on at least $3/4$ of the indices.
+is correct on at least $3/4$ of the indices for $\DB$.
 Henceforth, without loss of generality, we may
 assume that $T \in [2, o(n)]$.
 By \Cref{lem:prob-yao-key-lemma}, 
