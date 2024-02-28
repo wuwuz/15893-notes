@@ -382,7 +382,8 @@ For the purpose of construction \textsc{ORP}, we are going to assign each elemen
 
 \paragraph{Efficiency for Clients with $2Z$ storage.}
 
-If the client has a storage size no less than $2Z$, then they can perform \textsc{mergesplit} and random permute the buckets at the final layer locally. In each of the $\log B = \log \frac{2n}{Z} < \log N$ layers, the $2n$-sized sequence (containing $n$ real elements and $n$ dummy elements) is read  and written once. So oblivious bin assignment and bucket ORP run in $4n\log n$ time. 
+If the client has a storage size no less than $2Z$, then they can perform \textsc{mergesplit} and random permute the buckets at the final layer locally. In each of the $\log B = \log \frac{2n}{Z} < \log N$ layers, the $2n$-sized sequence (containing $n$ real elements and $n$ dummy elements) is read  and written once. So oblivious bin assignment and bucket ORP has $4n\log n$ cost (measured
+in terms of reads and writes to memory). 
 
 \paragraph{Efficiency for Clients with constant storage.}
 
