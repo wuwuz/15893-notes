@@ -1,0 +1,164 @@
+%\usepackage{xspace}
+
+\newcommand{\bits}{\{0,1\}}
+\newcommand{\bfu}{\mathbf{u}}
+\newcommand{\bfv}{\mathbf{v}}
+\newcommand{\bfp}{\mathbf{p}}
+\newcommand{\bfz}{\mathbf{z}}
+\newcommand{\bfx}{\mathbf{x}}
+\newcommand{\bfy}{\mathbf{y}}
+
+\newcommand{\calR}{\mathcal{R}}
+
+\newcommand{\CNextMsg}{\ensuremath{{\sf C Next Msg}}}
+\newcommand{\SNextMsg}{\ensuremath{{\sf S Next Msg}}}
+\newcommand{\CNext}{\ensuremath{{\sf C Next}}}
+\newcommand{\SNext}{\ensuremath{{\sf S Next}}}
+\newcommand{\Cstp}{\ensuremath{{\sf Cst'}}}
+\newcommand{\Cst}{\ensuremath{{\sf Cst}}}
+\newcommand{\msg}{\ensuremath{{\sf msg}}}
+\newcommand{\msgp}{\ensuremath{{\sf msg'}}}
+\newcommand{\Coutput}{\ensuremath{{\sf Reconstr}}}
+\newcommand{\ans}{\ensuremath{{\sf ans}}}
+\newcommand{\Ccoins}{\ensuremath{{\sf Ccoins}}}
+\newcommand{\Scoins}{\ensuremath{{\sf Scoins}}}
+\newcommand{\Expt}{\ensuremath{{\sf Expt}}}
+\newcommand{\coin}{\ensuremath{{\sf coin}}}
+\newcommand{\View}{\ensuremath{{\sf View}}}
+\newcommand{\PPT}{PPT }
+\newcommand{\Out}{\ensuremath{{\sf Out}}}
+\newcommand{\OWF}{\ensuremath{{\sf OWF}}}
+\newcommand{\OT}{\ensuremath{{\sf OT}}}
+\newcommand{\PIR}{\ensuremath{{\sf PIR}}}
+\newcommand{\Server}{\ensuremath{{\sf Server}}}
+\newcommand{\Client}{\ensuremath{{\sf Client}}}
+\newcommand{\Alice}{\ensuremath{{\sf Alice}}}
+\newcommand{\Bob}{\ensuremath{{\sf Bob}}}
+\newcommand{\get}{\ensuremath{\leftarrow}}
+\newcommand{\E}{\ensuremath{{\bf E}}}
+\newcommand{\out}{\ensuremath{{\sf out}}}
+\newcommand{\addr}{\vec{\mbox{addr}}}
+\newcommand{\action}{\vec{\mbox{action}}}
+\newcommand{\op}{\vec{\mbox{op}}}
+\newcommand{\mread}{\mbox{read}}
+\newcommand{\mwrite}{\mbox{write}}
+
+\newcommand{\red}[1]{{}\color{red}#1}
+
+\tikzset{every tree node/.style={minimum width=2em,draw},
+         blank/.style={draw=none},
+         edge from parent/.style=
+         {draw,edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}},
+         level distance=1.5cm}
+
+\section{Goldreich-Ostrovsky}
+\textbf{Goldreich-Ostrovsky Lower Bound \cite{goldreich96software}} Any ORAM scheme (in the balls-and-bins model) must have at least logarithmic overhead. 
+
+\noindent To prove, let
+\begin{itemize}
+  \item $m =$ number of balls the client can hold in its hand
+  \item $t =$ logical request sequence length
+  \item $n =$ memory size
+\end{itemize}
+
+\noindent Every step, client can visit some memory location $i$, and
+\begin{enumerate}
+  \item take no action
+  \item take a ball from $i$
+  \item place a ball into $i$
+\end{enumerate}
+
+\noindent Now given
+\begin{itemize}
+  \item initial memory with $n$ balls,
+  \item requests $r_1\dots r_t$
+  \item implementation $(\addr, \action)$ and $q = |\addr|$
+\end{itemize}
+an observer can only see $\addr$ but not $\action$.
+
+\bigskip
+\noindent\emph{Q: Assume perfect security, how many request sequences can $\addr$ realize?}
+\begin{enumerate}
+  \item For every request, there are $m+2$ possible action (1 from doing nothing, 1 from taking a ball, and $m$ from placing a ball).
+  \item At the end of each $(\addr, \action)$, the client can use the $m$ balls it has to express $m$ different results.
+  \item Need to realize all $n^t$ possible memory access sequences.
+\end{enumerate}
+Thus,
+$$
+\begin{array}{rcl}
+  (m+2)^q \cdot m^q \geq n^t & \Rightarrow & q\log m + q\log(m+2) \geq t\log n \\
+  & \Rightarrow & q/t \geq \frac{\log n}{2\log (m+2)}
+\end{array}
+$$
+
+\noindent Restrction of G-O LB:
+\begin{enumerate}
+  \item Balls and bins assumptions
+  \item Only works for statistically secure schemes
+\end{enumerate}
+
+\section{Lauren-Nielsen}
+
+\textbf{Lauren-Nielsen Lower Bound \cite{larsen18lowerbound}} Logarithmic LB for ORAM but removing these restrictions.
+
+\noindent Assumptions:
+\begin{itemize}
+  \item read and write in ``word''
+  \item word size $\geq \log N$ (memory size)
+\end{itemize}
+
+Assume that there is a binary tree, where each leaf node corresponds to a consecutive (read, write) pair. W.L.o.G, fix 
+$$\op = \mread(0), \mwrite(0, 0), \dots, \mread(0), \mwrite(0, 0)$$
+Want to show: number of probes into memory must be "high" for $\op$.
+
+\noindent \emph{How the tree helps us count}: suppose $\mbox{op}_j$ probes some mem location, and the last time this location was probed was during $\mbox{op}_i$. Then we charge this probe to the least common ancestor in the tree of $\mbox{op}_i$ and $\mbox{op}_j$.
+
+\begin{tikzpicture}
+  \Tree
+  [.\red{charge}     
+      [.{} 
+        [.{\dots} ]
+        [.\red{$\mbox{op}_i$} ]
+      ]
+      [.{}
+        [.{\dots} ]
+        [.\red{$\mbox{op}_j$} ]
+      ]
+  ]
+\end{tikzpicture}
+
+Assume that the adversary can observe the physical probe locations and the boundary between each $\mbox{op}$. Then it can construct this tree in polynomial time, i.e. how many probes are charged to each node. (\emph{This is where computational security kicks in.})
+
+By ORAM security: $\forall\ \op, \op'$ of same length, the two trees constructed must be computationally indistinguishable from each other.
+
+For every subtree $v$ of size $2m$, let the left half of the leaves denote
+$$\mread(0), \mwrite(1, r_1)$$
+$$\vdots$$
+$$\mread(0), \mwrite(m, r_m)$$
+and the right half denote
+$$(\mread(1), \mwrite(0, 0))$$
+$$\vdots$$
+$$(\mread(m), \mwrite(0, 0))$$
+
+Idea: when we count the probes assigned to each node $v$, we can use the worst-case sequence for $v$.
+
+Intuition: imagine balls-and-bins model, number of probes assigned to $v \geq\frac{|\mbox{leaves under } v|}{2}$. Thus, at each level, there will be at least $T/2$ probes. Since there are $\log T$ levels, total number of probes at least $O(T \log T)$.
+
+\textbf{Information Transfer Technique} (Encoding Argument): let coins be the randomness consumed by ORAM.
+\begin{itemize}
+  \item Encode ($r_1, \dots r_m$, coins)
+  \begin{enumerate}
+    \item Execute ORAM over prefix $\mread(0), \mwrite(0, 0), \dots$
+    \item Execute $\mread(0), \mwrite(1, r_1), \dots, \mread(0), \mwrite(m, r_m)$
+    \item Execute $\mread(1), \mwrite(0, 0), \dots, \mread(m), \mwrite(0, 0)$
+  \end{enumerate}
+  \item Encoding ($C$) = for each memory location probed during 2 and 3, record (location, last value written during 2) and the CPU register at the end of 2
+  \item Decode ($C$, coins)
+  \begin{enumerate}
+    \item Same as 1 in Encode
+    \item Reset CPU state to $C$.cpuState for every (loc, val) in $C$, let mem[loc]$\leftarrow$ val
+    \item same as 3 in Encode
+  \end{enumerate}
+  \item Decoder output the outcomes of the read ops in 3
+\end{itemize}
+
