@@ -9,10 +9,9 @@
 \section{Oblivious Sorting}
 
 \begin{definition}
-    An algorithm $\alg$ is \textbf{oblivious} if for all pairs of inputs $\mathcal{I}, \mathcal{I}'$ with equal lengths, we have:
+    An algorithm $\alg$ is \textbf{oblivious} if for all pairs of inputs $\mathcal{I}, \mathcal{I}'$ of equal length, we have:
     \[\ap(\alg, \mathcal{I}) \approx \ap(\alg, \mathcal{I}'), \]
-
-    where $\ap(\alg, \mathcal{I})$ denotes the observed access pattern when executing $\alg$ on input $\mathcal{I}$, and $\approx$ denotes two distributions are indistinguishable (either statistically or computationally, depending on the specific setting.)
+where $\ap(\alg, \mathcal{I})$ denotes the observed access pattern when executing $\alg$ on input $\mathcal{I}$, and $\approx$ denotes two distributions are indistinguishable (either statistically or computationally, depending on the specific setting.)
 \end{definition}
 
 $ $
@@ -43,9 +42,9 @@ If in both $Arr_1$ and $Arr_2$, $\textbf{4}$ is picked to be the pivot, then Qui
 
 $ $
 
-We can na\"ively compile QuickSort to be oblivious using $\textsc{PathOram}$. However, this incurs a log-squared overhead. Since the runtime of QuickSort is $\mathcal{O}(n\log n)$ where $n$ is the input length, the resulting oblivious version of QuickSort runs in $\mathcal{O}(n\log^3 n)$.
+We can na\"ively compile QuickSort to be oblivious using $\textsc{PathOram}$. However, this incurs a log-squared (multiplicative) overhead. Since the runtime of QuickSort is $\mathcal{O}(n\log n)$ where $n$ is the input length, the resulting oblivious version of QuickSort runs in $\mathcal{O}(n\log^3 n)$.
 
-In this lecture, we will see two direct constructions of oblivious sorting that achieve faster runtime than compiled QuickSort. Our ultimate goal is to match the runtime of non-oblivious QuickSort, i.e. $\mathcal{O}(n\log n)$.
+In this lecture, we will see two direct constructions of oblivious sorting that achieve faster runtime than compiling QuickSort with ORAM. Our ultimate goal is to match the runtime of non-oblivious QuickSort, i.e. $\mathcal{O}(n\log n)$.
 
 \begin{mdframed}[innertopmargin=0pt, skipabove=\topskip, skipbelow=\topskip,align=left]
    \begin{remark}
