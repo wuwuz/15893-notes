@@ -139,9 +139,13 @@ $ $
 \end{center}
 $ $
 
-\noindent where deeper colors represent larger values, and the arrows point to the larger values. Note that in the top $k-n/2$ rows (until the dashed line), the value on the right column must be greater than or equal to that on the left column.
+\noindent %where deeper colors represent larger values, 
+where 
+the blue and black arrows point to the larger values. 
+Note that in the top $k-n/2 + 1$ rows (until the dashed line), the value on the right column must be greater than or equal to that on the left column.
 
-Moreover, starting from the $(k-n/2)^\text{th}$ row, if we gradually move down the dashed line, we will find a unique row $r$ such that: \begin{itemize}
+Moreover, starting from the $(k-n/2 +2 )^\text{th}$ row (i.e., below
+the dashed line), if we gradually move down the dashed line, we will find a unique row $r$ (or reach the end) such that: \begin{itemize}
     \item Above this row, the value on the right column is greater than or equal to that on the left column, and \item Below this row, the value on the right column is less than or equal to that on the left column.
 \end{itemize}
 This is visualized as follows:
