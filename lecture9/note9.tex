@@ -318,9 +318,9 @@ A concrete example of the recursion is given as follows:
 
 \paragraph{Analysis.} \textsc{bitonicsort} is oblivious because the behavior of the algorithm does not depend on the content of the input, i.e., the sequence of comparisons is deterministic regardless of the comparison results. At each layer of the recursion, the total number of comparisons made by all calls in this layer is upper bounded by $n/2$. The depth of the recursion is given by \[D(n)  = D(n/2) + \log n \] which solves to $\log n (\log n+1)/2$. Therefore the total number of comparisons is upper bounded by $n/2 \cdot \log n (\log n+1)/2 = \mathcal{O}(n \log^2 n)$, where the Big-O notation hides a relatively small constant.
 
-\section{Bucket Oblivious Sort \cite{bucket}}
+\section{Bucket Oblivious Sort}
 
-We start by introducing the Bucket Oblivious Sorting algorithm that has an $\mathcal{O}(n\log n (\log\log n)^2)$ complexity. Afterward, we will discuss the improvement to speed it up to $\mathcal{O}(n\log n)$. In general, the framework of BucketSort is as follows: 
+We start by introducing the Bucket Oblivious Sorting algorithm~\cite{bucket} that has an $\mathcal{O}(n\log n (\log\log n)^2)$ complexity. Afterward, we will discuss the improvement to speed it up to $\mathcal{O}(n\log n)$. In general, the framework of BucketSort is as follows: 
 
 $ $
 
