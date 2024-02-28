@@ -6,6 +6,21 @@
 \newtheorem{nonexample}[theorem]{Non-Example}
 
 
+We will cover oblivious sorting in today's lecture, which is
+a powerful building
+block in the design of many oblivious algorithms. 
+In an earlier lecture, we learned about how to construct Oblivious RAM (ORAM).
+ORAM lets you compile any 
+non-oblivious algorithm into an oblivious counterpart.
+However, for a specific computation task,
+using ORAM to generically compile an existing non-oblivious algorithm
+often is not the fastest approach. 
+Today we will see one such example, namely, oblivious sorting.
+In future lectures, we will see more examples, 
+such as oblivious data structures, where customized oblivious algorithms
+asymptotically outperform generic ORAM-compilation 
+of an existing non-oblivious algorithm.  
+
 \section{Oblivious Sorting}
 
 \begin{definition}
