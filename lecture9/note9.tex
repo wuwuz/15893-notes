@@ -375,14 +375,33 @@ For the purpose of construction \textsc{ORP}, we are going to assign each elemen
 
     \item The \textsc{mergesplit} operator takes two buckets from the $i^{\text{th}}$ level as inputs and reorganize their elements into two buckets for  the $(i+1)^{\text{th}}$ layer, according to the $(i+1)^{\text{th}}$ most significant bit of the elements' keys. i.e., At the $i^{\text{th}}$ level, every $2i$ consecutive buckets are \emph{semi-sorted} by the most significant $i$ bits of the keys.
 
-    \item Finally, to obtain a random permutation from our random bin assignments, we  simply remove  all  dummy  elements in each bin and then randomly permute each single bucket at the final layer. 
+    \item Finally, 
+to obtain a random permutation from our random bin assignments, 
+we obliviously and randomly permute the real elements within 
+each bucket in the final layer. Further, we remove
+the dummy elements 
+from each bin in the finaly layer. 
+The bin-wise oblivious random permutation 
+can be accomplished by assigning a random $\log n$-bit label
+to each real element in the bin, and 
+and then calling bitonic sort to sort the real elements by their labels,
+while all dummies at the end of the bin (if two elements
+are found to have duplicate labels, we can repeat the process).
+Removing the dummies can be by making a pass over the final-layer bins,
+writing down only the real elements. 
+During this process, the number of dummies in each final-layer bin
+is revealed --- but this information is safe to reveal
+since it is simulatable without knowledge
+of the contents  
+of the input array to be sorted.
+%we  simply remove  all  dummy  elements in each bin and then randomly permute each single bucket at the final layer. 
 \end{itemize}
 
 \includegraphics[scale=0.45]{fig2.png}
 
 \paragraph{Efficiency for clients with $2Z$ storage.}
 
-If the client has a storage size no less than $2Z$, then they can perform \textsc{mergesplit} and random permute the buckets at the final layer locally. In each of the $\log B = \log \frac{2n}{Z} < \log N$ layers, the $2n$-sized sequence (containing $n$ real elements and $n$ dummy elements) is read  and written once. So oblivious bin assignment and bucket ORP has $4n\log n$ cost (measured
+If the client has a storage size no less than $2Z$, then they can perform \textsc{mergesplit} and random permute the buckets at the final layer locally. In each of the $\log B = \log \frac{2n}{Z} < \log n$ layers, the $2n$-sized sequence (containing $n$ real elements and $n$ dummy elements) is read  and written once. So oblivious bin assignment and bucket ORP has $4n\log n$ cost (measured
 in terms of reads and writes to memory). 
 
 \paragraph{Efficiency for clients with constant storage.}
