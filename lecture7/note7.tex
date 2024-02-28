@@ -718,6 +718,29 @@ can be encoded using $M \cdot (1- 2.86 \epsilon^2)$ bits.
 \label{fct:encodeset}
 \end{fact}
 \begin{proof}
+The number of ways to choose a subset of size
+at most $(1/2 - \epsilon)M$
+is 
+\[
+\sum_{i = 0}^{(1/2 - \epsilon)M}
+{M \choose i}
+\leq 2^{\mathbb{H}(1/2-\epsilon) M}
+\]
+where $\mathbb{H}$ is the binary entropy function, and the inequality 
+is due to Theorem 3.1 of Galvin~\cite{galvin} --- you can also try 
+proving it as exercise yourself!
+We can get that 
+$\log_2(2^{\mathbb{H}(1/2-\epsilon) M}) = 
+\mathbb{H}(1/2-\epsilon)\cdot M \leq M \cdot (1-2.86\epsilon^2)$
+by Taylor expansion. 
+
+\ignore{
+its not a major thing at all- but there is a small mistake in the proof of fact 2- the sterling step seems to use M! \le (M/e)^n, the inequality actual goes the other way (and hence using it in the denominator is fine)
+
+You can directly use the following inequality for simplicity- it ends up in the same expression you get before the taylor expansion:
+for \alpha \in(0,0.5), \sum_{i=0}^{\alpha*n} {n \choose i} \leq 2^{H(\alpha)} where H is the binary entropy function- 
+(an interested student can try to do the proof of this step as an exercise)
+you can add this note as a clean proof of the reference of this inequality in case you use it https://arxiv.org/pdf/1406.7872.pdf
 The number of ways to choose  
 a subset of size exactly $(1/2 - \epsilon)M$
 among $M$ elements is 
@@ -751,6 +774,7 @@ $\log_2((1/2 - \epsilon)M \cdot f + 1) \leq
 
 \ignore{TO FIX here: 
 the set can also be smaller than this size, consider all possible sizes.} 
+}
 \end{proof}
 
 
