@@ -517,7 +517,7 @@ correctness, as stated below.
 
 \paragraph{Yao's box problem with probabilistic correctness.}
 We say that some protocol $\Pi$ solves
-Yao's box problem with probabilistic correctness $\delta(n)$,  
+Yao's box problem with probablistic correctness $\delta(n)$,  
 iff 
 for any $\DB\in \{0, 1\}^n$, 
 it holds that 
@@ -641,8 +641,6 @@ tradeoff for 1-server preprocessing PIR.
 %\[p =\prob[\text{PIRExpt opens $i$}] \le \frac{T}{N} + \negl(N)\]
 
 
-
-
 \subsection{Proof of \Cref{thm:yao-prob}} 
 \label{sec:prob-yao}
 We now prove \Cref{thm:yao-prob}. 
@@ -684,6 +682,7 @@ r\getr\{0, 1\}^r, \DB \getr \{0, 1\}^n:
 \geq \delta
 \]
 Then, $m \geq n - \log(\frac{1}{\delta})$.
+\label{fct:shannonprob}
 \end{fact}
 \begin{proof}
 There must exist some $r$ such that 
@@ -781,6 +780,7 @@ such that
 %\elaine{FILL some concrete number}
 Further, the encoding length 
 $m \leq n - \Theta(\frac{n}{T}) + S$.
+\label{lem:prob-yao-key-lemma}
 \end{lemma}
 \begin{proof}
 %\elaine{FILL}
@@ -957,9 +957,47 @@ is at least $0.04$.
 \end{proof}
 
 
-\elaine{TODO: continue below}
+%\elaine{TODO: continue below}
+\paragraph{Completing the proof of \Cref{thm:yao-prob}.}
+Suppose we have a (possibly randomized)
+protocol $\Pi$ for solving Yao's box problem, and for any $\DB$,
+it achieves  
+probabilistic correctness $0.8$ for a random query index.
+Then, it must be that we can find 
+some good ${\sf coins}$, such that 
+for at least $0.1$ fraction of the databases,
+$\Pi^{\sf coin}$ 
+gives a correct answer on at least $3/4$ of the indices.
+Since otherwise, 
+$\Pi$ can achieve  
+correctness at most $0.1 \cdot 1 + 0.9 \cdot 3/4 < 0.775$ 
+for a random $\DB$ and random index $i \in [n]$ which
+violates the assumption that $\Pi$ has $0.8$ probabilistic correctness.
+
+Now, we can use the above encoding/decoding procedure  
+to encode the database. 
+We say that a $\DB$ is good if 
+$\Pi^{\sf coin}$ 
+is correct on at least $3/4$ of the indices.
+By \Cref{lem:prob-yao-key-lemma}, 
+as long as $\DB$ is good, using the above encoding/decoding procedure, 
+the decoding 
+is correct with probability $0.04$.
+Further, we know that $0.1$ fraction of the $\DB$s are good.
+Therefore, when we randomly choose $\DB$, the probability of correct
+decoding is at least $0.1 \cdot 0.04 = \Theta(1)$.
+By \Cref{fct:shannonprob}, the length of the encoding 
+is at least $n - \Theta(1)$.
+
+%\[
+%\Pr\left[\DB \getr \{0, 1\}^n, i \getr [n]: \ 
+%\Pi^{\sf coins} \text{ is correct for $(\DB, i)$} \right]
+%\geq 3/4
+%\]
 
 
+
+\ignore{
 \section*{Old TEXT below}
 \vspace{5mm}
 
@@ -1061,3 +1099,4 @@ With the information above, we can mek the following conclusion.
 \end{align*}
 
 \qed
+}
