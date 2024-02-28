@@ -645,8 +645,19 @@ tradeoff for 1-server preprocessing PIR.
 \subsection{Proof of \Cref{thm:yao-prob}} 
 \label{sec:prob-yao}
 We now prove \Cref{thm:yao-prob}. 
-We present a version of the proof described by De, Trevisan, 
+We present a variant of the proof\footnote{The proof 
+we present below fixes
+a bug in their proof. %of Lemma 8.4.
+Specifically, the way they take Chernoff bound in the proof of Lemma 8.4 
+is incorrect
+since the underlying random variables are positively correlated.
+Thanks to Ashrujit Ghoshal
+for helping me fix the bug.
+} 
+described by De, Trevisan, 
 and Tulsiani~\cite{DTT10}. 
+
+
 
 
 \begin{fact}[Extension of Shannon's theorem for codes
@@ -728,8 +739,10 @@ Let $\DB \in \{0, 1\}^n$ be some fixed string
 such that 
 $\Pi$ gives a correct answer
 on  
-at least $\frac{1}{2} + \epsilon$ 
+at least $\frac{3}{4}$ 
+\elaine{note param}
 fraction of the indices.
+\elaine{may need some assumption T much smalller than n}
 Then, 
 %there is a randomized
 %encoding ${\sf Enc}$ and decoding procedure 
@@ -743,13 +756,49 @@ such that
 {\sf Dec}\left({\sf Enc}(\DB, r), r\right) 
 \right]
 \geq 
-\Omega(\epsilon/T)
+\Omega(1)
 \]
 Further, the encoding length 
-$m \leq n - \frac{\epsilon^2 n}{10T} + S + O(1)$.
+$m \leq n - \Theta(\frac{n}{10T}) + S$.
 \end{lemma}
 \begin{proof}
-\elaine{FILL}
+%\elaine{FILL}
+Suppose we sample each index in $[n]$ with probability $1/10T$
+into some random set $R$.
+For some $i \in R$, if running the protocol $\Pi$   
+on $i$ 
+does not end up visiting any position 
+in $R$, then we say that $i$ is {\it good}.
+Let $G \subseteq R$ be the subset of $R$ that are good. 
+We partition $G = G_0 \cup G_1$ into two disjoint subsets,
+where $G_0$ includes every index $i \in G$
+such that running $\Pi$ on $i$ gives a correct answer,
+and  
+$G_1$ includes every index $i \in G$
+such that running $\Pi$ on $i$ gives an incorrect answer.
+
+\begin{fact}
+$\E[|R|] = N/10T$. Further, 
+by Chernoff bound, $\Pr[|R| > 0.09N/T] \geq \exp(-\Omega(N/T))$.
+\end{fact}
+
+\begin{claim}
+%$\E[|G|] \geq 0.09/T$. 
+$\Pr[|G| > \elaine{FILL}] \geq \elaine{FILL}$.
+\end{claim}
+\begin{proof}
+For a fixed $i \in [n]$, the probability that it lands in $R$
+and is bad is  
+\[
+\frac{1}{10T} \cdot \left(1-\left(1-\frac{1}{10T}\right)^{T}\right)
+\leq 
+\frac{1}{10T} \cdot \left(1 - 1/e^{0.1}\right)
+%\frac{1}{10T} \cdot (1-\frac{1}{10T})^T 
+%\geq 0.09 /T
+\]
+
+\end{proof}
+
 \end{proof}
 
 
