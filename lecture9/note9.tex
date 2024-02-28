@@ -387,6 +387,11 @@ in terms of reads and writes to memory).
 
 \paragraph{Efficiency for clients with constant storage.}
 With constant-storage clients, we need to implement oblivious \textsc{MergeSplit} using \textsc{bitonicsort}. This is done by sorting the real elements with respect to the keys and then padding each of the resulting buckets with dummy elements. In the final layer, the bucket-wise permutation is also done with \textsc{bitonicsort}. Given a bucket, we firstly assign  each  element  with a  $\log n$-bit label. We then obliviously  sort  the  elements  by  their  labels using  \textsc{bitonicsort}.  In total, at each of the $\log B$ layers, we invoke $B/2$ instances of bitonic sort on $2Z$ elements, thus the  runtime  is  roughly  \[\log B\cdot B/2\cdot 2Z\log^2(2Z))\approx 2n\log n\log^2Z.\]
+If we set $Z = \log^2 n$ which is sufficient
+for getting negligibly small failure probability
+(see \Cref{lem:overflow}), we have that the  
+algorithm's runtime is $O(n \log n (\log \log n)^2)$.
+
 
 \paragraph{Success probability.} The above algorithm is guaranteed to output a correct, randomly permuted version of the input sequence if none of the buckets ever overflows (i.e., receives more than $Z$ real elements) during the routing.
 
