@@ -51,7 +51,31 @@
          {draw,edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}},
          level distance=1.5cm}
 
-\section{Goldreich-Ostrovsky}
+In this lecture, we will prove that any Oblivious RAM (ORAM)
+scheme must suffer from logarithmic overhead. 
+We will show two proofs.  The first
+proof was 
+described in Goldreich and Ostrovsky's original paper on 
+ORAM~\cite{goldreich96software}. 
+Their lower bound has two restrictions: 
+1) it works only for {\it statistically} secure ORAMs and 
+2) 
+it assumes that the ORAM is in the {\it balls-and-bins}
+model, i.e., the scheme does not perform
+any encoding on the payload strings stored in memory.
+Many years later, in 2018, the 
+work of Larsen and Nielsen~\cite{larsen18lowerbound}
+proved a new lower bound removing both of these restrictions. 
+Interestingly, their proof uses techniques
+from the data structure lower bound literature.
+We will also 
+cover Larsen and Nielsen's lower bound in today's lecture.
+
+
+
+
+\section{Goldreich and Ostrovsky's Lower Bound}
+
 \textbf{Goldreich-Ostrovsky Lower Bound \cite{goldreich96software}} Any ORAM scheme (in the balls-and-bins model) must have at least logarithmic overhead. 
 
 \noindent To prove, let
