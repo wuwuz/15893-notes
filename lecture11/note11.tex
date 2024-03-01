@@ -76,6 +76,55 @@ cover Larsen and Nielsen's lower bound in today's lecture.
 
 \section{Goldreich and Ostrovsky's Lower Bound}
 
+\begin{theorem}
+Consider any perfectly secure ORAM scheme in the balls-and-bins model
+such that the ORAM begins with 
+a memory already loaded with $n$ words. 
+Then, any 
+logical request sequence of length $t$ 
+must incur $\max(n, \Omega(t \log t))$ total cost. 
+Further, the lower bound works even for read-only 
+requests. 
+\end{theorem}
+\begin{proof}
+Consider the following game. 
+Initially, there are $n$ balls, and ball $i$ is stored in cell $i$
+of the memory.
+There is a sequence of $t$ logical requests, to read
+the balls indexed $i_1, \ldots, i_t$ respectively.
+A player 
+can hold up to $m$ balls in her hand. 
+In every time step indexed $1, 2, \ldots, q$, she 
+can visit a memory cell of her choice and 
+perform one of the following hidden operations:
+\begin{enumerate}[itemsep=1pt]
+\item 
+Take a ball from the memory cell and put it in her hand;
+\item 
+Place a ball from her hand to the memory cell (if it is currently empty);
+\item 
+Do nothing.
+\end{enumerate}
+The player's action sequence 
+can satisfy the request sequence, iff there is  
+a subsequence 
+$1\leq j_1 \leq j_2 \leq \ldots \leq j_t \leq q$, such
+that for all $k \in [t]$, 
+the ball indexed $i_k$ is in the player's hands
+at the end of 
+time step $j_k$. 
+
+Suppose that an adversary can observe which memory cell
+the player visits in every time step,  
+but cannot observe which hidden operation the player performs. 
+Similarly, the adversary cannot observe which balls are 
+stored in the memory cells or the player's hands.
+Now, the player's job is to satisfy the logical request
+sequence $i_1, \ldots, i_t$ without revealing any information 
+about the logical request sequence.
+\end{proof}
+
+
 \textbf{Goldreich-Ostrovsky Lower Bound \cite{goldreich96software}} Any ORAM scheme (in the balls-and-bins model) must have at least logarithmic overhead. 
 
 \noindent To prove, let
