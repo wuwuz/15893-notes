@@ -51,7 +51,162 @@
          {draw,edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}},
          level distance=1.5cm}
 
-\section{Goldreich-Ostrovsky}
+In this lecture, we will prove that any Oblivious RAM (ORAM)
+scheme must suffer from logarithmic overhead. 
+We will show two proofs.  The first
+proof was 
+described in Goldreich and Ostrovsky's original paper on 
+ORAM~\cite{goldreich96software}. 
+Their lower bound has two restrictions: 
+1) it works only for {\it statistically} secure ORAMs and 
+2) 
+it assumes that the ORAM is in the {\it balls-and-bins}
+model, i.e., the scheme does not perform
+any encoding on the payload strings stored in memory.
+Many years later, in 2018, the 
+work of Larsen and Nielsen~\cite{larsen18lowerbound}
+proved a new lower bound removing both of these restrictions. 
+Interestingly, their proof uses techniques
+from the data structure lower bound literature.
+We will also 
+cover Larsen and Nielsen's lower bound in today's lecture.
+
+
+
+
+\section{Goldreich and Ostrovsky's Lower Bound}
+
+\begin{theorem}[Goldreich-Ostrovsky ORAM lower bound]
+Consider any perfectly secure ORAM scheme in the balls-and-bins model
+such that the memory is  
+initialized with $n$ words, and the client has $m$ space. 
+Then, any 
+logical request sequence of length $t$ 
+must incur $\max(n, \Omega(t \log_m n))$ total cost. 
+Further, the lower bound works even for read-only 
+requests. 
+\end{theorem}
+\begin{proof}
+Consider the following game. 
+Initially, there are $n$ balls, and ball $i$ is stored in cell $i$
+of the memory.
+There is a sequence of $t$ logical requests, to read
+the balls indexed $i_1, \ldots, i_t$ respectively.
+A player 
+can hold up to $m$ balls in her hand, and initially, her hand is empty.
+In every time step indexed $1, 2, \ldots, q$, she 
+can visit a memory cell of her choice and 
+take one of the following hidden actions: 
+\begin{enumerate}[itemsep=1pt]
+\item 
+Take a ball from the memory cell and put it in her hand;
+\item 
+Place a ball from her hand to the memory cell (if it is currently empty);
+\item 
+Do nothing.
+\end{enumerate}
+The player's action sequence 
+can satisfy the request sequence, iff there is  
+a subsequence 
+$1\leq j_1 \leq j_2 \leq \ldots \leq j_t \leq q$, such
+that for all $k \in [t]$, 
+the ball indexed $i_k$ is in the player's hands
+at the end of 
+time step $j_k$. 
+
+Suppose that an adversary can observe which memory cell
+the player visits in every time step,  
+but cannot observe which hidden action the player takes. 
+Similarly, the adversary cannot observe which balls are 
+stored in the memory cells or the player's hands.
+Now, the player's job is to satisfy the logical request
+sequence $i_1, \ldots, i_t$ without revealing any information 
+about the logical request sequence.
+We assume that the adversary knows the parameters $n, t, m$.
+
+First, it is easy to see that $q \geq m$. 
+To see this, consider a logical request sequence of length $1$.
+To satisfy the request, 
+if there is some memory cell the player does not visit, it directly
+reveals
+that the request is not for that index.
+In the remainder of the proof, we focus on proving
+$q \geq \Omega(t \log_m n)$.
+
+Consider a fixed sequence of memory cells visited 
+$(v_1, \ldots, v_q)$ 
+that happens with non-zero probability 
+when the logical request sequence is $(1, 1, \ldots, 1)$.
+%Henceforth we call 
+%$(v_1, \ldots, v_q)$ 
+%the {\it physical access} sequence.
+Because of the privacy requirement, 
+$(v_1, \ldots, v_q)$ 
+must be able to satisfy any logical request
+sequence of length $t$, and the total number
+of logical request sequences of length $t$ is $n^t$.
+
+Now, how many logical request sequences
+can $(v_1, \ldots, v_q)$ 
+satisfy? 
+When we fix %the sequence of memory cells visited
+the physical access sequence 
+$(v_1, \ldots, v_q)$, 
+in each of the 
+$q$ time steps, the player can choose 
+one of at most $m+2$ hidden actions. 
+Specifically, if the player chooses to place a ball,
+the ball can be 
+one of the (up to) $m$ balls in her hand. 
+Therefore, fixing $(v_1, \ldots, v_q)$, there are 
+$(m+2)^q$ possible 
+action sequences.
+Further, when we fix the sequence of memory cells
+visited $(v_1, \ldots, v_q)$
+as well as the sequence of hidden actions, 
+it 
+can satisfy at most ${q \choose t} \cdot m^t$
+logical requests, where $q \choose t$ is the number
+of ways to choose $t$ out of the $q$ time steps,
+and for each of the $t$ chosen time steps, the player can choose
+one out of up to $m$ balls in her hand to satisfy the next request.
+
+Summarizing the above, we have
+that 
+\[
+{q \choose t} \cdot (m+2)^q \geq n^t
+\]
+Using the fact that ${q \choose t} \leq \left(\frac{eq}{t}\right)^t$, we have
+\[
+\left(\frac{eq}{t}\right)^t\cdot (m+2)^q \geq n^t
+\]
+Therefore,
+\[
+q \log(m+2) \geq t (\log n  -  \log (eq/t))
+\]
+If $q/t > \sqrt{n}$, then $q > t \log n$ trivially follows.
+Therefore, we may assume that $q/t \leq \sqrt{n}$.  
+In this case, 
+we have that 
+$q \geq \Omega(t\log n/\log(m+2))$ which gives the desired bound. 
+\end{proof}
+
+In the above proof, 
+the game setup
+where the player can only grab and place
+balls means that this proof works only 
+for ORAM schemes in the balls-and-bins model.
+Moreover,  the counting-based argument %in the above proof
+implicitly assumes that the 
+scheme is perfectly secure.
+With some more work,
+it is possible to extend the above proof to 
+work for statistical (rather than 
+perfect) security. 
+
+\section{Old Text}
+
+
 \textbf{Goldreich-Ostrovsky Lower Bound \cite{goldreich96software}} Any ORAM scheme (in the balls-and-bins model) must have at least logarithmic overhead. 
 
 \noindent To prove, let
