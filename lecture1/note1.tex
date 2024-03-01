@@ -1,6 +1,7 @@
 
 %\section{Lecture 1: Private Information Retrieval}
-The Private Information Retrieval problem was first introduced by CGKS 98, In this setting, we will have a client and server(s). The server(s) are connected to a public database indexed from $1$ to $n$, which could represent DNS, webpage, leaked password database, etc.
+The Private Information Retrieval problem was first introduced by Benny Chor, Eyal Kushilevitz, Oded Goldreich and Madhu Sudan~\cite{chor1998private}.
+In this setting, we will have a client and server(s). The server(s) are connected to a public database indexed from $1$ to $n$, which could represent DNS, webpage, leaked password database, etc.
 
 A client wants to fetch an entry from this database $i \in [n]$ but does not want to leak their query to the server(s). More formally,
 \begin{definition}[PIR - Single Server Scheme]
@@ -96,7 +97,7 @@ It is straightforward to verify correctness by seeing that
 \[r_{1} \oplus r_{2} = S r_{1} \oplus Sr_{2} \bmod 2 = S (r_{1} \oplus r_{2}) \bmod 2\]
 Lastly, this scheme is private, since $v_{1},v_{2}$ are uniformly random in each server's view, respectively.
 
-\subsection{$n^{\frac{1}{3}}$-BW 2-server Scheme (CGKS '98)}
+\subsection{$n^{\frac{1}{3}}$-BW 2-server Scheme\cite{chor1998private}}
 We will first motivate this construction with a two server scheme with expected $\frac{n}{2}$ bandwidth and a eight server scheme with $n^{\frac 1 3}$ bandwidth. 
 \begin{enumerate}
 	\item \textbf{$\mathbb{E}[\frac{n}{2}]$-BW 2-server Scheme}
