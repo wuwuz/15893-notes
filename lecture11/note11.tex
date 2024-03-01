@@ -78,9 +78,8 @@ cover Larsen and Nielsen's lower bound in today's lecture.
 
 \begin{theorem}[Goldreich-Ostrovsky ORAM lower bound]
 Consider any perfectly secure ORAM scheme in the balls-and-bins model
-such that the ORAM begins with 
-a memory already loaded with $n$ words, and suppose
-that the client has $m$ space. 
+such that the memory is  
+initialized with $n$ words, and the client has $m$ space. 
 Then, any 
 logical request sequence of length $t$ 
 must incur $\max(n, \Omega(t \log_m n))$ total cost. 
@@ -191,6 +190,11 @@ In this case,
 we have that 
 $q \geq \Omega(t\log n/\log(m+2))$ which gives the desired bound. 
 \end{proof}
+
+Note that the counting based argument in the above proof
+implicitly assumes that the 
+scheme is perfectly secure.
+
 
 \section{Old Text}
 
