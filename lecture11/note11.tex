@@ -76,13 +76,14 @@ cover Larsen and Nielsen's lower bound in today's lecture.
 
 \section{Goldreich and Ostrovsky's Lower Bound}
 
-\begin{theorem}
+\begin{theorem}[Goldreich-Ostrovsky ORAM lower bound]
 Consider any perfectly secure ORAM scheme in the balls-and-bins model
 such that the ORAM begins with 
-a memory already loaded with $n$ words. 
+a memory already loaded with $n$ words, and suppose
+that the client has $m$ space. 
 Then, any 
 logical request sequence of length $t$ 
-must incur $\max(n, \Omega(t \log t))$ total cost. 
+must incur $\max(n, \Omega(t \log_m n))$ total cost. 
 Further, the lower bound works even for read-only 
 requests. 
 \end{theorem}
@@ -93,10 +94,10 @@ of the memory.
 There is a sequence of $t$ logical requests, to read
 the balls indexed $i_1, \ldots, i_t$ respectively.
 A player 
-can hold up to $m$ balls in her hand. 
+can hold up to $m$ balls in her hand, and initially, her hand is empty.
 In every time step indexed $1, 2, \ldots, q$, she 
 can visit a memory cell of her choice and 
-perform one of the following hidden operations:
+take one of the following hidden actions: 
 \begin{enumerate}[itemsep=1pt]
 \item 
 Take a ball from the memory cell and put it in her hand;
@@ -116,13 +117,82 @@ time step $j_k$.
 
 Suppose that an adversary can observe which memory cell
 the player visits in every time step,  
-but cannot observe which hidden operation the player performs. 
+but cannot observe which hidden action the player takes. 
 Similarly, the adversary cannot observe which balls are 
 stored in the memory cells or the player's hands.
 Now, the player's job is to satisfy the logical request
 sequence $i_1, \ldots, i_t$ without revealing any information 
 about the logical request sequence.
+We assume that the adversary knows the parameters $n, t, m$.
+
+First, it is easy to see that $q \geq m$. 
+To see this, consider a logical request sequence of length $1$.
+To satisfy the request, 
+if there is some memory cell the player does not visit, it directly
+reveals
+that the request is not for that index.
+In the remainder of the proof, we focus on proving
+$q \geq \Omega(t \log_m n)$.
+
+Consider a fixed sequence of memory cells visited 
+$(v_1, \ldots, v_q)$ 
+that happens with non-zero probability 
+when the logical request sequence is $(1, 1, \ldots, 1)$.
+%Henceforth we call 
+%$(v_1, \ldots, v_q)$ 
+%the {\it physical access} sequence.
+Because of the privacy requirement, 
+$(v_1, \ldots, v_q)$ 
+must be able to satisfy any logical request
+sequence of length $t$, and the total number
+of logical request sequences of length $t$ is $n^t$.
+
+Now, how many logical request sequences
+can $(v_1, \ldots, v_q)$ 
+satisfy? 
+When we fix %the sequence of memory cells visited
+the physical access sequence 
+$(v_1, \ldots, v_q)$, 
+in each of the 
+$q$ time steps, the player can choose 
+one of at most $m+2$ hidden actions. 
+Specifically, if the player chooses to place a ball,
+the ball can be 
+one of the (up to) $m$ balls in her hand. 
+Therefore, fixing $(v_1, \ldots, v_q)$, there are 
+$(m+2)^q$ possible 
+action sequences.
+Further, when we fix the sequence of memory cells
+visited $(v_1, \ldots, v_q)$
+as well as the sequence of hidden actions, 
+it 
+satisfy at most ${q \choose t} \cdot m^t$
+logical requests, where $q \choose t$ is the number
+of ways to choose $t$ out of the $q$ time steps,
+and for each of the $t$ chosen time steps, the player can choose
+one out of up to $m$ balls in her hand to satisfy the next request.
+
+Summarizing the above, we have
+that 
+\[
+{q \choose t} \cdot (m+2)^q \geq n^t
+\]
+Using the fact that ${q \choose t} \leq \left(\frac{eq}{t}\right)^t$, we have
+\[
+\left(\frac{eq}{t}\right)^t\cdot (m+2)^q \geq n^t
+\]
+Therefore,
+\[
+q \log(m+2) \geq t (\log n  -  \log (eq/t))
+\]
+If $q/t > \sqrt{n}$, then $q > t \log n$ trivially follows.
+Therefore, we may assume that $q/t > \sqrt{n}$.  
+In this case, 
+we have that 
+$q \geq \Omega(t\log n/\log(m+2))$ which gives the desired bound. 
 \end{proof}
+
+\section{Old Text}
 
 
 \textbf{Goldreich-Ostrovsky Lower Bound \cite{goldreich96software}} Any ORAM scheme (in the balls-and-bins model) must have at least logarithmic overhead. 
