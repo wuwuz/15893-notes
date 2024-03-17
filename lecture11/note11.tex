@@ -330,22 +330,32 @@ Now, to lower bound
 $P_{u}(op^*)$ for each $u$, 
 we will come up with the {\it worst-case request sequence} for 
 $u$. 
-Henceforth, let ${\sf tree}(u)$ denote the subtree rooted at $u$,
-let ${\sf ltree}(u)$ denote the left half of ${\sf tree}(u)$ 
-and let ${\sf rtree}(u)$ denote the right half of 
-${\sf tree}(u)$.
-Let $d$ denote the height of $u$ where leaf is at height $0$ and so on.
+We use $d$ to denote the height of the node $u$
+where the leaf is at height $0$ and 
+the root is at height $\log_2 T$. 
+We use ``Epoch L'' to refer 
+to the requests associated with leaves in the left subtree
+of $u$, and we use 
+``Epoch R'' to refer to the requests 
+associated with leaves in the right subtree of $u$.
+
+%Henceforth, let ${\sf tree}(u)$ denote the subtree rooted at $u$,
+%let ${\sf ltree}(u)$ denote the left half of ${\sf tree}(u)$ 
+%and let ${\sf rtree}(u)$ denote the right half of 
+%${\sf tree}(u)$.
+%Let $d$ denote the height of $u$ where leaf is at height $0$ and so on.
 
 Consider the following request sequence:
 \begin{itemize}[leftmargin=5mm]
 \item 
-Part I --- for the prefix of requests not in   
-${\sf tree}(u)$: 
+{\it Before Epoch L}: 
+%not in    ${\sf tree}(u)$: 
 \[\texttt{write}(0, {0}), \texttt{read}(0), \ 
 \texttt{write}(0, {0}), \texttt{read}(0), \ 
 \ldots, \  \texttt{write}(0, {0}), \texttt{read}(0)\]
 \item 
-Part II --- for leaves in ${\sf ltree}(u)$:  
+%Part II --- for leaves in ${\sf ltree}(u)$:  
+{\it Epoch L}: 
 \[\texttt{write}(1, r_1), \texttt{read}(0), \ 
 \texttt{write}(2, r_2), \texttt{read}(0), \ 
 \ldots,  \ 
@@ -355,7 +365,8 @@ Part II --- for leaves in ${\sf ltree}(u)$:
 where $r_1, r_2, \ldots,  r_{2^d}$
 are randomly and independently sampled words. 
 \item 
-Part III --- for leaves in ${\sf rtree}(u)$:  
+%Part III --- for leaves in ${\sf rtree}(u)$:  
+{\it Epoch R}:
 \[
 \texttt{write}(0, 0), \texttt{read}(1), \ 
 \texttt{write}(0, 0), \texttt{read}(2), \ 
@@ -364,7 +375,8 @@ Part III --- for leaves in ${\sf rtree}(u)$:
 \]
 
 \item 
-Part IV --- all the rest: 
+%Part IV --- all the rest: 
+{\it After Epoch R}:
 \[
 \texttt{write}(0, 0), \texttt{read}(0), \ 
 \texttt{write}(0, 0), \texttt{read}(0), \ 
@@ -373,26 +385,45 @@ Part IV --- all the rest:
 \end{itemize}
 
 
-
-
 \elaine{TODO: insert figure}
 
 
 \paragraph{Informal intuition.}
-The intuition is that to satisfy the read requests in ${\sf rtree}(u)$,
+The intuition is that to satisfy the read requests in %${\sf rtree}(u)$,
+Epoch R, 
 we will need to transfer sufficient information
-from the write requests in ${\sf ltree}(u)$. 
+from the write requests in %${\sf ltree}(u)$. 
+Epoch L.
 Ignoring the %information transferred
 $O(1)$ client space, 
 information can only be transferred from
-the write requests in ${\sf ltree}(u)$ 
-to the read requests in ${\sf rtree}(u)$
-when requests in ${\sf rtree}(u)$  
-probe memory cells last written to 
-during the requests 
-in ${\sf ltree}(u)$. 
+the write requests in %${\sf ltree}(u)$ 
+Epoch L 
+to the read requests in %${\sf rtree}(u)$
+Epoch R
+when %requests in %${\sf rtree}(u)$  
+Epoch R probes memory cells last written to 
+during %the requests 
+in Epoch L. 
+Since the data strings written during Epoch L
+are all randomly chosen,  roughly speaking, 
+we need to transfer $2^d$ words of  
+information from Epoch L to Epoch R, and thus
+the expected number of probes assigned to node $u$
+needs to be at least $2^d$.
 
-
+Using the same argument, we can find the worst-case
+request sequence for any node $u$, and argue
+that the expected number  
+of probes assigned to $u$ 
+must be proportional to the subtree size of $u$.
+Thus, when we sum up all nodes $u$, we get
+that the total number of probes in the tree is 
+at least $\Omega(T  \log T)$.
+Amortized to $2T$ requests, it means that 
+the average 
+cost of each request 
+is at least $\Omega(\log T)$.
 
 \paragraph{Formal encoding argument.}
 
