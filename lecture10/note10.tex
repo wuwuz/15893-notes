@@ -187,8 +187,11 @@ Then, for each level, we check if the element is in the hash table.
 If we find the element, we set \texttt{found} to \texttt{true} and store the element in $\texttt{data}^*$.
 If the element is already found, we just look up a filler 
 for all future levels 
-%in the hash table for the rest of the levels 
-to prevent leakage in the access patterns.
+%to prevent leakage in the access patterns 
+--- {\it note that 
+this guarantees 
+that the non-recurrent
+constraint is satisfied for every oblivious hash table}.
 After we go through all levels, 
 the fetched element is in $\texttt{data}^*$.
 
