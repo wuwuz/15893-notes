@@ -17,6 +17,10 @@ Chronologically,
 Hierarchical ORAM 
 was actually the original ORAM construction  
 first proposed by Goldreich and Ostrovsky~\cite{10.1145/233551.233553}. 
+The version we will describe in today's class
+is {\it an optimized variant} of Goldreich and Ostrovsky's original
+construction~\cite{10.1145/233551.233553}
+described in Chan et al.~\cite{ohash}.
 Since hierarchical ORAM consists of a hierarchy of oblivious hash tables,
 let's first introduce oblivious hash table.
 
@@ -258,8 +262,13 @@ the elements by key and by
 freshness and removes the duplicate elements using a linear scan.
 
 
-\paragraph{Analysis.} Now let's analyze the overhead of Hierarchical ORAM. There are two sources of the overhead: the lookup phase, and the rebuild phase.
-The lookup cost is $L \times Z$, the number of levels $L$ times the lookup cost of at each level, which is at most $Z$. Recall $Z = \log N \cdot \alpha(N)$, where $\alpha(N)$ is the superconstant function. Thus the lookup cost is $\mathcal{O}(\log^2 N \cdot \alpha(N))$.
+\paragraph{Analysis.} Now let's analyze the overhead of Hierarchical ORAM. 
+For each request, 
+there are two sources of the overhead: the lookup phase, and the rebuild phase.
+The lookup cost is $L \times Z$, the number of levels $L$ times the lookup cost of at each level, which is at most the bin size $Z$.
+ Recall we can set $Z = \log N \cdot \alpha(N)$, where $\alpha(N)$ is 
+an arbitrarily small super-constant function. 
+Thus the lookup cost is $\mathcal{O}(\log^2 N \cdot \alpha(N))$.
 
 For rebuild cost, a level of size $2^i$ is rebuilt every $2^i$ steps.
 So to rebuild a level of size $2^i$, the cost is $2^i \cdot \log 2^i$ (see the analysis of the oblivious hash table).
