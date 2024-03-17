@@ -94,7 +94,8 @@ of bucket oblivious sort.
 More specifically, the initial labels of an element with key $k$ 
 is computed by $PRF_{sk}(k)$, and then we use a butterfly
 network (where all intermediate bins are of size $2Z$)
-to route all elements to their desired destination bins.
+to route all elements to their desired destination bins\footnote{Note that it is also possible to route the elements to bins
+using oblivious sorting itself as a building block.}.
 %To do this obliviously, we can use the butterfly network to route the elements to their respective bins, which is similar to the oblivious random permutation.
 
 To implement ${\sf Lookup}(k)$, if $k$ is a real key,
@@ -282,3 +283,18 @@ Summarizing the above, each memory request
 has cost $\mathcal{O}(\log^2 N \cdot \alpha(N))$ where $\alpha(N)$
 may be an arbitrarily small super-constant function.
 Note that the original Goldreich-Ostrovsky construction~\cite{10.1145/233551.233553} has a cost of $\mathcal{O}(\log^3 N)$, because that they throw $N$ balls into $N$ bins, instead of $N/Z$ bins.
+
+
+
+\begin{remark}
+Bentley and Saks' hierarchical data structure idea~\cite{hierds} 
+is a well-known and  widely used 
+technique for converting static data structures into dynamic ones,
+for example, see 15451 lecture notes
+(Section 2.2 in \url{https://www.cs.cmu.edu/~15451-s23/lectures/lec03-amortized.pdf}).
+There has also been various applications in the cryptography literature
+besides ORAM, e.g., to obtain dynamic versions of proofs 
+of retrievability~\cite{dpor}, searchable encryption~\cite{dsse}, 
+and private information retrieval~\cite{privblocklist}.
+\end{remark}
+
