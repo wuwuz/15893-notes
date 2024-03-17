@@ -349,9 +349,11 @@ Part II --- for leaves in ${\sf ltree}(u)$:
 \[\texttt{write}(1, r_1), \texttt{read}(0), \ 
 \texttt{write}(2, r_2), \texttt{read}(0), \ 
 \ldots,  \ 
-\texttt{write}(2^d, r_j), \texttt{read}(0),\\
+\texttt{write}(2^d, r_{2^d}), \texttt{read}(0),\\
  %\texttt{write}(1, {0}), \texttt{read}(0)
 \]
+where $r_1, r_2, \ldots,  r_{2^d}$
+are randomly and independently sampled words. 
 \item 
 Part III --- for leaves in ${\sf rtree}(u)$:  
 \[
