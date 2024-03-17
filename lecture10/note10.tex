@@ -178,6 +178,44 @@ it causes a cascading merge until we find a level that is empty
 or we reach the largest level.  
 %Otherwise, if this level is still not empty, merge them again and put them to the next level, until we find the empty level to put the merged element.
 
+\begin{algorithm}[t]
+  \SetAlgorithmName{Algorithm}{algorithmautorefname}{list of algorithms name}
+  \caption{\textsc{Hierarchical ORAM}}
+  \label{alg:oram}
+ 
+ \KwIn{$\texttt{addr}$, an address to lookup in the hash tables; $\texttt{op}$, the operation $\texttt{write}$ or $\texttt{read}$; $\texttt{data}$, the data to write.}
+ \KwOut{$data^*$, the lookup result, if $\texttt{op} = \texttt{read}$.}
+ $\texttt{found} \leftarrow false$\;
+ \For{$l \leftarrow 0$ \KwTo $L$}{
+   \If{not $\texttt{found}$}{
+     $\texttt{fetched} \leftarrow T_l.{\sf Lookup}(\texttt{addr})$\;
+     \If{$\texttt{fetched} \neq \bot$}{
+        $\texttt{found} \leftarrow true$\;
+        $data^* \leftarrow \texttt{fetched}$\;
+     }
+   }
+   \Else{
+      $T_l.lookup(\bot)$
+   }
+ }
+ \If{$\texttt{op} = \texttt{read}$}{
+  Let $T^{\phi} \leftarrow \{ (\texttt{addr}, \texttt{data}^*) \}$\;
+ }
+ \ElseIf{$\texttt{op} = \texttt{write}$}{
+  Let $T^{\phi} \leftarrow \{ (\texttt{addr}, \texttt{data}) \}$\;
+ }
+ Let $l$ be the smallest level such that $T_l$ is empty, if all levels are full, let $l = L$\;
+ Let $S \leftarrow T^\phi \cup T_0 \cup \cdots \cup T_{l-1}$\;
+ If all levels are full, let $S \leftarrow S \cup T_L$\;
+ $T_l.{\sf Build}(\texttt{SuppressDup}(S))$\;
+ Mark $T_l$ as full, mark $T_0, \cdots, T_{l-1}$ as empty\;
+ \If{$\texttt{op} = \texttt{read}$}{
+  \Return{$\texttt{data}^*$}\;
+ }
+ \end{algorithm}
+
+
+
 \paragraph{Algorithm.} The detailed algorithm is 
 shown in Algorithm~\ref{alg:oram}. 
 We use $T_0, \ldots T_L$ to denote the oblivious hash table
@@ -219,42 +257,6 @@ Specifically, we obliviously sort
 the elements by key and by 
 freshness and removes the duplicate elements using a linear scan.
 
-
-\begin{algorithm}[h]
-  \SetAlgorithmName{Algorithm}{algorithmautorefname}{list of algorithms name}
-  \caption{\textsc{Hierarchical ORAM}}
-  \label{alg:oram}
- 
- \KwIn{$\texttt{addr}$, an address to lookup in the hash tables; $\texttt{op}$, the operation $\texttt{write}$ or $\texttt{read}$; $\texttt{data}$, the data to write.}
- \KwOut{$data^*$, the lookup result, if $\texttt{op} = \texttt{read}$.}
- $\texttt{found} \leftarrow false$\;
- \For{$l \leftarrow 0$ \KwTo $L$}{
-   \If{not $\texttt{found}$}{
-     $\texttt{fetched} \leftarrow T_l.{\sf Lookup}(\texttt{addr})$\;
-     \If{$\texttt{fetched} \neq \bot$}{
-        $\texttt{found} \leftarrow true$\;
-        $data^* \leftarrow \texttt{fetched}$\;
-     }
-   }
-   \Else{
-      $T_l.lookup(\bot)$
-   }
- }
- \If{$\texttt{op} = \texttt{read}$}{
-  Let $T^{\phi} \leftarrow \{ (\texttt{addr}, \texttt{data}^*) \}$\;
- }
- \ElseIf{$\texttt{op} = \texttt{write}$}{
-  Let $T^{\phi} \leftarrow \{ (\texttt{addr}, \texttt{data}) \}$\;
- }
- Let $l$ be the smallest level such that $T_l$ is empty, if all levels are full, let $l = L$\;
- Let $S \leftarrow T^\phi \cup T_0 \cup \cdots \cup T_{l-1}$\;
- If all levels are full, let $S \leftarrow S \cup T_L$\;
- $T_l.{\sf Build}(\texttt{SuppressDup}(S))$\;
- Mark $T_l$ as full, mark $T_0, \cdots, T_{l-1}$ as empty\;
- \If{$\texttt{op} = \texttt{read}$}{
-  \Return{$\texttt{data}^*$}\;
- }
- \end{algorithm}
 
 \paragraph{Analysis.} Now let's analyze the overhead of Hierarchical ORAM. There are two sources of the overhead: the lookup phase, and the rebuild phase.
 The lookup cost is $L \times Z$, the number of levels $L$ times the lookup cost of at each level, which is at most $Z$. Recall $Z = \log N \cdot \alpha(N)$, where $\alpha(N)$ is the superconstant function. Thus the lookup cost is $\mathcal{O}(\log^2 N \cdot \alpha(N))$.
