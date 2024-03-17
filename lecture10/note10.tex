@@ -232,8 +232,9 @@ If we find the element, we set \texttt{found} to \texttt{true} and store the ele
 If the element is already found, we just look up a filler 
 for all future levels 
 %to prevent leakage in the access patterns 
---- {\it note that 
-this guarantees 
+---
+importantly, 
+{\it this guarantees 
 that the non-recurrent
 constraint is satisfied for every oblivious hash table}.
 After we go through all levels, 
