@@ -38,6 +38,13 @@ $(k, v) \in A$.
 %to denote an operational sequence, which 
 %begins with a single call to ${\sf Build}(A)$, 
 %followed by a sequence of ${\sf Lookup}$s denoted $op$. 
+The hash table 
+we will construct satifies
+obliviousnes only if the same real key
+is never looked up twice. 
+It turns out that such a hash table 
+is sufficient for constructing hierarchical ORAM.
+We now formally define this non-recurrent requirement. 
 A sequence of ${\sf Lookup}$ operations denoted $op$
 is said to be {\it non-recurrent} if 
 every real key requested is distinct. However, the sequence  
