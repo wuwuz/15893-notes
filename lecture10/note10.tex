@@ -29,8 +29,8 @@ let's first introduce oblivious hash table.
 We consider a standard static hash table abstraction.
 \begin{definition}[Static Hash Table]
     Consider a data array $A = \{ (k_i, v_i) | \bot \}_{i \in [N]}$, i.e., 
-each element is either a real key-value pair denoted $(k_i, v_i)$ 
-or a filler denoted $\bot$. It is guaranteed that all real elements have distinct keys. An oblivious hash table contains the following operations:
+each element is either a {\it real} key-value pair denoted $(k_i, v_i)$ 
+or a {\it filler} denoted $\bot$. It is guaranteed that all real elements have distinct keys. An oblivious hash table contains the following operations:
     \begin{itemize}
       \item ${\sf Build}(A)$: Given a data array $A$, output a data structure.
       \item ${\sf Lookup}(k)$: Given a key $k$, output $v$. If $k = \bot$ or $k \notin A$, then output 
