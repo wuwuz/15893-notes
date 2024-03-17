@@ -197,7 +197,7 @@ or we reach the largest level.
      $\texttt{fetched} \leftarrow T_l.{\sf Lookup}(\texttt{addr})$\;
      \If{$\texttt{fetched} \neq \bot$}{
         $\texttt{found} \leftarrow true$\;
-        $data^* \leftarrow \texttt{fetched}$\;
+        $\texttt{data}^* \leftarrow \texttt{fetched}$\;
      }
    }
    \Else{
@@ -213,7 +213,7 @@ or we reach the largest level.
  Let $l$ be the smallest level such that $T_l$ is empty, if all levels are full, let $l = L$\;
  Let $S \leftarrow T^\phi \cup T_0 \cup \cdots \cup T_{l-1}$\;
  If all levels are full, let $S \leftarrow S \cup T_L$\;
- $T_l.{\sf Build}(\texttt{SuppressDup}(S))$\;
+ $T_l.{\sf Build}({\sf SuppressDup}(S))$\;
  Mark $T_l$ as full, mark $T_0, \cdots, T_{l-1}$ as empty\;
  \If{$\texttt{op} = \texttt{read}$}{
   \Return{$\texttt{data}^*$}\;
