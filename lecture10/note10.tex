@@ -6,39 +6,105 @@
 \newtheorem{nonexample}[theorem]{Non-Example}
 
 
-In an earlier lecture, we learned oblivious sorting, including bitonic sort with $\mathcal{O}(n \log^2 n)$ overhead~\cite{Batcher} , bucket oblivious sort~\cite{bucket} using oblivious random permutation to achieve $\mathcal{O}(n \log n (\log \log n)^2)$ overhead, 
-and we showed that we can future eliminate the $(\log \log n)^2$ factor~\cite{domulticore, tianyao-sort}.
-We will cover Hierarchical ORAM~\cite{10.1145/233551.233553} in today's lecture, which consists of a hierarchy of oblivious hash tables.
-So, firstly, let's introduce oblivious hash table.
+In an earlier lecture, we learned how to construct oblivious sorting, including bitonic sort which has $\mathcal{O}(n \log^2 n)$ cost~\cite{Batcher}, bucket oblivious sort~\cite{bucket} which has $\mathcal{O}(n \log n (\log \log n)^2)$ cost, 
+and we showed that we can future eliminate the $(\log \log n)^2$ factor using
+techniques from 
+\cite{domulticore, tianyao-sort}.
+
+We will cover Hierarchical ORAM~\cite{10.1145/233551.233553} 
+in today's lecture.
+Chronologically, 
+Hierarchical ORAM 
+was actually the original ORAM construction  
+first proposed by Goldreich and Ostrovsky~\cite{10.1145/233551.233553}. 
+Since hierarchical ORAM consists of a hierarchy of oblivious hash tables,
+let's first introduce oblivious hash table.
 
 \section{Oblivious Hash Table}
 
-\begin{definition}[Oblivious Hash Table]
-    Consider a data array $A = \{ (k_i, v_i) | \bot \}_{i \in [N]}$, where $(k_i, v_i)$ is a real key-value pair element and $\bot$ is a filler. And it's guaranteed that all real elements have distinct keys. An oblivious hash table contains the following operations:
+We consider a standard static hash table abstraction.
+\begin{definition}[Static Hash Table]
+    Consider a data array $A = \{ (k_i, v_i) | \bot \}_{i \in [N]}$, i.e., 
+each element is either a real key-value pair denoted $(k_i, v_i)$ 
+or a filler denoted $\bot$. It is guaranteed that all real elements have distinct keys. An oblivious hash table contains the following operations:
     \begin{itemize}
-      \item Build($A$): Given a data array $A$, output a data structure.
-      \item Lookup($k$): Given a key $k$, output $v$. If $k = \bot$ or $k \notin A$, $v = \bot$, otherwise $(k, v) \in A$.
+      \item ${\sf Build}(A)$: Given a data array $A$, output a data structure.
+      \item ${\sf Lookup}(k)$: Given a key $k$, output $v$. If $k = \bot$ or $k \notin A$, then output 
+$v = \bot$; otherwise the output $v$ satisfies 
+$(k, v) \in A$. 
     \end{itemize}
-    $\forall A_0, op_0, A_1, op_1$ s.t. $|A_0| = |A_1|, |op_0| = |op_1|$ and both $(A_0, op_0)$ and $(A_1, op_1)$ satisfy the non-recurrent constraint, then the oblivious hash table requires: 
+
+%We use the notation $(A, op)$
+%to denote an operational sequence, which 
+%begins with a single call to ${\sf Build}(A)$, 
+%followed by a sequence of ${\sf Lookup}$s denoted $op$. 
+A sequence of ${\sf Lookup}$ operations denoted $op$
+is said to be {\it non-recurrent} if 
+every real key requested is distinct. However, the sequence  
+$op$ is allowed to make filler requests $k = \bot$ multiple times. 
+%that request real keys never ask for the same key
+%twice.
+
+\paragraph{Obliviousness.} Obliviousness requires the following: 
+    $\forall A_0, op_0, A_1, op_1$ s.t. $|A_0| = |A_1|, |op_0| = |op_1|$ and both $op_0$ and $op_1$ satisfy the non-recurrent constraint, 
+then %the oblivious hash table requires: 
+it holds that 
     $$\text{AccessPattern}(A_0, op_0) \approx \text{AccessPattern}(A_1, op_1)$$
-    That is, for any data array and operation sequences of the same length, the access patterns in oblivious hash tables are indistinguishable as long as the same key is never looked up twice.
+where $\text{AccessPattern}(A, op)$ denotes
+the access patterns emitted
+by the oblivious hash table 
+when making a single call to ${\sf Build}(A)$
+followed by a sequence of ${\sf Lookup}$ operations denoted $op$, 
+and $\approx$ means computational indistinguishability.
+More intuitively, 
+we want that for any two data arrays and operation sequences of the same length, 
+the access patterns in oblivious hash tables are indistinguishable as long as the same key is never looked up twice.
 \end{definition}
 
+\paragraph{Construction.}
 Now let's introduce how to build an oblivious hash table.
-We use the balls and bins hashing with $N$ elements (balls) and $N / Z$ bins, where $Z=\omega(\log N)$.
+We use the balls and bins hashing with $N$ elements (balls) and $N / Z$ 
+bins\footnote{For simplicity, we assume that $N$ is divisible by $Z$.}, where $Z=\omega(\log N)$.
 The expected number of elements in any fixed bin is $Z$. 
-With Chernoff bound, the probability of any bin having more than $2Z$ elements is negligible.
+With Chernoff bound, the probability of any bin having more than $2Z$ elements is negligible in $N$.
 Thus, we set the bin size to be $2Z$.
 
 So now, we want to obliviously throw the balls into the bins without revealing which bin each ball goes to.
 One way to randomly assign the element $(k, v)$ to a bin is to use a persudorandom function $PRF_{sk}(k)$, where the $sk$ is the secret key held by the ORAM client and the PRF output range is $[N/Z]$, indicating the bin index.
-To do this obliviously, we can use the butterfly network to route the elements to their respective bins, which is similar to the oblivious random permutation.
-So, everytime the clients lookup a fresh element, the ORAM servers will see they are accessing a random bin. In case if it's a filler element, the client will just lookup a random bin.
+To achieve this obliviously, we will use the 
+``oblivious random bin assignment''
+construction from the last lecture --- recall
+from the last lecture that oblivious random bin assignment
+was a key building block for constructing
+an oblivious random permutation, which 
+in turn served as a key building block in the construction
+of bucket oblivious sort.
+More specifically, the initial labels of an element with key $k$ 
+is computed by $PRF_{sk}(k)$, and then we use a butterfly
+network (where all intermediate bins are of size $2Z$)
+to route all elements to their desired destination bins.
+%To do this obliviously, we can use the butterfly network to route the elements to their respective bins, which is similar to the oblivious random permutation.
 
-\textbf{Analysis.} Building an oblivious hash table involves routing elements to random bins. 
-Recall that in oblivious random permutation, we can accomplish this with $\mathcal{O}(N \log N)$ overhead~\cite{domulticore, tianyao-sort}. 
+To implement ${\sf Lookup}(k)$, if $k$ is a real key,
+the client simply reads the entire bin indexded $PRF_{sk}(k)$.
+If $k = \bot$, then 
+the client reads a random bin.
+%So, everytime the clients lookup a fresh element, the ORAM servers will see they are accessing a random bin. In case if it's a filler element, the client will just lookup a random bin.
+
+\paragraph{Analysis.} 
+Building an oblivious hash table %involves routing elements to random bins. 
+calls the ``oblivious random bin assignment'' algorithm
+of the last lecture.  
+Recall that in the last lecture,
+we mentioned 
+that using techniques from \cite{domulticore, tianyao-sort}, 
+we can accomplish this with 
+%Recall that in oblivious random permutation, we can accomplish this with 
+$\mathcal{O}(N \log N)$ cost. %~\cite{domulticore, tianyao-sort}. 
 For every lookup, the cost is the bin size, which is $Z = \omega(\log N)$.
-Different from static hashing that has constant cost for each lookup, oblivious hash tables have a bit higher overhead.
+Different from (non-oblivious) 
+static hashing that has constant cost for each lookup, 
+our oblivious (static) hash table has a bit higher overhead.
 
 \section{Hierarchical ORAM}
 
