@@ -178,25 +178,43 @@ it causes a cascading merge until we find a level that is empty
 or we reach the largest level.  
 %Otherwise, if this level is still not empty, merge them again and put them to the next level, until we find the empty level to put the merged element.
 
-\paragraph{Algorithm.} The detailed algorithm is shown in Algorithm~\ref{alg:oram}. The algorithm starts by initiating a binary variable \texttt{found} to \texttt{false}.
+\paragraph{Algorithm.} The detailed algorithm is 
+shown in Algorithm~\ref{alg:oram}. 
+We use $T_0, \ldots T_L$ to denote the oblivious hash table
+of the $L+1$ levels.
+The algorithm starts by initiating a binary variable \texttt{found} to \texttt{false}.
 Then, for each level, we check if the element is in the hash table. 
 If we find the element, we set \texttt{found} to \texttt{true} and store the element in $\texttt{data}^*$.
-If the element is already found, we just lookup filler in the hash table for the rest of the levels to prevent leakage in the access patterns.
-After we go through all levels, the fetched element is in $\texttt{data}^*$.
+If the element is already found, we just look up a filler 
+for all future levels 
+%in the hash table for the rest of the levels 
+to prevent leakage in the access patterns.
+After we go through all levels, 
+the fetched element is in $\texttt{data}^*$.
 
-In the following we will do the relocate operation.
-If the operation $\texttt{op}$ is \texttt{read}, we will need to relocate the retrived element $T^\phi = \{(\texttt{addr}, \texttt{data}^*)\}$.
-Otherwise, if the operation $\texttt{op}$ is \texttt{write}, we will need to relocate the new element $T^\phi = \{(\texttt{addr}, \texttt{data})\}$.
+%In the following we will do the relocate operation.
+If the operation $\texttt{op}$ is \texttt{read}, we will need to write back 
+the retrieved element $T^\phi = \{(\texttt{addr}, \texttt{data}^*)\}$.
+Otherwise, if the operation $\texttt{op}$ is \texttt{write}, we will need to write back the new element $T^\phi = \{(\texttt{addr}, \texttt{data})\}$.
 Let $l$ be the smallest level such that $T_l$ is empty, if all levels are full, let $l = L$.
-Let $S$ be the set of elements to relocate, which is the union of the new element and all the elements in the hash tables from level $0$ to level $l-1$.
-If all levels are full, let $S$ be the union of all the elements and the new element $T^\phi$.
-Then we build the hash table at level $l$ with the set $S$.
-The build step is the same as the oblivious hash table, which is to throw the elements into the bins obliviously.
-After the build step, we mark the level $l$ as full and the levels $0$ to $l-1$ as empty.
+We want to merge all levels $0\ldots l-1$ along with the new element 
+into level $l$ (or merge all levels $0\ldots L$ along with the new
+element into the largest level $L$). 
+%Let $S$ be the set of elements to relocate, which is the union of the new element and all the elements in the hash tables from level $0$ to level $l-1$.
+%If all levels are full, let $S$ be the union of all the elements and the new element $T^\phi$.
+Then we obliviously build the hash table at level $l$ with the input set $S$.
+%The build step is the same as the oblivious hash table, which is to throw the elements into the bins obliviously.
+After the build step, we mark the level $l$ as 
+full and the levels $0$ to $l-1$ as empty.
 
 Note that if the oblivious hash table doesn't remove the element we just looked up, there might be duplicate elements in the set $S$ and we will need to suppress the duplicate elements.
 The elements in the smaller level is always fresher than the elements in the larger level, so we can just keep the fresher element and remove the older one.
-We use the oblivious sorting to do the \texttt{SuppressDup}, which simply sorts the elements by key and by freshness and removes the duplicate elements using a linear scan.
+We can use the oblivious sorting to do the duplicate
+suppression, denoted ${\sf SuppressDup}$
+in Algorithm~\ref{alg:oram}. 
+Specifically, we obliviously sort 
+the elements by key and by 
+freshness and removes the duplicate elements using a linear scan.
 
 
 \begin{algorithm}[h]
