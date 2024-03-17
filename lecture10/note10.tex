@@ -117,10 +117,19 @@ our oblivious (static) hash table has a bit higher overhead.
 
 So now with this oblivious hash table, we can construct a Hierarchical ORAM.
 In Hierarchical ORAM, we have a hierarchy of exponentially growing oblivious hash tables as shown in Figure~\ref{fig:oram}.
-Each level of the hierarchy has a different capability, and the capability grows exponentially with the level.
-The $i$-th level's capability is $2^i$.
-The root level has the largest capability $2^L$, where $L = \lceil \log N \rceil$, and the leaf level has the smallest capability $1$.
-Additionally, every level has a label, either \textbf{available} (\textbf{empty}) or \textbf{full}.
+Each level of the hierarchy has a different capacity, and the capacity grows exponentially with the level.
+The levels are indexed $0, 1, \ldots, L$, and 
+the $i$-th level's capacity is $2^i$.
+%Level $L$ has the largest capacity $2^L$, where $L = \lceil \log N \rceil$, and 
+%level $0$ has the smallest capacity $1$.
+Additionally, every level has a label, either \textbf{empty} or \textbf{full}.
+``Empty'' means that this level current is not being used,
+and ``full'' means that 
+this level is currently in use.
+Whether each level is empty or full only
+depends on the time step (i.e., how many operations
+have been performed so far), so this information is public and
+is known by the adversary.
 
 \begin{figure}[!h]
   \centering
@@ -129,19 +138,47 @@ Additionally, every level has a label, either \textbf{available} (\textbf{empty}
   \label{fig:oram}
 \end{figure}
 
-Now let's consider two operations, \texttt{Read}(\texttt{addr}) and \texttt{Write}(\texttt{addr}, \texttt{data}).
-Before we dive into the detailed algorithm, let's first introduce the high-level idea of how to perform these operations.
+Recall that we want to implement 
+a memory abstraction with the address space $1 \ldots N$. Initially,
+we may assume that all memory cells are empty and contain the symbol $\bot$. 
+Therefore, initially all the ORAM levels are marked
+empty.
+However, later, as we perform read and write operations, at any point of time, 
+some levels might be full and others are empty.
 
-If we want to lookup some element, we will start from the smallest level.
-Since every level is either empty or full. If it's full, lookup in that hash table for the element.
+Now suppose a sequence of operations arrive.
+There are two types of operations, 
+%Now let's consider two operations, 
+\texttt{Read}(\texttt{addr}) and \texttt{Write}(\texttt{addr}, \texttt{data}).
+
+\paragraph{Intuition.}
+Before diving into the detailed algorithm, let's first introduce the high-level idea of how to perform these operations.
+The hierachical ORAM essentially uses
+Bentley and Saks' hierarchical data structure idea~\cite{hierds} 
+that converts
+a static data structure (in our case, an oblivious hash table) 
+into a dynamic one.
+Specifically, it works as follows. 
+
+If we want to look up some element, we will start from the smallest level.
+Since every level is either empty or full. If it's full, 
+look up that hash table for the desired element.
 There are two outcomes: either we find the element, or we don't find the element.
-If we find the element, for all future levels, we just lookup filler and perform a fake operation.
-Similar to the tree-based ORAM, we will also need to relocate the retrived element.
-So in Hierarchical ORAM, we will put the retrived element to the smallest level if this level is empty.
-If this level is not empty, we will need to merge the retrived element with the existing element in this level and put the merged element to the next level. 
-Otherwise, if this level is still not empty, merge them again and put them to the next level, until we find the empty level to put the merged element.
+If we have found the element, for all future levels, we just 
+perform a fake lookup by requesting a filler element $\bot$.
+Similar to the tree-based ORAM, 
+we will also need to relocate the retrieved element.
+So in Hierarchical ORAM, we will put the retrieved element 
+to the smallest level if this level is empty.
+If this level is not empty, we will need to merge the retrieved element with the existing element in this level and 
+and merged hash table of size $2$ is copied to the next level
+if it is empty. 
+However, if the next level is not empty, then 
+it causes a cascading merge until we find a level that is empty
+or we reach the largest level.  
+%Otherwise, if this level is still not empty, merge them again and put them to the next level, until we find the empty level to put the merged element.
 
-\textbf{Algorithm.} The detailed algorithm is shown in Algorithm~\ref{alg:oram}. The algorithm starts by initiating a binary variable \texttt{found} to \texttt{false}.
+\paragraph{Algorithm.} The detailed algorithm is shown in Algorithm~\ref{alg:oram}. The algorithm starts by initiating a binary variable \texttt{found} to \texttt{false}.
 Then, for each level, we check if the element is in the hash table. 
 If we find the element, we set \texttt{found} to \texttt{true} and store the element in $\texttt{data}^*$.
 If the element is already found, we just lookup filler in the hash table for the rest of the levels to prevent leakage in the access patterns.
@@ -172,7 +209,7 @@ We use the oblivious sorting to do the \texttt{SuppressDup}, which simply sorts 
  $\texttt{found} \leftarrow false$\;
  \For{$l \leftarrow 0$ \KwTo $L$}{
    \If{not $\texttt{found}$}{
-     $\texttt{fetched} \leftarrow T_l.lookup(\texttt{addr})$\;
+     $\texttt{fetched} \leftarrow T_l.{\sf Lookup}(\texttt{addr})$\;
      \If{$\texttt{fetched} \neq \bot$}{
         $\texttt{found} \leftarrow true$\;
         $data^* \leftarrow \texttt{fetched}$\;
@@ -191,15 +228,14 @@ We use the oblivious sorting to do the \texttt{SuppressDup}, which simply sorts 
  Let $l$ be the smallest level such that $T_l$ is empty, if all levels are full, let $l = L$\;
  Let $S \leftarrow T^\phi \cup T_0 \cup \cdots \cup T_{l-1}$\;
  If all levels are full, let $S \leftarrow S \cup T_L$\;
- $T_l.Build(\texttt{SuppressDup}(S))$\;
- Mark $T_l$ as full\;
- Mark $T_0, \cdots, T_{l-1}$ as empty\;
+ $T_l.{\sf Build}(\texttt{SuppressDup}(S))$\;
+ Mark $T_l$ as full, mark $T_0, \cdots, T_{l-1}$ as empty\;
  \If{$\texttt{op} = \texttt{read}$}{
   \Return{$\texttt{data}^*$}\;
  }
  \end{algorithm}
 
-\textbf{Analysis.} Now let's analyze the overhead of Hierarchical ORAM. There are two sources of the overhead: the lookup phase, and the rebuild phase.
+\paragraph{Analysis.} Now let's analyze the overhead of Hierarchical ORAM. There are two sources of the overhead: the lookup phase, and the rebuild phase.
 The lookup cost is $L \times Z$, the number of levels $L$ times the lookup cost of at each level, which is at most $Z$. Recall $Z = \log N \cdot \alpha(N)$, where $\alpha(N)$ is the superconstant function. Thus the lookup cost is $\mathcal{O}(\log^2 N \cdot \alpha(N))$.
 
 For rebuild cost, a level of size $2^i$ is rebuilt every $2^i$ steps.
