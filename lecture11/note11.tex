@@ -228,7 +228,7 @@ called the ``information transfer'' technique.
 We want to realize a memory abstraction
 that supports two types of operations, 
 \texttt{read}(\texttt{addr}) and \texttt{write}(\texttt{addr}, \texttt{data}).
-The address space is from $1$ to $N$.
+The address space is from $0$ to $N-1$.
 We will make a couple simplifying assumptions. 
 We assume that all read and write operations
 operate on {\it words}, and we assume 
@@ -245,8 +245,8 @@ In our proof, we will show that the following canonical
 request sequence of length $2T$ 
 must make many cell probes.
 
-\[op^* := \texttt{write}(1, {\bf 0}), \texttt{read}(1), 
-\texttt{write}(1, {\bf 0}), \texttt{read}(1), \ldots\]
+\[op^* := \texttt{write}(0, {0}), \texttt{read}(0), 
+\texttt{write}(0, {0}), \texttt{read}(0), \ldots\]
 
 
 We will count the cell probes in a clever way, by assigning
@@ -276,39 +276,119 @@ to nodes in the binary tree.
 To get the total number of cell probes, we can sum
 up the cell probes assigned to each node of the tree.
 
+\ignore{
 Now, fix some leaf node $i$.
 We want to show that every ancestor $u$ of leaf $i$
 will get assigned 
 many cell probes 
 due to the requests associated with leaf $i$.
 Henceforth, we will use the notation $P_{i \rightarrow u}(op)$
-to denote the number of cell probes assigned to $u$ 
-due to the requests on leaf node $i$.  
-To prove this, we will need to use the security requirement  
-of ORAM. 
-The security of ORAM says that the access patterns
+to denote the {\it expected} number of cell probes assigned to $u$ 
+due to the requests on leaf node $i$, after executing
+the request sequence $op$.
+To that $P_{i \rightarrow u}(op^*)$ is large, 
+we will need to use the security requirement  
+of ORAM, which says that the access patterns
 of any two request sequences of the same length 
-must be indistinguishable.
+must be computationally indistinguishable.
 Now, suppose that an adversary 
 observes the cell probes
 for each request, it  
-can assign these probes to nodes in the binary tree 
+can then assign these probes to nodes in the binary tree 
 in polynomnial time.
-Therefore, the security definition of ORAM implies
+The security definition of ORAM implies
 that for any 
-request sequence $op$ of length $2T$,  
+request sequence $op$ of the same length $2T$,  
 $|P_{i \rightarrow u}(op) - 
 P_{i \rightarrow u}(op^*)| \leq {\sf negl}(N)$,
 and this must hold for any leaf $i$ and any ancestor $u$ of $i$.
+}
+
+Let $P_u(op)$ denote the expected number 
+of cell probes assigned to 
+some node $u$ after executing the request sequence $op$.
+We want to show that $P_u(op^*)$ is large for any $u$.
+To do so, we will need to use the security requirement of ORAM,
+ which says that the access patterns
+of any two request sequences of the same length
+must be computationally indistinguishable.
+Now, suppose that an adversary 
+observes the cell probes
+for each request, it  
+can then assign these probes to nodes in the binary tree 
+in polynomnial time.
+Therefore, 
+the security requirement of ORAM implies
+that for any 
+request sequence $op$ of the same length $2T$,
+$|P_{u}(op) - 
+P_{u}(op^*)| \leq {\sf negl}(N)$,
+and this must hold for any node $u$.
 
 
+Now, to lower bound 
+$P_{u}(op^*)$ for each $u$, 
+we will come up with the {\it worst-case request sequence} for 
+$u$. 
+Henceforth, let ${\sf tree}(u)$ denote the subtree rooted at $u$,
+let ${\sf ltree}(u)$ denote the left half of ${\sf tree}(u)$ 
+and let ${\sf rtree}(u)$ denote the right half of 
+${\sf tree}(u)$.
+Let $d$ denote the height of $u$ where leaf is at height $0$ and so on.
 
+Consider the following request sequence:
+\begin{itemize}[leftmargin=5mm]
+\item 
+Part I --- for the prefix of requests not in   
+${\sf tree}(u)$: 
+\[\texttt{write}(0, {0}), \texttt{read}(0), \ 
+\texttt{write}(0, {0}), \texttt{read}(0), \ 
+\ldots, \  \texttt{write}(0, {0}), \texttt{read}(0)\]
+\item 
+Part II --- for leaves in ${\sf ltree}(u)$:  
+\[\texttt{write}(1, r_1), \texttt{read}(0), \ 
+\texttt{write}(2, r_2), \texttt{read}(0), \ 
+\ldots,  \ 
+\texttt{write}(2^d, r_j), \texttt{read}(0),\\
+ %\texttt{write}(1, {0}), \texttt{read}(0)
+\]
+\item 
+Part III --- for leaves in ${\sf rtree}(u)$:  
+\[
+\texttt{write}(0, 0), \texttt{read}(1), \ 
+\texttt{write}(0, 0), \texttt{read}(2), \ 
+\ldots,  \ 
+\texttt{write}(0, 0), \texttt{read}(2^d),\\
+\]
+
+\item 
+Part IV --- all the rest: 
+\[
+\texttt{write}(0, 0), \texttt{read}(0), \ 
+\texttt{write}(0, 0), \texttt{read}(0), \ 
+\ldots,  
+\]
+\end{itemize}
 
 
 
 
 \elaine{TODO: insert figure}
 
+
+\paragraph{Informal intuition.}
+The intuition is that to satisfy the read requests in ${\sf rtree}(u)$,
+we will need to transfer sufficient information
+from the write requests in ${\sf ltree}(u)$. 
+Ignoring the %information transferred
+$O(1)$ client space, 
+information can only be transferred from
+the write requests in ${\sf ltree}(u)$ 
+to the read requests in ${\sf rtree}(u)$
+when requests in ${\sf rtree}(u)$  
+probe memory cells last written to 
+during the requests 
+in ${\sf ltree}(u)$. 
 
 
 
