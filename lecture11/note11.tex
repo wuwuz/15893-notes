@@ -220,6 +220,97 @@ techniques from the data structure lower bound literature,
 called the ``information transfer'' technique.
 
 
+%We will use the cell-probe model 
+%(first proposed by Yao~\cite{yao81})
+%that is commonly used in the data structure lower bound literature.
+%Specifically, we assume that there 
+
+We want to realize a memory abstraction
+that supports two types of operations, 
+\texttt{read}(\texttt{addr}) and \texttt{write}(\texttt{addr}, \texttt{data}).
+The address space is from $1$ to $N$.
+We will make a couple simplifying assumptions. 
+We assume that all read and write operations
+operate on {\it words}, and we assume 
+that the word size is at least $\log N$ which is a standard
+assumption for the RAM model.
+We assume that the ORAM client has $O(1)$ space. 
+
+Imagine a physical memory array that contains {\it cells}
+and each cell stores one word. 
+Our ORAM algorithm 
+will read/write  
+some of the cells upon receiving a request.
+In our proof, we will show that the following canonical 
+request sequence of length $2T$ 
+must make many cell probes.
+
+\[op^* := \texttt{write}(1, {\bf 0}), \texttt{read}(1), 
+\texttt{write}(1, {\bf 0}), \texttt{read}(1), \ldots\]
+
+
+We will count the cell probes in a clever way, by assigning
+the cell probes to 
+to nodes in a binary tree. 
+Imagine a binary tree with $T$ leaf nodes.
+Each leaf node $i$ is associated with two operations
+$\texttt{write}(\texttt{addr}_i, \texttt{data}_i)$
+and $\texttt{read}(\texttt{addr}'_i)$.
+Imagine that these operations 
+occur in chronological order from left to right. 
+Given a leaf node $i$, 
+to satisfy the requests associated with it,
+we need to make some cell probes.
+We will charge these cell probes 
+to ancestors of the leaf node $i$ (including $i$ itself) in the following way. 
+Suppose a cell probe  
+visits some cell that was last  
+written to during the 
+requests associated with some leaf node $j \leq i$.
+Then, this cell probe is charged to the 
+lowest common 
+ancestor of $i$ and $j$.
+Therefore, once we complete the entire request sequence
+on the leaf nodes, we can assign all cell probes
+to nodes in the binary tree.
+To get the total number of cell probes, we can sum
+up the cell probes assigned to each node of the tree.
+
+Now, fix some leaf node $i$.
+We want to show that every ancestor $u$ of leaf $i$
+will get assigned 
+many cell probes 
+due to the requests associated with leaf $i$.
+Henceforth, we will use the notation $P_{i \rightarrow u}(op)$
+to denote the number of cell probes assigned to $u$ 
+due to the requests on leaf node $i$.  
+To prove this, we will need to use the security requirement  
+of ORAM. 
+The security of ORAM says that the access patterns
+of any two request sequences of the same length 
+must be indistinguishable.
+Now, suppose that an adversary 
+observes the cell probes
+for each request, it  
+can assign these probes to nodes in the binary tree 
+in polynomnial time.
+Therefore, the security definition of ORAM implies
+that for any 
+request sequence $op$ of length $2T$,  
+$|P_{i \rightarrow u}(op) - 
+P_{i \rightarrow u}(op^*)| \leq {\sf negl}(N)$,
+and this must hold for any leaf $i$ and any ancestor $u$ of $i$.
+
+
+
+
+
+
+
+\elaine{TODO: insert figure}
+
+
+
 
 \section{Old Text}
 
