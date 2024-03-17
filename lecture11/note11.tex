@@ -204,9 +204,26 @@ it is possible to extend the above proof to
 work for statistical (rather than 
 perfect) security. 
 
+\section{Larsen and Nielsen's Lower Bound}
+
+Goldreich and Ostrovsky's lower bound suffers from two restrictions:
+1) the ORAM scheme must be statistically secure; and 2) 
+the ORAM scheme must follow the balls-and-bins model, i.e.,
+the algorithm cannot perform any encoding of the payload strings.
+
+We now 
+show a more recent lower bound proof 
+by Larsen  
+and Nielsen~\cite{larsen18lowerbound} which removes these two restrictions.
+Their proof uses elegant 
+techniques from the data structure lower bound literature,
+called the ``information transfer'' technique.
+
+
+
 \section{Old Text}
 
-
+\ignore{
 \textbf{Goldreich-Ostrovsky Lower Bound \cite{goldreich96software}} Any ORAM scheme (in the balls-and-bins model) must have at least logarithmic overhead. 
 
 \noindent To prove, let
@@ -251,6 +268,7 @@ $$
   \item Balls and bins assumptions
   \item Only works for statistically secure schemes
 \end{enumerate}
+}
 
 \section{Lauren-Nielsen}
 
