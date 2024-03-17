@@ -121,6 +121,12 @@ our oblivious (static) hash table has a bit higher overhead.
 \section{Hierarchical ORAM}
 
 So now with this oblivious hash table, we can construct a Hierarchical ORAM.
+The hierachical ORAM essentially uses
+Bentley and Saks' hierarchical data structure idea~\cite{hierds} 
+that converts
+a static data structure (in our case, an oblivious hash table) 
+into a dynamic one.
+
 In Hierarchical ORAM, we have a hierarchy of exponentially growing oblivious hash tables as shown in Figure~\ref{fig:oram}.
 Each level of the hierarchy has a different capacity, and the capacity grows exponentially with the level.
 The levels are indexed $0, 1, \ldots, L$, and 
@@ -158,12 +164,7 @@ There are two types of operations,
 
 \paragraph{Intuition.}
 Before diving into the detailed algorithm, let's first introduce the high-level idea of how to perform these operations.
-The hierachical ORAM essentially uses
-Bentley and Saks' hierarchical data structure idea~\cite{hierds} 
-that converts
-a static data structure (in our case, an oblivious hash table) 
-into a dynamic one.
-Specifically, it works as follows. 
+%Specifically, it works as follows. 
 
 If we want to look up some element, we will start from the smallest level.
 Since every level is either empty or full. If it's full, 
