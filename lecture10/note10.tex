@@ -79,10 +79,11 @@ bins\footnote{For simplicity, we assume that $N$ is divisible by $Z$.}, where $Z
 The expected number of elements in any fixed bin is $Z$. 
 With Chernoff bound, the probability of any bin having more than $2Z$ elements is negligible in $N$.
 Thus, we set the bin size to be $2Z$.
+One way to randomly assign the element $(k, v)$ to a bin is to use a persudorandom function $PRF_{sk}(k)$, where the $sk$ is the secret key held by the ORAM client and the PRF output range is $[N/Z]$, indicating the desired bin index.
 
-So now, we want to obliviously throw the balls into the bins without revealing which bin each ball goes to.
-One way to randomly assign the element $(k, v)$ to a bin is to use a persudorandom function $PRF_{sk}(k)$, where the $sk$ is the secret key held by the ORAM client and the PRF output range is $[N/Z]$, indicating the bin index.
-To achieve this obliviously, we will use the 
+So now, we want to {\it obliviously} throw the balls into the bins without revealing which bin each ball goes to.
+At the end, each bin is padded with filler elements to the maximum capacity.
+To achieve this, we will use the 
 ``oblivious random bin assignment''
 construction from the last lecture --- recall
 from the last lecture that oblivious random bin assignment
