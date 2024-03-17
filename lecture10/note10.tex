@@ -275,4 +275,8 @@ For rebuild cost, a level of size $2^i$ is rebuilt every $2^i$ steps.
 So to rebuild a level of size $2^i$, the cost is $2^i \cdot \log 2^i$ (see the analysis of the oblivious hash table).
 By amortizing the cost to each step, every level has a cost $\leq \log N$.
 Thus, the rebuild cost is $\mathcal{O}(\log^2 N)$.
+
+Summarizing the above, each memory request
+has cost $\mathcal{O}(\log^2 N \cdot \alpha(N))$ where $\alpha(N)$
+may be an arbitrarily small super-constant function.
 Note that the original Goldreich-Ostrovsky construction~\cite{10.1145/233551.233553} has a cost of $\mathcal{O}(\log^3 N)$, because that they throw $N$ balls into $N$ bins, instead of $N/Z$ bins.
