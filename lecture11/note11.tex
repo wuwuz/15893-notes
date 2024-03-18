@@ -463,7 +463,6 @@ this part is denoted $\{\texttt{addr}_i, v_i\}_i$.
 
 
 \item  ${\sf Decode}({\sf coins}, ({\sf cmem}, \{\texttt{addr}_i, v_i\}_i))$:
-Parse 
 The decoder executes the ORAM algorithm 
 parametrized with ${\sf coins}$, over requests before Epoch L.
 At this moment, 
@@ -476,8 +475,50 @@ Output the output of each read request in
 Epoch R.
 \end{itemize}
 
+Note that the decoder cannot execute the request in Epoch L
+itself because it does not know $r_1, \ldots, r_{2^d}$.
+However, it knows all the requests before Epoch L and after Epoch L. 
 
 
+Correctness of decoding is easy to verify. 
+By our word size
+ assumption, an address can be stored in a single memory word.
+Thus, the encoding contains at most  
+$m + 2 P$
+words, where 
+$m$
+denotes the client memory size (in terms of words), and 
+$P$ is the number 
+of cells probed in Epoch R that were 
+last written to in Epoch L.
+
+By Shannon's source coding theorem, for every choice
+of ${\sf coins}$, the expected length of the encoding 
+must be at least the entropy
+of the string $r_1, \ldots, r_{2^d}$ (where expectation
+is taken over the random choice of $r_1, \ldots, r^{2^d}$). 
+Thus, we have that 
+\[
+\E[m + 2 P] \geq 2^d \quad \text{i.e., }
+\quad \E[P] \geq 2^{d-1}-m/2
+\]
+
+In other words, 
+for every choice of ${\sf coins}$ of the ORAM algorithm, 
+the expected number of probes assigned to a node $u$  
+over the choice of $r_1, \ldots, r_{2^d}$
+is at least $2^{d-1}-m/2$ where $d$ is the height of $u$. 
+Suppose that $m = O(1)$, and summing over all nodes
+in the tree whose height 
+is at least $\log_2 m + 1$, 
+we have that the total expected number of probes
+is at least $\Omega(T \log T)$
+for a random choice of $r_1, \ldots, r_{2^d}$.
+Amortizing over $2T$ requests, the amortized cost
+per request is at least $\Omega(\log T)$. 
+
+
+\ignore{
 \section{Old Text}
 
 \ignore{
@@ -591,4 +632,4 @@ Intuition: imagine balls-and-bins model, number of probes assigned to $v \geq\fr
   \end{enumerate}
   \item Decoder output the outcomes of the read ops in 3
 \end{itemize}
-
+}
