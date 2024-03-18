@@ -228,11 +228,11 @@ called the ``information transfer'' technique.
 We want to realize a memory abstraction
 that supports two types of operations, 
 \texttt{read}(\texttt{addr}) and \texttt{write}(\texttt{addr}, \texttt{data}).
-The address space is from $0$ to $N-1$.
+The address space is from $0$ to $n-1$.
 We will make a couple simplifying assumptions. 
 We assume that all read and write operations
 operate on {\it words}, and we assume 
-that the word size is at least $\log N$ which is a standard
+that the word size is at least $\log n$ which is a standard
 assumption for the RAM model.
 We assume that the ORAM client has $O(1)$ space. 
 
@@ -305,7 +305,7 @@ The security definition of ORAM implies
 that for any 
 request sequence $op$ of the same length $2T$,  
 $|P_{i \rightarrow u}(op) - 
-P_{i \rightarrow u}(op^*)| \leq {\sf negl}(N)$,
+P_{i \rightarrow u}(op^*)| \leq {\sf negl}(n)$,
 and this must hold for any leaf $i$ and any ancestor $u$ of $i$.
 }
 
@@ -327,7 +327,7 @@ the security requirement of ORAM implies
 that for any 
 request sequence $op$ of the same length $2T$,
 $|P_{u}(op) - 
-P_{u}(op^*)| \leq {\sf negl}(N)$,
+P_{u}(op^*)| \leq {\sf negl}(n)$,
 and this must hold for any node $u$.
 For the rest of the proof, we will simply assume
 $P_{u}(op^*) = P_u(op)$
@@ -600,7 +600,7 @@ $$
 \noindent Assumptions:
 \begin{itemize}
   \item read and write in ``word''
-  \item word size $\geq \log N$ (memory size)
+  \item word size $\geq \log n$ (memory size)
 \end{itemize}
 
 Assume that there is a binary tree, where each leaf node corresponds to a consecutive (read, write) pair. W.L.o.G, fix 
