@@ -329,12 +329,21 @@ request sequence $op$ of the same length $2T$,
 $|P_{u}(op) - 
 P_{u}(op^*)| \leq {\sf negl}(N)$,
 and this must hold for any node $u$.
+For the rest of the proof, we will simply assume
+$P_{u}(op^*) = P_u(op)$
+for any request sequence $op$
+of the same length --- it is not hard to modify the argument to account
+for the negligibly small difference. 
 
 
 Now, to lower bound 
 $P_{u}(op^*)$ for each $u$, 
-we will come up with the {\it worst-case request sequence} for 
-$u$. 
+we will come up with the {\it worst-case request sequence} for $u$,
+since the expected number of probes assigned to $u$ under $op^*$
+is the same as 
+%the expected number of probes assigned to $u$ 
+under any request
+sequence $op'$ of the same length.
 We use $d$ to denote the height of the node $u$
 where the leaf is at height $0$ and 
 the root is at height $\log_2 T$. 
@@ -343,12 +352,24 @@ to the requests associated with leaves in the left subtree
 of $u$, and we use 
 ``Epoch R'' to refer to the requests 
 associated with leaves in the right subtree of $u$.
+See \Cref{fig:lnproof} 
+for an illustration.
 
 %Henceforth, let ${\sf tree}(u)$ denote the subtree rooted at $u$,
 %let ${\sf ltree}(u)$ denote the left half of ${\sf tree}(u)$ 
 %and let ${\sf rtree}(u)$ denote the right half of 
 %${\sf tree}(u)$.
 %Let $d$ denote the height of $u$ where leaf is at height $0$ and so on.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\textwidth]{ln-proof}
+\caption{Use the worst-case sequence for $u$ to lower bound
+the number of probes assigned to $u$.
+}
+\label{fig:lnproof}
+\end{figure*}
+
+
 
 Consider the following request sequence:
 \begin{itemize}[leftmargin=5mm]
