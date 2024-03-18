@@ -427,7 +427,54 @@ is at least $\Omega(\log T)$.
 
 \paragraph{Formal encoding argument.}
 To formalize the above the intuition, we can use an encoding-based argument.
-Fix the node $u$, and choose $r_1, \ldots, r_{2^d}$ at random.
+Fix the node $u$, 
+and fix the randomness tape
+of the ORAM algorithm henceforth denoted ${\sf coins}$.
+The encoder and decoder will share ${\sf coins}$
+and note that 
+the data strings $r_1, \ldots, r_{2^d}$ are chosen at random 
+and independent of ${\sf coins}$.
+
+
+\begin{itemize}[leftmargin=6mm]
+\item  ${\sf Encode}({\sf coins}, r_1, \ldots, r_{2^d})$:
+The encoding algorithm executes the ORAM parametrized
+with ${\sf coins}$, over requests before Epoch L.
+followed by requests in Epoch L, 
+followed by requests in Epoch R.
+%At this moment, let ${\sf cmem}$ be
+%denote the client's local memory state. 
+%Then, the encoder executes all requests
+%in Epoch L and Epoch R.
+Now, output the following encoding:
+\begin{itemize}
+\item 
+%${\sf cmem}$;
+the client's memory state at the end of Epoch L henceforth denoted
+${\sf cmem}$; 
+\item 
+for every cell probed 
+in Epoch R which were 
+last written in Epoch L, output
+the index of the cell and 
+the value of the cell at the end of Epoch L --- henceforth
+this part is denoted $\{\texttt{addr}_i, v_i\}_i$.
+\end{itemize}
+
+
+\item  ${\sf Decode}({\sf coins}, ({\sf cmem}, \{\texttt{addr}_i, v_i\}_i))$:
+Parse 
+The decoder executes the ORAM algorithm 
+parametrized with ${\sf coins}$, over requests before Epoch L.
+At this moment, 
+the decoder resets the ORAM's client memory to ${\sf cmem}$;  
+further, 
+for each $(\texttt{addr}_i, v_i)$, it resets
+the memory cell at $\texttt{addr}_i$ to the value $v_i$.
+Now the decoder executes the requests in Epoch R.
+Output the output of each read request in
+Epoch R.
+\end{itemize}
 
 
 
