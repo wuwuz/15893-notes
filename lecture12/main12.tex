@@ -8,6 +8,8 @@
 \usepackage{geometry}
 \geometry{a4paper, margin=1in}
 
+\newcommand{\ignore}[1]{}
+
 % Theorem Environments
 \newtheorem{theorem}{Theorem}
 \newtheorem{remark}{Remark}
@@ -30,17 +32,62 @@
 \maketitle
 
 \section{Motivation}
-In previous lectures, we learned how ORAM allows up to compile any program into an oblivious counterpart by simply using ORAM instead of RAM. However, this sort of generic application can cause unnecessarily high overhead. For example, in previous lectures we saw how ORAM could be used on sorting which caused $O(\log n)$ overhead. Instead, we can actually use the non-recursive tree idea from Path ORAM  to create oblivious data structures that allow us to more easily create oblivious protocols with lower overhead \cite{stefanov2018path}.
+In previous lectures, we learned Oblivious RAM (ORAM),
+which allows us to 
+compile {\it any} program into an oblivious counterpart. 
+However, in practice, when you encounter
+a specific computational task, using generic ORAM  
+to compile a non-oblivious algorithm may not 
+be the best approach. 
+%However, this sort of generic application can cause unnecessarily high overhead. 
+For example, in a previous lecture, 
+we showed how to design oblivious  
+sorting algorithms that asymptotically outperform
+the na\"ive approach of directly using ORAM
+to compile Quick Sort. 
+In this lecture, we will how to design
+customized oblivious data structures 
+(e.g., dictionary, stack, queue, priority queue) 
+that outperform 
+generically using Path ORAM to compile a non-oblivious algorithm.
+%we saw how ORAM could be used on sorting which caused $O(\log n)$ overhead. Instead, we can actually use the non-recursive tree idea from Path ORAM  to create oblivious data structures that allow us to more easily create oblivious protocols with lower overhead \cite{stefanov2018path}.
 
 \section{Background}
-Recall the recursive tree data structure used in Path ORAM \cite{stefanov2018path}. In this protocol, the client stores a small local stash. The server-side storage is treated as a tree of buckets where each block is stored in a random leaf and the unique path from the root to said leaf contains all the blocks not in the client stash. An access to Path ORAM can be described by the simple pseudocode shown in Figure \ref{fig:pathORAMpseudo}.
+We will rely on a (non-recursive) ORAM tree
+ which was used in Path ORAM~\cite{stefanov2018path}.  
+Recall that in the ORAM tree, every element is assigned
+to some random path (from the root to some leaf node) --- 
+we call this path the  
+element's {\it position identifier}.
+Suppose one already knows which path an element 
+is assigned to, then to fetch the element,
+one only needs to read the corresponding path  
+and remove the element 
+from the path. 
+At this moment, we will assign the element to a random new path,
+and perform an eviction operation 
+on the path just read. 
 
+In Path ORAM, to find out which path the desired element 
+resides on, we recursively store a position map 
+in  a smaller ORAM tree. 
+The size of the position map is at least a constant factor
+smaller than the original ORAM. Therefore, after logarithmically
+many recursions, the position map becomes constant in size
+and can be stored directly by the ORAM client.
+
+
+
+%Recall the recursive tree data structure used in Path ORAM \cite{stefanov2018path}. In this protocol, the client stores a small local stash. The server-side storage is treated as a tree of buckets where each block is stored in a random leaf and the unique path from the root to said leaf contains all the blocks not in the client stash. An access to Path ORAM can be described by the simple pseudocode shown in Figure \ref{fig:pathORAMpseudo}.
+
+\ignore{
 \begin{figure}
     \centering
     \includegraphics[scale=0.5]{path_oram_pseudocode.png}
     \caption{Pseudocode taken from \cite{stefanov2018path} showing the logic necessary to make an oblivious access in the Path ORAM model}
     \label{fig:pathORAMpseudo}
 \end{figure}
+}
 
 
 \section{Oblivious Dictionary}
@@ -51,11 +98,27 @@ For an oblivious dictionary, we want to support the following operations \cite{w
     \item \textbf{Insert($k, v$):} Insert the value $v$ with key $k$ into the dictionary
     \item \textbf{Delete($k$):} Delete the value with key $k$ from the dictionary
 \end{itemize}
-Though this oblivious dictionary method can be generalized to include duplicate keys, we will only focus on the case where all keys are unique for the sake of simplicity. Note that ORAM can be viewed as a special case of the dictionary (lookup is a ``read" and insert is a ``write") where the key space is contiguous.
+Though this oblivious dictionary method can be generalized to include duplicate keys, we will only focus on the case where all keys are unique for the sake of simplicity. Note that ORAM itself 
+realizes a memory array abstraction which is 
+a special dictionary with contiguous key space $[1\ldots N]$
+where $N$ is the maximum number of elements in the data structure.
+For a general dictionary, however, the key space is allowed
+to be much larger than the number of elements.
+
+%can be viewed as a special case of the dictionary (lookup is a ``read" and insert is a ``write") where the key space is contiguous.
 
 \subsection{Construction}
-A naive way to implement dictionaries would be to compile a classic logical tree with ORAM. This would involve giving each element a key alongside its value to generate a logical tree as depicted in Figure \ref{fig:bin_tree}. Even if we assume, for simplicity, that the tree is balanced and static, it's still an inefficient way to make an oblivious dictionary. Instead, we can encode a logical tree \textit{within} the recursion used by Path ORAM itself.
+The na\"ive approach is to use Path ORAM to directly compile a non-oblivious
+dictionary, e.g., an AVL tree --- henceforth we shall
+call the AVL tree the {\it logical} tree to distinguish
+it from the ORAM tree.
+The cost per operation for a non-oblivious AVL tree is $O(\log N)$, and the Path ORAM
+compilation incurs $O(\log^2 N)$ multiplicative overhead.
+So the na\"ive approach would incur $O(\log^3 N)$ 
+cost per dictionary operation.
+%A naive way to implement dictionaries would be to compile a classic logical tree with ORAM. This would involve giving each element a key alongside its value to generate a logical tree as depicted in Figure \ref{fig:bin_tree}. Even if we assume, for simplicity, that the tree is balanced and static, it's still an inefficient way to make an oblivious dictionary. Instead, we can encode a logical tree \textit{within} the recursion used by Path ORAM itself.
 
+\ignore{
 \begin{figure}
 \centering
 \begin{minipage}{.45\textwidth}
@@ -71,6 +134,43 @@ A naive way to implement dictionaries would be to compile a classic logical tree
   \label{fig:oram_bin_tree}
 \end{minipage}
 \end{figure}
+}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.8\textwidth]{ods}
+\end{figure*}
+
+If we directly use Path ORAM to compile the AVL logical tree, 
+essentially we have to go through the entire ORAM recursion for reading
+every node in the logical tree. 
+The following simple idea allows
+us to avoid this recursion 
+overhead. 
+Specifically, we can have each parent node
+additionally store the position identifiers of its two children.
+Moreover, suppose the client always
+keeps track of the position identifier of the position of the logical tree.
+When the client has fetched some node 
+in the logical tree, it immediately knows
+the position identifiers of its two children, and hence there is
+no more need to do a recursive position map lookup to find
+out where its children are.
+When the client has read 
+a path in the logical tree
+containing logarithmically many nodes, 
+it can choose 
+random new position identifiers to all logical nodes 
+along this path. 
+It then updates the entries 
+to make sure that 
+each parent correctly points to the new position identifers
+for its children. 
+
+
+
+
+
+
 
 The implementation of a dictionary with binary search trees is simple and intuitive. Each block can be described as containing the following: a key, a value, a pointer to the current block's path, the left key, a pointer to the left child's path, the right key, and a pointer to the right child's path as can be seen in Figure \ref{fig:oram_bin_tree}.
 
