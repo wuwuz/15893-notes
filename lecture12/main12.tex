@@ -6,9 +6,12 @@
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
+\usepackage{enumitem}
 \geometry{a4paper, margin=1in}
 
-\newcommand{\ignore}[1]{}
+%\newcommand{\ignore}[1]{}
+%\newcommand{\elaine}[1]{{\color{red} [elaine: #1]}}
+
 
 % Theorem Environments
 \newtheorem{theorem}{Theorem}
@@ -17,6 +20,8 @@
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{proposition}[theorem]{Proposition}
+
+\input{macro}
 
 % Document Information
 \title{{\Large Cryptography meets algorithms (15893) Lecture Notes}\\[5pt]
@@ -110,15 +115,27 @@ to be much larger than the number of elements.
 
 %can be viewed as a special case of the dictionary (lookup is a ``read" and insert is a ``write") where the key space is contiguous.
 
-\subsection{Construction}
+\subsection{Construction for a Static Dictionary}
+For simplicity, let's first assume
+that we want to implement a static dictionary 
+where we only need to support ${\bf Lookup}$ but no dynamic insertion
+and deletion. 
+
 The na\"ive approach is to use Path ORAM to directly compile a non-oblivious
 dictionary, e.g., an AVL tree --- henceforth we shall
 call the AVL tree the {\it logical} tree to distinguish
 it from the ORAM tree.
-The cost per operation for a non-oblivious AVL tree is $O(\log N)$, and the Path ORAM
+The cost per operation for a non-oblivious AVL tree is $O(\log N)$, 
+and the Path ORAM
 compilation incurs $O(\log^2 N)$ multiplicative overhead.
 So the na\"ive approach would incur $O(\log^3 N)$ 
-cost per dictionary operation.
+cost per dictionary operation\footnote{In an AVL tree, not all operations
+take the same amount of time. 
+When we use ORAM to compile an AVL tree, we have to pad all operations to
+the same length to avoid leakage through the number of 
+accesses.
+}.
+
 %A naive way to implement dictionaries would be to compile a classic logical tree with ORAM. This would involve giving each element a key alongside its value to generate a logical tree as depicted in Figure \ref{fig:bin_tree}. Even if we assume, for simplicity, that the tree is balanced and static, it's still an inefficient way to make an oblivious dictionary. Instead, we can encode a logical tree \textit{within} the recursion used by Path ORAM itself.
 
 \ignore{
@@ -149,47 +166,120 @@ This eliminates the need to perform a recursive position map lookup
 for the next child node to read.}
 Note that the element is actually stored somewhere
 along the path leading to the leaf even though we draw it at the leaf.
-{\tt ChildrenKeys} 
-and {\tt ChildrenPos} 
+${\sf ChildrenKeys}$
+and ${\sf ChildrenPos}$
 denotes the 
 keys 
 and the position identifiers of the two children.
-{\tt Pos} denotes the position identifier
+${\sf Pos}$ denotes the position identifier
 of the current element,  
 which is needed for performing eviction on the ORAM tree.
 }
-\caption{fig:ods}
+\label{fig:ods}
 \end{figure*}
 
+%\paragraph{Avoiding the recursive position map lookup.}
 If we directly use Path ORAM to compile the AVL logical tree, 
 essentially we have to go through the entire ORAM recursion for reading
 every node in the logical tree. 
 The following simple idea~\cite{gentryods,wang2014oblivious} allows
 us to avoid this recursion 
 overhead. 
-Specifically, as shown in \Cref{fig:ods}, each element in the ORAM tree
+
+As shown in \Cref{fig:ods}, each element in the ORAM tree
 corresponds to a node in the logical tree. 
 We will have each element 
 additionally store the position identifiers of its two children.
-Moreover, suppose the client always
-keeps track of the position identifier of the position of the logical tree.
+Moreover, the client always
+stores the position identifier of the logical root.
 When the client has fetched some node 
 in the logical tree, it immediately knows
 the position identifiers of its two children, and hence there is
 no more need to do a recursive position map lookup to find
-out where its children are.
+out the next child node it wants to read.
+
+
+\elaine{TODO: write a clean version of the algorithm}
+
+More formally, we can implement ${\bf Lookup}(k)$
+as follows:
+Initially, let $k'$ be the key of 
+the logical root, let ${\sf Pos}$ denote
+the position identifier of the root.
+Let $D = 1.44 \log N$ which corresponds
+to the maximum depth of an AVL tree with 
+$N$ elements.
+Sample $D$ new position identifiers
+denoted ${\sf Pos}'_1, \ldots, {\sf Pos}'_D$.
+Now, 
+%repeat the following for $1.44 \log N$ times:
+for $i = 1$ to $D$, repeat the  
+following:
+\begin{itemize} 
+\item 
+Read and remove the element with key $k'$ from 
+ the path ${\sf Pos}$. 
+\begin{itemize}
+\item 
+If an element $(k', v, {\sf Pos}, {\sf ChildrenKeys}, {\sf ChildrenPos})$
+is found, 
+\item 
+\end{itemize}
+\end{itemize}
+
 When the client has read 
 a path in the logical tree
 containing logarithmically many nodes, 
 it can choose 
-random new position identifiers to all logical nodes 
+random new position identifiers for all logical nodes 
 along this path. 
 It then updates the entries 
 to make sure that 
 each parent correctly points to the new position identifers
-for its children. 
-Further, the client records the new position identifier
-for the root node. 
+for its children, before writing them back to the root
+and performing evictions on the ORAM tree.
+
+
+In a non-oblivious AVL tree, the lookup algorithm 
+stops whenever the desired key is found.
+However, in an oblivious dictionary, such early stopping
+would leak information 
+about where the 
+requested element
+is in the logical tree. 
+Therefore, even after we have found
+the element, we still have to perform fake
+operations on the ORAM tree.  
+It is known that the maximum depth of an AVL
+tree with $N$ elements is $1.44 \log N$.
+Therefore, when the 
+lookup on the logical tree has ended, we will still
+access some more random paths in the ORAM tree, such that 
+the total number of paths accessed is exactly $1.44 \log N$.
+
+
+
+
+%Further, the client records the new position identifier
+%for the root node. 
+
+
+The above idea was first suggested by Gentry et al.~\cite{gentryods}
+who considered a static logical tree that supports
+only ${\bf Lookup}$ but no dynamic insertion and deletion.  
+Subsequently, Wang et al.~\cite{wang2014oblivious}
+showed that it is not hard to extend the idea to support dynamic 
+insertions and deletions.
+Specifically, during an insertion or deletion operation, 
+the logical AVL tree may perform rotation operations
+to balance the logical tree.
+Each rotation operation involves modifying the pointers
+on constant number of nodes 
+in the logical AVL tree. 
+In our case, during a rotation, 
+we just have to additionally
+update the children position identifiers
+for nodes involved in the rotation. 
 
 
 \ignore{
@@ -197,13 +287,16 @@ The implementation of a dictionary with binary search trees is simple and intuit
 }
 
 
+\ignore{
 \subsection{Access Protocol}
 The only part of the access protocol that differs significantly from the regular setup of Path ORAM is the existence of parents and children. Thus, we must simply maintain the invariant that the parent's child pointers get updated whenever the child's own path is changed on access. This idea can be extended for insertion and deletion in dynamic trees but it remains within the same complexity class for overhead. Beyond that, the access protocol is very similar to the pseudocode shown in Figure \ref{fig:pathORAMpseudo}.
+}
 
 \subsection{Overhead}
 The improved oblivious data structure has an overhead of $O(\log^2 n)$ with $O(\log n)$ from the recursion level and $O(\log n)$ from the size of the tree. This is an improvement in contrast to the naive approach that compiles binary searching--which automatically incurs a $O(\log n)$ search cost \cite{gentry2013optimizing}-- with Path ORAM--that already has a $O(\log^2 n)$ lookup cost-- giving an overall $O(\log^3 n)$ overhead.
 
 It is possible to achieve $O(\log n)$ overhead as shown by Asharov et. al. \cite{asharov2023futorama}. With this low overhead, this implementation of an oblivious dictionary finally becomes practical and a viable choice for real-world security. However, there are many restrictions and assumptions that must be met before FuturORAMa can be used and thus some people still prefer to use Path ORAM or Circuit ORAM despite the larger overhead.
+
 
 \section{Oblivious Stacks / Queues}
 \subsection{Operations}
