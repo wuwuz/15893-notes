@@ -26,6 +26,7 @@
 
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage[capitalize,noabbrev]{cleveref}
 
 \begin{document}
 
@@ -92,7 +93,9 @@ and can be stored directly by the ORAM client.
 
 \section{Oblivious Dictionary}
 \subsection{Operations}
-For an oblivious dictionary, we want to support the following operations \cite{wang2014oblivious}:
+%For an oblivious dictionary, we want to support the following operations \cite{wang2014oblivious}:
+We consider a standard dictionary data structure
+supporting the following operations: 
 \begin{itemize}
     \item \textbf{Lookup($k$):} Return the value with key $k$
     \item \textbf{Insert($k, v$):} Insert the value $v$ with key $k$ into the dictionary
@@ -138,15 +141,35 @@ cost per dictionary operation.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.8\textwidth]{ods}
+\caption{{\bf Each element in the ORAM tree corresponds to a node 
+in the logical tree.  
+Each element stores
+the position identifiers of its two children. 
+This eliminates the need to perform a recursive position map lookup
+for the next child node to read.}
+Note that the element is actually stored somewhere
+along the path leading to the leaf even though we draw it at the leaf.
+{\tt ChildrenKeys} 
+and {\tt ChildrenPos} 
+denotes the 
+keys 
+and the position identifiers of the two children.
+{\tt Pos} denotes the position identifier
+of the current element,  
+which is needed for performing eviction on the ORAM tree.
+}
+\caption{fig:ods}
 \end{figure*}
 
 If we directly use Path ORAM to compile the AVL logical tree, 
 essentially we have to go through the entire ORAM recursion for reading
 every node in the logical tree. 
-The following simple idea allows
+The following simple idea~\cite{gentryods,wang2014oblivious} allows
 us to avoid this recursion 
 overhead. 
-Specifically, we can have each parent node
+Specifically, as shown in \Cref{fig:ods}, each element in the ORAM tree
+corresponds to a node in the logical tree. 
+We will have each element 
 additionally store the position identifiers of its two children.
 Moreover, suppose the client always
 keeps track of the position identifier of the position of the logical tree.
@@ -165,14 +188,13 @@ It then updates the entries
 to make sure that 
 each parent correctly points to the new position identifers
 for its children. 
+Further, the client records the new position identifier
+for the root node. 
 
 
-
-
-
-
-
+\ignore{
 The implementation of a dictionary with binary search trees is simple and intuitive. Each block can be described as containing the following: a key, a value, a pointer to the current block's path, the left key, a pointer to the left child's path, the right key, and a pointer to the right child's path as can be seen in Figure \ref{fig:oram_bin_tree}.
+}
 
 
 \subsection{Access Protocol}
