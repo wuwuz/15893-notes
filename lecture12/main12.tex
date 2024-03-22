@@ -130,12 +130,13 @@ where $N$ is the maximum number of elements in the data structure,
 and the Path ORAM
 compilation incurs $O(\log^2 N)$ multiplicative overhead.
 So the na\"ive approach would incur $O(\log^3 N)$ 
-cost per dictionary operation\footnote{In an AVL tree, not all operations
+cost per dictionary operation. Note that 
+in an AVL tree, not all operations
 take the same amount of time. 
 When we use ORAM to compile an AVL tree, we have to pad all operations to
 the same length to avoid leakage through the number of 
 accesses.
-}.
+
 
 %A naive way to implement dictionaries would be to compile a classic logical tree with ORAM. This would involve giving each element a key alongside its value to generate a logical tree as depicted in Figure \ref{fig:bin_tree}. Even if we assume, for simplicity, that the tree is balanced and static, it's still an inefficient way to make an oblivious dictionary. Instead, we can encode a logical tree \textit{within} the recursion used by Path ORAM itself.
 
@@ -351,7 +352,46 @@ The only part of the access protocol that differs significantly from the regular
 }
 
 
+\begin{remark}
+Using an optimal ORAM like OptORAMa~\cite{optorama} 
+to directly compile an AVL tree also gives $O(\log^2 N)$
+cost per operation. 
+However, the resulting scheme is less practical and has only computational
+security, since the only known optimal ORAM constructions
+%are based on the hierarchical ORAM framework, 
+all rely on the existence of a pseudorandom function.
+The aforementioned constructions that makes non-blackbox usage of  
+Path ORAM~\cite{stefanov2018path}
+or Circuit ORAM~\cite{circuitoram}'s non-recursive ORAM tree 
+are conceptually simpler, more efficient in hardware enclave
+or secure computation scenarios, and 
+enjoy statistical security.
+\end{remark}
+
+
 \section{Oblivious Stacks / Queues}
+An oblivious stack or queue can also be realized
+using a similar idea.
+For example, in an oblivious stack,
+each element can store the position identifier
+of the next element, and the client saves
+the position identifier of the top of the stack denoted ${\sf Pos}_0$.
+For a push operation, the client 
+%creates a new element assigned to a random path ${\sf Pos}^*$,
+assigns the new element to a random path ${\sf Pos}^*$, 
+and the have the new element record
+${\sf Pos}_0$ as the next element's position identifier. 
+The client now writes the new element to the root bucket,
+and performs eviction on a random path.
+The client also updates ${\sf Pos}_0 := {\sf Pos}^*$.
+A pop operation can be implemented in a similar manner.
+In this 
+way, 
+each push or pop operation involves
+accessing only a single path in the ORAM tree,
+and the cost is $O(\log N)$.
+
+\ignore{
 \subsection{Operations}
 Zahur et. al. also proposes a circuit-based construction of a stack/queue but, for the proof of concept, we will only describe the Path ORAM implementation for stacks \cite{zahur2016revisiting}. Note that oblivious queues can be made in a very similar way. The oblivious stack supports the following operations \cite{toft2011secure}:
 \begin{itemize}
@@ -367,7 +407,7 @@ Push simply requires us to choose a path for the new element and then put it ont
 
 \subsection{Overhead}
 Because there is only one tree and we only need to worry about modifying one element in the tree at a time, each operation takes $O(\log n)$ time. Note that this is a randomized algorithm because there is only one tree and thus this scheme uses non-recursive Path ORAM. We'll learn about a deterministic oblivious algorithm in a later section on oblivious Turing machines.
-
+}
 
 \section{Oblivious Heaps / Priority Queues}
 This oblivious data structure constructed using non-recursive Path ORAM is somewhat similar to that of oblivious stacks and queues but has a few notable differences. For simplicity, we are again assuming that all keys are distinct.
