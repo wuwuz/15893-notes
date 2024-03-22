@@ -437,25 +437,101 @@ Because there is only one tree and we only need to worry about modifying one ele
 \section{Oblivious Priority Queues}
 %This oblivious data structure constructed using non-recursive Path ORAM is somewhat similar to that of oblivious stacks and queues but has a few notable differences. For simplicity, we are again assuming that all keys are distinct.
 
-We consider a basic priority queue with only the following
-two types of opearations: 
+We first consider a basic priority queue with only the following
+two types of opearations --- we will discuss how to support other operations such as
+${\sf DecreaseKey}$ and ${\sf Delete}$ later:
 
 \begin{itemize}
-    \item \textbf{${\sf ExtractMin}()$:} Return the item with the minimum key;
+    \item \textbf{${\sf ExtractMin}()$:} Return the element with the minimum key;
     \item \textbf{${\sf Insert}(k, v)$:} Insert the value $v$ with key $k$.
 \end{itemize}
-For simplicity, we shall assume that all items have distinct
+For simplicity, we shall assume that all elements have distinct
 keys, although it is not hard to extend
 the algorithm
 to support possibly 
 duplicate keys.
 
 
-\subsection{Construction}
+%\subsection{Construction}
 %Using the hierarchical ORAM proposed by Kasper and Larsen, we can store the elements in order with a block containing the the value, a self-referential pointer, a pointer to this subtree minimum's path, and the subtree's minimum itself \cite{larsen2018yes} \cite{asharov2023futorama}. \cite{wang2014oblivious}.
 We will describe Shi's construction of an oblivious  
 priority queue~\cite{shi-opq}, also based on a non-recursive
 Path ORAM data structure.
+
+Every element is assigned to a random path in the ORAM tree.  
+We additionally augment each node $v$ in the tree
+with an entry henceforth called the {\it subtree minimum}, 
+which stores the minimum 
+key in the subtree rooted at $v$, as well as the path this minimum element resides on. 
+
+\begin{itemize}
+\item 
+${\sf ExtractMin}$: 
+\begin{itemize}
+\item 
+look up the root's subtree minimum; 
+visit the corresponding path
+to fetch the element with the minimum key and remove this element from the path;
+\item 
+perform an evicition on the path just visited;
+\item 
+update the subtree minimum entries 
+on the path just visited;
+\end{itemize}
+\item 
+${\sf Insert}(k, v)$:
+\begin{itemize}
+\item 
+assign a random path to the element $(k, v)$ 
+and add it to the root; 
+\item 
+perform eviction on a random path;
+\item 
+update the subtree minimum entries 
+on the eviction path.
+\end{itemize}
+\end{itemize}
+Observe that when one modifies a path, the subtree minimum entries
+of the path can be updated 
+in logarithmic cost (i.e., proportional to the path length).
+Specifically, the leaf node on the path first computes
+its own subtree minimum from the elements contained in the leaf node. 
+Next, 
+starting from the level above 
+the leaf back to the root, 
+every node 
+on the path can query the subtree minimum 
+of its two children, and scan the elements contained in the node itself.
+This allows the node to correctly update
+its own subtree minimum.
+
+\begin{remark}[Hiding the type of operations]
+The access pattern of the above algorithm 
+are independent of the 
+sequence of (key, value)
+pairs inserted. 
+However, 
+the access patterns reveal whether the type of each operation 
+is ${\sf ExtractMin}$
+or ${\sf Insert}$.
+It is not hard to modify the algorithm to hide
+the type of the operations too. 
+In particular, we can have the  ${\sf ExtractMin}$ operation 
+perform a fake write to the root before the eviction step;
+and we can have the ${\sf Insert}$
+operation begin with a fake look up 
+along the eviction path.
+\end{remark}
+
+
+\subsection{Supporting additional operations.}
+We now discuss how to support ${\sf Delete}$ and ${\sf DecreaseKey}$ operations,
+with the following syntax: 
+\begin{itemize}
+    \item ${\sf Delete}({\sf ref})$: Access the path pointer denoted by $ref$, removes the item with key $k$, evicts along the path pointed to by $ref$, and recalculates the subtree minimum for each node along the path
+    \item ${\sf DecreaseKey}({\sf ref}, k)$: Delete(ref), insert($k', v$)
+\end{itemize}
+
 
 
 \subsection{Access Protocol}
