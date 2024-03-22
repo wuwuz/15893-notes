@@ -391,6 +391,11 @@ each push or pop operation involves
 accessing only a single path in the ORAM tree,
 and the cost is $O(\log N)$.
 
+
+A queue can also be realized in a similar
+manner, incurring $O(\log N)$ cost per ${\sf PushBack}$ or
+${\sf PopFront}$ operation.
+
 \ignore{
 \subsection{Operations}
 Zahur et. al. also proposes a circuit-based construction of a stack/queue but, for the proof of concept, we will only describe the Path ORAM implementation for stacks \cite{zahur2016revisiting}. Note that oblivious queues can be made in a very similar way. The oblivious stack supports the following operations \cite{toft2011secure}:
