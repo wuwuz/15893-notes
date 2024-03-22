@@ -82,12 +82,17 @@ and write it back to the root;
 perform an eviction operation 
 on the path just read. 
 \end{itemize}
-Henceforth
-we shall assume that the Path ORAM's stash is part of the root.
-In other words, the root has super-logarithmic capacity
-whereas all other nodes 
-in the tree has capacity $4$.
 
+We shall assume that the client stores a superlogarithmically sized
+stash (which is required for storing the overflowing elements in Path ORAM), 
+and we count cost in terms of the number of elements 
+communicated 
+to and from the server for each data structure request.
+%Henceforth
+%we shall assume that the Path ORAM's stash is part of the root.
+%In other words, the root has super-logarithmic capacity
+%whereas all other nodes 
+%in the tree has capacity $4$.
 
 In Path ORAM, to find out which path the desired element 
 resides on, we recursively store a position map 
@@ -429,17 +434,29 @@ Push simply requires us to choose a path for the new element and then put it ont
 Because there is only one tree and we only need to worry about modifying one element in the tree at a time, each operation takes $O(\log n)$ time. Note that this is a randomized algorithm because there is only one tree and thus this scheme uses non-recursive Path ORAM. We'll learn about a deterministic oblivious algorithm in a later section on oblivious Turing machines.
 }
 
-\section{Oblivious Heaps / Priority Queues}
-This oblivious data structure constructed using non-recursive Path ORAM is somewhat similar to that of oblivious stacks and queues but has a few notable differences. For simplicity, we are again assuming that all keys are distinct.
+\section{Oblivious Priority Queues}
+%This oblivious data structure constructed using non-recursive Path ORAM is somewhat similar to that of oblivious stacks and queues but has a few notable differences. For simplicity, we are again assuming that all keys are distinct.
 
-\subsection{Operations}
+We consider a basic priority queue with only the following
+two types of opearations: 
+
 \begin{itemize}
-    \item \textbf{$Extract\_min()$:} Returns the item with the minimum priority
-    \item \textbf{$Insert(k, v)$:} Inserts the value $v$ with priority $k$
+    \item \textbf{${\sf ExtractMin}()$:} Return the item with the minimum key;
+    \item \textbf{${\sf Insert}(k, v)$:} Insert the value $v$ with key $k$.
 \end{itemize}
+For simplicity, we shall assume that all items have distinct
+keys, although it is not hard to extend
+the algorithm
+to support possibly 
+duplicate keys.
+
 
 \subsection{Construction}
-Using the hierarchical ORAM proposed by Kasper and Larsen, we can store the elements in order with a block containing the the value, a self-referential pointer, a pointer to this subtree minimum's path, and the subtree's minimum itself \cite{larsen2018yes} \cite{asharov2023futorama}. \cite{wang2014oblivious}.
+%Using the hierarchical ORAM proposed by Kasper and Larsen, we can store the elements in order with a block containing the the value, a self-referential pointer, a pointer to this subtree minimum's path, and the subtree's minimum itself \cite{larsen2018yes} \cite{asharov2023futorama}. \cite{wang2014oblivious}.
+We will describe Shi's construction of an oblivious  
+priority queue~\cite{shi-opq}, also based on a non-recursive
+Path ORAM data structure.
+
 
 \subsection{Access Protocol}
 
