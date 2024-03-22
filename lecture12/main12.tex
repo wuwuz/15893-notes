@@ -58,8 +58,10 @@ that outperform
 generically using Path ORAM to compile a non-oblivious algorithm.
 %we saw how ORAM could be used on sorting which caused $O(\log n)$ overhead. Instead, we can actually use the non-recursive tree idea from Path ORAM  to create oblivious data structures that allow us to more easily create oblivious protocols with lower overhead \cite{stefanov2018path}.
 
+
+
 \section{Background}
-We will rely on a (non-recursive) ORAM tree
+Several of our algorithms will rely on a (non-recursive) ORAM tree
  which was used in Path ORAM~\cite{stefanov2018path}.  
 Recall that in the ORAM tree, every element is assigned
 to some random path (from the root to some leaf node) --- 
