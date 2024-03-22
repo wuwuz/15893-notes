@@ -525,11 +525,35 @@ along the eviction path.
 
 
 \subsection{Supporting additional operations.}
-We now discuss how to support ${\sf Delete}$ and ${\sf DecreaseKey}$ operations,
-with the following syntax: 
+We now discuss how to support ${\sf Delete}$ and ${\sf DecreaseKey}$ operations. 
+To define their syntax, we need to introduce
+the notion of a reference pointer, denoted ${\sf ref}$ to refer
+to the element being deleted or whose key is being decreased. 
+Recall that   
+the definition of ${\sf Delete}$ and ${\sf DecreaseKey}$ in the ordinary (non-oblivious)
+binary heap also used a reference pointer to refer to the element
+being deleted or whose key is being decreased. 
+In our context, the reference pointer ${\sf ref} := (k, {\sf Pos})$
+stores the key being deleted as well as the position identifier
+(denoted ${\sf Pos}$)
+of the element.  
+ 
+Like in the ordinary (non-oblivious) binary heap, we shall assume that 
+the ${\sf Insert}(k, v)$
+operation returns a reference pointer 
+to the element inserted, so we can later refer to them
+in ${\sf Delete}$ or ${\sf DecreaseKey}$ calls. 
+It is not hard to modify our earlier insertion algorithm
+to return such a reference pointer. 
+We now define the syntax of the two operations: 
 \begin{itemize}
-    \item ${\sf Delete}({\sf ref})$: Access the path pointer denoted by $ref$, removes the item with key $k$, evicts along the path pointed to by $ref$, and recalculates the subtree minimum for each node along the path
-    \item ${\sf DecreaseKey}({\sf ref}, k)$: Delete(ref), insert($k', v$)
+    \item ${\sf Delete}({\sf ref})$: 
+delete the element represented
+by ${\sf ref}$; or if ${\sf ref} = \bot$, then do nothing;  
+%Access the path pointer denoted by $ref$, removes the item with key $k$, evicts along the path pointed to by $ref$, and recalculates the subtree minimum for each node along the path
+    \item ${\sf DecreaseKey}({\sf ref}, k)$: %Delete(ref), insert($k', v$)
+decrease the key of the element 
+represented by ${\sf ref}$ to $k$. 
 \end{itemize}
 
 
