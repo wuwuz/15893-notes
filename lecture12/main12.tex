@@ -69,12 +69,25 @@ we call this path the
 element's {\it position identifier}.
 Suppose one already knows which path an element 
 is assigned to, then to fetch the element,
-one only needs to read the corresponding path  
+the client performs the following:
+\begin{itemize}
+\item 
+read the corresponding path  
 and remove the element 
-from the path. 
-At this moment, we will assign the element to a random new path,
-and perform an eviction operation 
+from the path;
+\item 
+assign the element to a random new path,
+and write it back to the root;
+\item 
+perform an eviction operation 
 on the path just read. 
+\end{itemize}
+Henceforth
+we shall assume that the Path ORAM's stash is part of the root.
+In other words, the root has super-logarithmic capacity
+whereas all other nodes 
+in the tree has capacity $4$.
+
 
 In Path ORAM, to find out which path the desired element 
 resides on, we recursively store a position map 
