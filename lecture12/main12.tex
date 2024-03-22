@@ -125,7 +125,8 @@ The na\"ive approach is to use Path ORAM to directly compile a non-oblivious
 dictionary, e.g., an AVL tree --- henceforth we shall
 call the AVL tree the {\it logical} tree to distinguish
 it from the ORAM tree.
-The cost per operation for a non-oblivious AVL tree is $O(\log N)$, 
+The cost per operation for a non-oblivious AVL tree is $O(\log N)$
+where $N$ is the maximum number of elements in the data structure, 
 and the Path ORAM
 compilation incurs $O(\log^2 N)$ multiplicative overhead.
 So the na\"ive approach would incur $O(\log^3 N)$ 
@@ -166,11 +167,10 @@ This eliminates the need to perform a recursive position map lookup
 for the next child node to read.}
 Note that the element is actually stored somewhere
 along the path leading to the leaf even though we draw it at the leaf.
-${\sf ChildrenKeys}$
-and ${\sf ChildrenPos}$
-denotes the 
-keys 
-and the position identifiers of the two children.
+$({\sf LKey}, {\sf LPos})$
+and $({\sf RKey}, {\sf RPos})$
+denote the 
+keys and the position identifiers of the two children.
 ${\sf Pos}$ denotes the position identifier
 of the current element,  
 which is needed for performing eviction on the ORAM tree.
@@ -199,7 +199,7 @@ no more need to do a recursive position map lookup to find
 out the next child node it wants to read.
 
 
-\elaine{TODO: write a clean version of the algorithm}
+%\elaine{TODO: write a clean version of the algorithm}
 
 More formally, we can implement ${\bf Lookup}(k)$
 as follows:
@@ -210,23 +210,64 @@ Let $D = 1.44 \log N$ which corresponds
 to the maximum depth of an AVL tree with 
 $N$ elements.
 Sample $D$ new position identifiers
-denoted ${\sf Pos}'_1, \ldots, {\sf Pos}'_D$.
+denoted ${\sf Pos}'_0, \ldots, {\sf Pos}'_D$, and let ${\sf Pos}'_{D+1} = \bot$.
+Initialize ${\sf found} := {\sf false}$.
 Now, 
-%repeat the following for $1.44 \log N$ times:
-for $i = 1$ to $D$, repeat the  
+for $i = 1$ to $D + 1$, repeat the  
 following:
 \begin{itemize} 
 \item 
-Read and remove the element with key $k'$ from 
+If not ${\sf found}$, then 
+read and remove the element with key $k'$ from 
  the path ${\sf Pos}$. 
-\begin{itemize}
+%\begin{itemize}
+%\item 
+Let $(k', v, {\sf Pos}, ({\sf LKey}, {\sf LPos}), 
+({\sf RKey}, {\sf RPos}))$
+be the element found:
+\begin{itemize}[leftmargin=5mm]
 \item 
-If an element $(k', v, {\sf Pos}, {\sf ChildrenKeys}, {\sf ChildrenPos})$
-is found, 
+if $k < k'$, then 
+write back
+$(k', v, {\color{red} {\sf Pos}'_{i-1}}, ({\sf LKey}, 
+{\color{red}{\sf Pos}'_i}), ({\sf RKey}, {\sf RPos}))$
+to the root and let $k' := {\sf LKey}$; 
 \item 
+else 
+if $k > k'$, 
+write back
+$(k', v$, ${\color{red}{\sf Pos}'_{i-1}}$,
+ $({\sf LKey}$,
+${\sf LPos})$,
+$({\sf RKey}$,
+${\color{red}{{\sf Pos}'_i}}))$ to the root, and let
+$k' := {\sf RKey}$;
+\item 
+else if $k = k'$, let ${\sf found} := {\sf true}$, 
+let ${\sf fetched} := (k', v, {\sf Pos}, ({\sf LKey}, {\sf LPos}), 
+({\sf RKey}, {\sf RPos}))$, 
+and write back 
+$(k', v, {\color{red}{\sf Pos}'_{i-1}}, ({\sf LKey}, {\sf LPos}), 
+({\sf RKey}, {\sf RPos}))$
+to the root;
 \end{itemize}
+%\item 
+%Else, write back a filler element to the root;
+%\item 
+%let $i := i + 1$;
+%\end{itemize}
+\item 
+Else if ${\sf found}$, then 
+access a random path in the ORAM tree, and write back a filler
+element to the root.
+\item 
+Perform eviction on the ORAM tree path just read.  
 \end{itemize}
+Finally, the client updates the root's position identifier 
+to be ${\sf Pos}'_0$, and the result of the request
+is stored in ${\sf fetched}$.
 
+\ignore{
 When the client has read 
 a path in the logical tree
 containing logarithmically many nodes, 
@@ -239,7 +280,9 @@ each parent correctly points to the new position identifers
 for its children, before writing them back to the root
 and performing evictions on the ORAM tree.
 
+}
 
+\begin{remark}
 In a non-oblivious AVL tree, the lookup algorithm 
 stops whenever the desired key is found.
 However, in an oblivious dictionary, such early stopping
@@ -249,21 +292,33 @@ requested element
 is in the logical tree. 
 Therefore, even after we have found
 the element, we still have to perform fake
-operations on the ORAM tree.  
-It is known that the maximum depth of an AVL
-tree with $N$ elements is $1.44 \log N$.
-Therefore, when the 
-lookup on the logical tree has ended, we will still
-access some more random paths in the ORAM tree, such that 
-the total number of paths accessed is exactly $1.44 \log N$.
+operations on the ORAM tree, such that all requests 
+incur the same number of memory accesses.
+%It is known that the maximum height of an AVL
+%tree with $N$ elements is $1.44 \log N$.
+%Therefore, when the 
+%lookup on the logical tree has ended, we will still
+%access some more random paths in the ORAM tree, such that 
+%the total number of paths accessed is exactly $1.44 \log N$.
+\end{remark}
+
+%\subsection{Performance}
+\paragraph{Performance.}
+The above algorithm involves visiting
+$O(\log N)$ ORAM tree paths for each lookup request. 
+Therefore, the cost per ${\bf Lookup}$ is $O(\log^2 N)$.
 
 
+%The improved oblivious data structure has an overhead of $O(\log^2 n)$ with $O(\log n)$ from the recursion level and $O(\log n)$ from the size of the tree. This is an improvement in contrast to the naive approach that compiles binary searching--which automatically incurs a $O(\log n)$ search cost \cite{gentry2013optimizing}-- with Path ORAM--that already has a $O(\log^2 n)$ lookup cost-- giving an overall $O(\log^3 n)$ overhead.
+
+%It is possible to achieve $O(\log n)$ overhead as shown by Asharov et. al. \cite{asharov2023futorama}. With this low overhead, this implementation of an oblivious dictionary finally becomes practical and a viable choice for real-world security. However, there are many restrictions and assumptions that must be met before FuturORAMa can be used and thus some people still prefer to use Path ORAM or Circuit ORAM despite the larger overhead.
 
 
 %Further, the client records the new position identifier
 %for the root node. 
 
 
+\paragraph{Extending it to a dynamic dictionary.}
 The above idea was first suggested by Gentry et al.~\cite{gentryods}
 who considered a static logical tree that supports
 only ${\bf Lookup}$ but no dynamic insertion and deletion.  
@@ -280,6 +335,9 @@ In our case, during a rotation,
 we just have to additionally
 update the children position identifiers
 for nodes involved in the rotation. 
+Again, we have to pad all 
+requests to the same length 
+to avoid leakage through early stopping. 
 
 
 \ignore{
@@ -291,11 +349,6 @@ The implementation of a dictionary with binary search trees is simple and intuit
 \subsection{Access Protocol}
 The only part of the access protocol that differs significantly from the regular setup of Path ORAM is the existence of parents and children. Thus, we must simply maintain the invariant that the parent's child pointers get updated whenever the child's own path is changed on access. This idea can be extended for insertion and deletion in dynamic trees but it remains within the same complexity class for overhead. Beyond that, the access protocol is very similar to the pseudocode shown in Figure \ref{fig:pathORAMpseudo}.
 }
-
-\subsection{Overhead}
-The improved oblivious data structure has an overhead of $O(\log^2 n)$ with $O(\log n)$ from the recursion level and $O(\log n)$ from the size of the tree. This is an improvement in contrast to the naive approach that compiles binary searching--which automatically incurs a $O(\log n)$ search cost \cite{gentry2013optimizing}-- with Path ORAM--that already has a $O(\log^2 n)$ lookup cost-- giving an overall $O(\log^3 n)$ overhead.
-
-It is possible to achieve $O(\log n)$ overhead as shown by Asharov et. al. \cite{asharov2023futorama}. With this low overhead, this implementation of an oblivious dictionary finally becomes practical and a viable choice for real-world security. However, there are many restrictions and assumptions that must be met before FuturORAMa can be used and thus some people still prefer to use Path ORAM or Circuit ORAM despite the larger overhead.
 
 
 \section{Oblivious Stacks / Queues}
