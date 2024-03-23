@@ -644,11 +644,15 @@ Access Machine (RAM)
 is that in a 
 Turing Machine, the current memory pointer 
 can only move left
-or right by one position, or stay put. 
+or right by one position, or stay put --- note that stacks
+and queues satisfy this so they have an efficient implementation on a Turing
+Machine. 
 By contrast, in a RAM, the current memory 
 pointer can jump around to any location.
 For this reason, Turing Machines are easier 
-to make oblivious than a RAM. 
+to make oblivious than a RAM\footnote{One can show that to get an Oblivious RAM
+with non-trivial overhead, randomness is necessary. By contrast,
+OTM can be achieved with a deterministic construction.}. 
 
 Oblivious Turing Machine was first shown by 
 Pippenger and Fischer~\cite{otm}. In this lecture, we will describe
