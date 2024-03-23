@@ -110,7 +110,11 @@ and server input $(1^\lambda, \DB)$.
 \end{definition}
 
 
-Note that PIR schemes can additionally be extended to retrieve blocks of data by querying the database bit-by-bit.
+Note that PIR schemes can be extended 
+for retrieving records containing multiple bits, rather than
+just 1-bit records. 
+
+%to retrieve blocks of data by querying the database bit-by-bit.
 \section{Single Server PIR constructions}
 Naively, the client can just download the entire database, which is perfect correctness and privacy, but this has linear bandwidth, client computation, and server computation with respect to the database size.
 
