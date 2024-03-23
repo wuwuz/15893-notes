@@ -20,7 +20,7 @@ syntax:
 	\item The client's input is a desired 
 index $i \in [n]$, and the server's input is a database $\DB \in \{0,1\}^n$.
 Both the client and server also obtain $1^\lambda$ as input. 
-	\item At the end of the protocol, the client outputs bit $b \in \{0,1\}$.
+	\item At the end of the protocol, the client outputs a bit $b \in \{0,1\}$.
 \end{itemize}
 
 We want the scheme to satisfy the following properties.
@@ -75,11 +75,17 @@ servers' views.
 
 
 
-\begin{definition}[PIR - Two Server Scheme]
-A protocol between a client $c$ and servers $s_{1},s_{2}$ where,
+\begin{definition}[Two-server PIR]
+A two-server PIR, parametrized with some security parameter $\lambda$, is a 
+protocol between a client $c$ and two servers $s_{1},s_{2}$ 
+with the following syntax:  
 \begin{itemize}
-	\item Client has desired index $i \in [n]$, and server(s) have $\DB \in \{0,1\}^n$
-	\item At the end of the protocol, client outputs bit $b \in \{0,1\}$
+	\item 
+The client's input is $1^\lambda$ and a 
+desired index $i \in [n]$, and 
+each server's input is a database $\DB \in \{0,1\}^n$.
+	\item At the end of the protocol, 
+the client outputs a bit $b \in \{0,1\}$.
 \end{itemize}
 with properties,
 \begin{itemize}
