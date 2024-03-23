@@ -169,7 +169,8 @@ ${\sf Circ}(c)$.
 We can construct a single-server PIR scheme from an FHE scheme 
 as follows.
 \begin{enumerate}
-	\item The client samples $(\pk,\sk) \leftarrow \FHE.\Gen(1^\lambda),$ and encrypts their query as $q \leftarrow \FHE.\Enc(i)$. The client then sends $q$ to the server.
+	\item The client samples $(\pk,\sk) \leftarrow \FHE.\Gen(1^\lambda),$ and encrypts its 
+query as $q \leftarrow \FHE.\Enc(\pk, i)$. The client then sends $q$ to the server.
 	\item The server homomorphically evaluates the selection circuit $S_i$ 
 and computes ${c} = \FHE.{\sf Eval}(\pk, S_i, q)$, where $S_i(\DB)$ 
 is the circuit that selects the $i$-th bit from the input $\DB$, 
