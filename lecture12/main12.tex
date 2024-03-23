@@ -15,7 +15,9 @@
 
 % Theorem Environments
 \newtheorem{theorem}{Theorem}
+{\theoremstyle{definition}
 \newtheorem{remark}{Remark}
+}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{definition}[theorem]{Definition}
@@ -392,7 +394,7 @@ enjoy statistical security.
 \end{remark}
 
 
-\section{Oblivious Stacks / Queues}
+\section{Oblivious Stack / Queue}
 An oblivious stack or queue can also be realized
 using a similar idea.
 For example, in an oblivious stack,
@@ -437,7 +439,7 @@ Push simply requires us to choose a path for the new element and then put it ont
 Because there is only one tree and we only need to worry about modifying one element in the tree at a time, each operation takes $O(\log n)$ time. Note that this is a randomized algorithm because there is only one tree and thus this scheme uses non-recursive Path ORAM. We'll learn about a deterministic oblivious algorithm in a later section on oblivious Turing machines.
 }
 
-\section{Oblivious Priority Queues}
+\section{Oblivious Priority Queue}
 %This oblivious data structure constructed using non-recursive Path ORAM is somewhat similar to that of oblivious stacks and queues but has a few notable differences. For simplicity, we are again assuming that all keys are distinct.
 
 We first consider a basic priority queue with only the following
@@ -514,7 +516,8 @@ its own subtree minimum.
 The access pattern of the above algorithm 
 are independent of the 
 sequence of (key, value)
-pairs inserted. 
+pairs inserted, since every operation 
+visits a random path whose choice has not been revealed before.
 However, 
 the access patterns reveal whether the type of each operation 
 is ${\sf ExtractMin}$
@@ -600,8 +603,8 @@ involve operating on $O(1)$ paths, and thus
 all operations require $O(\log N)$ cost. 
 
 
-\section{Old Text Below}
 
+\ignore{
 \subsection{Access Protocol}
 
 \subsubsection{Extract-min()}
@@ -620,8 +623,25 @@ We can also implement ``$delete(ref)$" where $ref$ is a reference to the pointer
 
 \subsection{Overhead}
 As expected, since insertion and extract-min() only require us to update the path the element resides on in linear time, they only incur a $O(\log n)$ overhead.
+}
 
-\section{Oblivious Turing Machines}
+
+\section{Oblivious Turing Machine}
+
+The oblivious stack and queue constructions
+described earlier 
+are randomized algorithms. 
+It is actually possible to realize oblivious stacks
+and queues through a deterministic 
+construction where each operation still takes $O(\log N)$ cost. 
+
+In fact, more generally, we can compile any Turing Machine
+to an oblivious Turing Machine (OTM) with $O(\log N)$
+blowup in the running time, and the resulting
+OTM is deterministic.
+
+
+
 \subsection{Operations}
 As a reminder, in the oblivious Turing machine model we want to hide whether the Turning machine is going left, right, or staying still on the tape.
 
