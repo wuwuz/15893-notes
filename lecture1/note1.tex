@@ -159,10 +159,16 @@ ${\sf Circ}(c)$.
 \end{itemize}
 
 \paragraph{PIR from FHE.}
+We can construct a single-server PIR scheme from an FHE scheme 
+as follows.
 \begin{enumerate}
-	\item The client samples $(pk,sk) \leftarrow \FHE.\Gen(1^\lambda),$ and encrypts their query as $m \leftarrow \FHE.\Enc(i)$. The client then sends $m$ to the server.
-	\item The server homomorphically evaluates the selection circuit $S$ and let ${c} = {\sf Eval}(S, m)$ ($S(i)$ selects the $i$-th bit from $\DB$ and the circuit is $\tilde{O}(n)$\footnote{$\tilde{O}$ hides the polylogarithmic factors.} in size), and sends it to the client. 
-	\item The client decrypts $\FHE.\Dec(sk,c)$.
+	\item The client samples $(\pk,\sk) \leftarrow \FHE.\Gen(1^\lambda),$ and encrypts their query as $q \leftarrow \FHE.\Enc(i)$. The client then sends $q$ to the server.
+	\item The server homomorphically evaluates the selection circuit $S_i$ 
+and computes ${c} = \FHE.{\sf Eval}(\pk, S_i, q)$, where $S_i(\DB)$ 
+is the circuit that selects the $i$-th bit from the input $\DB$, 
+%and the circuit is $\tilde{O}(n)$\footnote{$\tilde{O}$ hides the polylogarithmic factors.} in size), 
+and sends the resulting ciphertext $c$ back to the client. 
+	\item The client decrypts $\FHE.\Dec(\sk, c)$.
 \end{enumerate}
 The correctness of the scheme is clear. The scheme  has $\tilde{O}(1)$ bandwidth and client computation and $\tilde{O}(n)$ server computation. Some notable PIR schemes include Spiral~\cite{spiral} and SimplePIR~\cite{simplepir}.
 
