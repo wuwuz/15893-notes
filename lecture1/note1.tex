@@ -200,8 +200,14 @@ In fact, this is possible in the two-server setting (we will see this next),
 and later we will prove that it is impossible in the single-server setting.
 
 \section{Two-Server PIR Constructions}
-\subsection{$\sqrt{n}$-BW 2-Server-Scheme with Information-theoretic (IT) security}
-Note that IT security implies no harness assumptions, so this is perfect and statistically private.
+\subsection{$\sqrt{n}$-Bandwidth 
+2-Server PIR} % with Information-theoretic (IT) security}
+We now introduce a 2-server $\sqrt{n}$-bandwidth
+PIR scheme 
+with information theoretic security, i.e., 
+the scheme does not rely on any cryptographic assumptions,
+and achieves perfect privacy and correctness.
+%Note that IT security implies no harness assumptions, so this is perfect and statistically private.
 
 The key idea is the view of database $DB \in \{0,1\}^n$ as a $S \in \{0,1\}^{\sqrt{n} \times \sqrt{n}}$ matrix. Say the client wants to query the $(i,j)$'th entry. To do this, the server can simply return the entire column $j$, which we can afford to do via the square-root bandwidth. To provide security, the client also supplies a one-hot-vector $q_j$, split into two random shares $v_{1},v_{2}$ via a 2-share secret sharing scheme (that is, sample random $v_1,v_2$ conditioned on $v_1 \oplus v_2 = q_{j}$).
 
