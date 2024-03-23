@@ -13,10 +13,12 @@ we define a single-server PIR scheme as follows.
 
 \begin{definition}[Single-server PIR]
 A single-server PIR is a 
-protocol between a client $c$ and server $s$ where,
+protocol between a client and a server with the following
+syntax: 
 \begin{itemize}
-	\item Client has desired index $i \in [n]$, and server(s) have $\DB \in \{0,1\}^n$
-	\item At the end of the protocol, client outputs bit $b \in \{0,1\}$
+	\item The client's input is a desired 
+index $i \in [n]$, and the server's input is a database $\DB \in \{0,1\}^n$.
+	\item At the end of the protocol, the client outputs bit $b \in \{0,1\}$.
 \end{itemize}
 with properties,
 \begin{itemize}
