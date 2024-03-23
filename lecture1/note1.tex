@@ -93,10 +93,12 @@ with properties,
 all $\DB \in \{0,1\}^n, i \in [n],$ under honest execution, 
 	\[\Pr[b = \DB[i]] = 1%\geq 1 - \mu(n) \tag{negligible $\mu$}
 \]
-	
-	\item \textbf{Privacy}: $\forall i,j \in [n], \DB  \in \{0,1\}^n$, and function $view_{s}$ representing the view of server $s$:
-	\[view_{s_{1}}(n,\DB,i) \cong view_{s_{1}}(n,\DB,j)\]
-	\[view_{s_{2}}(n,\DB,i) \cong view_{s_{2}}(n,\DB,j)\]
+\item \textbf{Privacy}: 
+for any $\lambda$, any $n$ that is polynomially bounded in $\lambda$,
+any $i,j \in [n]$, any $\DB  \in \{0,1\}^n$, it holds that 
+%, and function $view_{s}$ representing the view of server $s$:
+	\[{\sf view}_{s_{1}}(1^\lambda,\DB,i) \approx {\sf view}_{s_{1}}(1^\lambda,\DB,j)\]
+	\[{\sf view}_{s_{2}}(1^\lambda,\DB,i) \approx {\sf view}_{s_{2}}(1^\lambda,\DB,j)\]
 \end{itemize}
 \end{definition}
 
