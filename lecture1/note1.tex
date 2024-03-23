@@ -123,7 +123,7 @@ However, this approach suffers from linear bandwidth,
 and linear server/client computation. 
 %which is perfect correctness and privacy, but this has linear bandwidth, client computation, and server computation with respect to the database size.
 
-\subsection{FHE PIR}
+\subsection{PIR Based on Fully Homomorphic Encryption}
 For a smarter and overall more efficient scheme, we assume we have an FHE scheme (Gen, Enc, Dec). An FHE scheme allows us to perform addition and multiplication operations on the ciphers which propagate to their underlying plain-texts.
 \footnote{TA:
 Arithmetic circuit (including addition and multiplication gates) is Turing-complete. Thus, FHE allows the server to evaluate arbitrary computation given the encrypted input. However, we have to be careful about its efficiency -- we usually discuss the time complexity of an algorithm in the RAM model, whereas FHE only works in the circuit model (in general).}
