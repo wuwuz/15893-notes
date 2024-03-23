@@ -171,8 +171,10 @@ as follows.
 \begin{enumerate}
 	\item The client samples $(\pk,\sk) \leftarrow \FHE.\Gen(1^\lambda),$ and encrypts its 
 query as $q \leftarrow \FHE.\Enc(\pk, i)$. The client then sends $q$ to the server.
-	\item The server homomorphically evaluates the selection circuit $S_i$ 
-and computes ${c} = \FHE.{\sf Eval}(\pk, S_i, q)$, where $S_i(\DB)$ 
+	\item The server homomorphically evaluates the selection 
+circuit $S_{\DB}$ 
+and computes ${c} \leftarrow  \FHE.{\sf Eval}(\pk, S_{\DB}, q)$, 
+where $S_{\DB}(i)$ 
 is the circuit that selects the $i$-th bit from the input $\DB$, 
 %and the circuit is $\tilde{O}(n)$\footnote{$\tilde{O}$ hides the polylogarithmic factors.} in size), 
 and sends the resulting ciphertext $c$ back to the client. 
