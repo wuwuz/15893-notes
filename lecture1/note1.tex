@@ -114,13 +114,19 @@ Note that PIR schemes can be extended
 for retrieving records containing multiple bits, rather than
 just 1-bit records. 
 
-%to retrieve blocks of data by querying the database bit-by-bit.
-\section{Single-Server PIR Constructions}
 
+\paragraph{Na\"ive approach.} 
 The na\"ive approach is for 
 the client to download the entire database. 
 However, this approach suffers from linear bandwidth,
 and linear server/client computation. 
+
+We will now show some PIR constructions with sublinear bandwidth.
+
+
+%to retrieve blocks of data by querying the database bit-by-bit.
+\section{Single-Server PIR Construction based on FHE}
+
 %which is perfect correctness and privacy, but this has linear bandwidth, client computation, and server computation with respect to the database size.
 
 \subsection{PIR Based on Fully Homomorphic Encryption}
