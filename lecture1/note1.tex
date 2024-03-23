@@ -1,7 +1,9 @@
 
 %\section{Lecture 1: Private Information Retrieval}
 The Private Information Retrieval problem was first introduced by Chor, Kushilevitz, Goldreich and Sudan~\cite{chor1998private}.
-In this setting, we will have a client and server(s). The server(s) are connected to a public database indexed from $1$ to $n$, which could represent DNS, webpage, leaked password database, etc.
+In this setting, we will have a client and 
+one or more server(s). The servers each have a public database indexed from $1$ to $n$ (e.g., the DNS repository, 
+a repository of webpages, a leaked password database, etc).
 
 A client wants to fetch an entry from this database $i \in [n]$ but does not want to leak their query to the server(s). More formally,
 \begin{definition}[PIR - Single Server Scheme]
