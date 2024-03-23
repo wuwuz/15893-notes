@@ -23,14 +23,26 @@ index $i \in [n]$, and the server's input is a database $\DB \in \{0,1\}^n$.
 
 We want the scheme to satisfy the following properties.
 \begin{itemize}
-	\item \textbf{Correctness}: $\forall n: \DB \in \{0,1\}^n, i \in [n],$ under honest execution, 
-	\[\Pr[b = \DB[i]] \geq 1 - \mu(n) \tag{negligible $\mu$}\]
+\item \textbf{Correctness}: for all $n$, 
+for all $\DB \in \{0,1\}^n, i \in [n],$ under honest execution, 
+	\[\Pr[b = \DB[i]] = 1 %- \mu(n) %\tag{negligible $\mu$}
+\]
 	
-	\item \textbf{Privacy}: $\forall i,j \in [n], \DB  \in \{0,1\}^n$, and function $view_{s}$ representing the view of server $s$:
-	\[view_s(n,\DB,i) \cong view_s(n,\DB,j)\]
+\item \textbf{Privacy}: For any $n$, any 
+$i,j \in [n], \DB  \in \{0,1\}^n$, 
+it holds that  
+%and function $view_{s}$ representing the view of server $s$:
+	\[view_s(DB,i) \approx view_s(DB,j)\]
+where $view_{s}(\DB, i)$ 
+is a random variable representing the view of the server  
+if we execute the PIR protocol 
+over client input $i$ and server input $\DB$, 
+and $\approx$ stands for 
+statistical or computational indistinguishability.
+%identically distributed, statistically, 
+%or computationally indistinguishable.
+%representing the view of server $s$:
 \end{itemize}
-where $\cong$ stands for identically distributed, statistically, 
-or computationally indistinguishable.
 \end{definition}
 %Intuitively, the privacy definition means that from the server's view, it cannot tell what the user is querying. One can also define a definition for malicious privacy, but since our schemes of interest are one-round, we do not make this distinction.
 
