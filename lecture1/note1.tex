@@ -116,7 +116,12 @@ just 1-bit records.
 
 %to retrieve blocks of data by querying the database bit-by-bit.
 \section{Single-Server PIR Constructions}
-Naively, the client can just download the entire database, which is perfect correctness and privacy, but this has linear bandwidth, client computation, and server computation with respect to the database size.
+
+The na\"ive approach is for 
+the client to download the entire database. 
+However, this approach suffers from linear bandwidth,
+and linear server/client computation. 
+%which is perfect correctness and privacy, but this has linear bandwidth, client computation, and server computation with respect to the database size.
 
 \subsection{FHE PIR}
 For a smarter and overall more efficient scheme, we assume we have an FHE scheme (Gen, Enc, Dec). An FHE scheme allows us to perform addition and multiplication operations on the ciphers which propagate to their underlying plain-texts.
