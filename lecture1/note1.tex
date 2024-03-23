@@ -25,16 +25,16 @@ Both the client and server also obtain $1^\lambda$ as input.
 
 We want the scheme to satisfy the following properties.
 \begin{itemize}
-\item \textbf{Correctness}: for all $n$, 
+\item \textbf{Correctness}: for all $\lambda, n$, 
 for all $\DB \in \{0,1\}^n, i \in [n],$ under honest execution, 
 	\[\Pr[b = \DB[i]] = 1 %- \mu(n) %\tag{negligible $\mu$}
 \]
 	
-\item \textbf{Privacy}: For any $n$, any 
+\item \textbf{Privacy}: For any $\lambda, n$, any 
 $i,j \in [n], \DB  \in \{0,1\}^n$, 
 it holds that  
 %and function $view_{s}$ representing the view of server $s$:
-	\[{\sf view}_s(DB,i) \approx {\sf view}_s(DB,j)\]
+	\[{\sf view}_s(1^\lambda, \DB,i) \approx {\sf view}_s(1^\lambda, \DB,j)\]
 where ${\sf view}_{s}(1^\lambda, \DB, i)$ 
 is a random variable representing the view of the server  
 if we execute the PIR protocol 
