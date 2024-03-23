@@ -170,7 +170,28 @@ is the circuit that selects the $i$-th bit from the input $\DB$,
 and sends the resulting ciphertext $c$ back to the client. 
 	\item The client decrypts $\FHE.\Dec(\sk, c)$.
 \end{enumerate}
-The correctness of the scheme is clear. The scheme  has $\tilde{O}(1)$ bandwidth and client computation and $\tilde{O}(n)$ server computation. Some notable PIR schemes include Spiral~\cite{spiral} and SimplePIR~\cite{simplepir}.
+The correctness of the PIR scheme is easy to see
+given correctness of the FHE scheme. 
+The scheme has $\widetilde{O}(1)$ bandwidth and 
+client computation, and $\widetilde{O}(n)$ 
+server computation\footnote{We assume a compact
+FHE scheme with the following
+performance bounds: 
+the ciphertext size is 
+$\widetilde{O}(1)$ for encrypting a plaintext
+of $\widetilde{O}(1)$ bits, and the encryption
+and decryption times are also $\widetilde{O}(1)$, 
+and the homomorphic evaluation
+time
+is $\widetilde{O}(|{\sf Circ}|)$
+ for a circuit ${\sf Circ}$.} 
+where $\widetilde{O}(\cdot)$ hides
+${\sf poly}(\lambda, \log n)$ factors.
+
+
+Some notable PIR schemes based on FHE 
+include Spiral~\cite{spiral} 
+and SimplePIR~\cite{simplepir}.
 
 \textbf{Question}: Can we get sub-linear bandwidth without any cryptographic (hardness) assumptions? In fact, this is possible in the two server setting (we will see this next), and we can prove that this is impossible in the one server case.
 
