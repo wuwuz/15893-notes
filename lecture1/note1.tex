@@ -12,12 +12,14 @@ but does not want to leak its query to the server(s). More formally,
 we define a single-server PIR scheme as follows.
 
 \begin{definition}[Single-server PIR]
-A single-server PIR is a 
+A single-server PIR, parametrized
+by a security parameter $\lambda \in \mathbb{N}$, is a 
 protocol between a client and a server with the following
 syntax: 
 \begin{itemize}
 	\item The client's input is a desired 
 index $i \in [n]$, and the server's input is a database $\DB \in \{0,1\}^n$.
+Both the client and server also obtain $1^\lambda$ as input. 
 	\item At the end of the protocol, the client outputs bit $b \in \{0,1\}$.
 \end{itemize}
 
@@ -32,11 +34,11 @@ for all $\DB \in \{0,1\}^n, i \in [n],$ under honest execution,
 $i,j \in [n], \DB  \in \{0,1\}^n$, 
 it holds that  
 %and function $view_{s}$ representing the view of server $s$:
-	\[view_s(DB,i) \approx view_s(DB,j)\]
-where $view_{s}(\DB, i)$ 
+	\[{\sf view}_s(DB,i) \approx {\sf view}_s(DB,j)\]
+where ${\sf view}_{s}(1^\lambda, \DB, i)$ 
 is a random variable representing the view of the server  
 if we execute the PIR protocol 
-over client input $i$ and server input $\DB$, 
+over client input $(1^\lambda, i)$ and server input $(1^\lambda, \DB)$, 
 and $\approx$ stands for 
 statistical or computational indistinguishability.
 %identically distributed, statistically, 
