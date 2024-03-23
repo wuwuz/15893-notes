@@ -179,7 +179,7 @@ where $S_{\DB}(i)$
 is the circuit that selects the $i$-th bit from the input $\DB$, 
 %and the circuit is $\tilde{O}(n)$\footnote{$\tilde{O}$ hides the polylogarithmic factors.} in size), 
 and sends the resulting ciphertext $c$ back to the client. 
-	\item The client decrypts $\FHE.\Dec(\sk, c)$.
+	\item The client decrypts $b \leftarrow \FHE.\Dec(\sk, c)$.
 \end{enumerate}
 The correctness of the PIR scheme is easy to see
 given correctness of the FHE scheme. 
