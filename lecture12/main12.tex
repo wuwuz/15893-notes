@@ -122,9 +122,11 @@ and can be stored directly by the ORAM client.
 We consider a standard dictionary data structure
 supporting the following operations: 
 \begin{itemize}
-    \item \textbf{Lookup($k$):} Return the value with key $k$
-    \item \textbf{Insert($k, v$):} Insert the value $v$ with key $k$ into the dictionary
-    \item \textbf{Delete($k$):} Delete the value with key $k$ from the dictionary
+    \item \textbf{Lookup($k$):} Return the value with key $k$;
+    \item \textbf{Insert($k, v$):} 
+Insert the value $v$ with key $k$ into the dictionary; 
+%if $(k, v) = (\bot, \bot)$, then do nothing; 
+    \item \textbf{Delete($k$):} Delete the value with key $k$ from the dictionary.
 \end{itemize}
 Though this oblivious dictionary method can be generalized to include duplicate keys, we will only focus on the case where all keys are unique for the sake of simplicity. Note that ORAM itself 
 realizes a memory array abstraction which is 
@@ -321,6 +323,7 @@ incur the same number of memory accesses.
 %lookup on the logical tree has ended, we will still
 %access some more random paths in the ORAM tree, such that 
 %the total number of paths accessed is exactly $1.44 \log N$.
+\label{rmk:padfake}
 \end{remark}
 
 %\subsection{Performance}
@@ -443,7 +446,8 @@ ${\sf DecreaseKey}$ and ${\sf Delete}$ later:
 
 \begin{itemize}
     \item \textbf{${\sf ExtractMin}()$:} Return the element with the minimum key;
-    \item \textbf{${\sf Insert}(k, v)$:} Insert the value $v$ with key $k$.
+    \item \textbf{${\sf Insert}(k, v)$:} Insert the value $v$ with key $k$; 
+or if $(k, v) = (\bot, \bot)$, then do nothing; 
 \end{itemize}
 For simplicity, we shall assume that all elements have distinct
 keys, although it is not hard to extend
@@ -483,7 +487,8 @@ ${\sf Insert}(k, v)$:
 \begin{itemize}
 \item 
 assign a random path to the element $(k, v)$ 
-and add it to the root; 
+and add it to the root, or if $(k, v) = (\bot, \bot)$,
+then pretend to add an element to the root; 
 \item 
 perform eviction on a random path;
 \item 
@@ -525,10 +530,14 @@ along the eviction path.
 
 
 \paragraph{Supporting additional operations.}
-We now discuss how to support ${\sf Delete}$ and ${\sf DecreaseKey}$ operations. 
-To define their syntax, we need to introduce
-the notion of a reference pointer, denoted ${\sf ref}$ to refer
-to the element being deleted or whose key is being decreased. 
+We now discuss how to support 
+additional operations, such as
+${\sf FindMin}$, ${\sf Delete}$ and ${\sf DecreaseKey}$ . 
+To define the syntax of ${\sf Delete}$ and ${\sf DecreaseKey}$, 
+we need to introduce
+the notion of a reference pointer (denoted ${\sf ref}$) 
+to reference 
+the element being deleted or whose key is being decreased. 
 Recall that   
 the definition of ${\sf Delete}$ and ${\sf DecreaseKey}$ in the ordinary (non-oblivious)
 binary heap also used a reference pointer to refer to the element
@@ -545,24 +554,45 @@ to the element inserted, so we can later refer to them
 in ${\sf Delete}$ or ${\sf DecreaseKey}$ calls. 
 It is not hard to modify our earlier insertion algorithm
 to return such a reference pointer. 
-We now define the syntax of the two operations: 
+We now define the syntax of the additional operations: 
 \begin{itemize}
-    \item ${\sf Delete}({\sf ref})$: 
+    \item $(k, v) \leftarrow {\sf Delete}({\sf ref})$: 
 delete the element represented
-by ${\sf ref}$; or if ${\sf ref} = \bot$, then do nothing;  
+by ${\sf ref}$ and return the deleted element; 
+or if ${\sf ref} = \bot$, then do nothing and return $\bot$;  
 %Access the path pointer denoted by $ref$, removes the item with key $k$, evicts along the path pointed to by $ref$, and recalculates the subtree minimum for each node along the path
     \item ${\sf DecreaseKey}({\sf ref}, k)$: %Delete(ref), insert($k', v$)
 decrease the key of the element 
 represented by ${\sf ref}$ to $k$. 
+\item $(k, v)\leftarrow {\sf FindMin}$:
+return the element with the minimum key.
 \end{itemize}
 
+These operations can be supported as follows. 
 ${\sf Delete}({\sf ref})$ can be implemented by going to the corresponding path 
-encoded in ${\sf ref}$, removing the element with the specified key, 
-and performing an eviction on that path.  
+encoded in ${\sf ref}$, reading and removing the element with the specified key, 
+and performing an eviction on that path. Further, if ${\sf ref} = \bot$, then
+simply scan a random path  
+and performing an eviction on that path.
+
 ${\sf DecreaseKey}({\sf ref}, k)$
 can be implemented 
-by   
+by calling $(k', v) \leftarrow {\sf Delete}({\sf ref})$ 
+first, and then 
+calling ${\sf Insert}(k, v)$, or  
+if ${\sf Delete}({\sf ref})$ returned $\bot$, then call 
+${\sf Insert}(\bot, \bot)$ instead.  
 
+${\sf FindMin}()$
+can be implemented by first calling ${\sf ExtractMin}$
+and then calling ${\sf Insert}$ to write back the extracted minimum element.
+
+Finally, if one wishes to additionally hide
+the type of operations, 
+then we can 
+use a similar idea as in \Cref{rmk:padfake}
+to make sure all requests 
+exhibit the same access patterns.
 
 
 \section{Old Text Below}
