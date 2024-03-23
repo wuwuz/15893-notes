@@ -20,9 +20,9 @@ syntax:
 index $i \in [n]$, and the server's input is a database $\DB \in \{0,1\}^n$.
 	\item At the end of the protocol, the client outputs bit $b \in \{0,1\}$.
 \end{itemize}
-with properties,
-\begin{itemize}
 
+We want the scheme to satisfy the following properties.
+\begin{itemize}
 	\item \textbf{Correctness}: $\forall n: \DB \in \{0,1\}^n, i \in [n],$ under honest execution, 
 	\[\Pr[b = \DB[i]] \geq 1 - \mu(n) \tag{negligible $\mu$}\]
 	
