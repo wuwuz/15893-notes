@@ -654,18 +654,111 @@ Oblivious Turing Machine was first shown by
 Pippenger and Fischer~\cite{otm}. In this lecture, we will describe
 a simplified variant of their construction.
 
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.8\textwidth]{otm}
+    \caption{{\bf Oblivious Turing Machine}: each level $i$ contains
+3 super-words of size $2^i$. }
+    \label{fig:otm}
+\end{figure*}
+
+\subsection{Construction}
+Henceforth we assume that the original Turing Machine 
+has space $N = 3 \cdot 2^D$.
+As shown in \Cref{fig:otm}, 
+in our OTM construction, we use a hierarchical data structure
+where the levels are indexed $0, 1, \ldots, D$.
+Each level $i \in \{0, 1, \ldots, D\}$ 
+contains 3 superwords of size $2^i$.
+A superword 
+of size $2^i$ is simply an array of $2^i$ words.
+
+\paragraph{Initialization.}
+Initially, the largest level $D$ contains  
+the memory of the TM.
+For every $i = D \ldots 1$, 
+level $i-1$ {\it obliviously} copies three super-words  
+of size $2^{i-1}$
+from the next level $i$, such that 
+the current memory pointer 
+is in the middle superword 
+in level $i-1$.
+
+Note that when level $i-1$ copies from the next level $i$,
+the starting position of the copy can only be one of the four choices
+as shown in \Cref{fig:otm}.
+To hide which three superwords are copied from the next level,
+we have to pretend to 
+make all four potential copies, such that only one of these
+copies is a real copy, and the rest are just fake operations.
+
+
+\paragraph{Operations.}
+In each time step $t = 1, 2, \ldots$, 
+we will read and write the memory word 
+at the current memory pointer, and then, 
+the memory pointer either moves left/right, or stays put.
+To support this, our OTM performs the following:
+
+\begin{itemize}[leftmargin=5mm]
+\item 
+Perform a linear scan of level $0$ to perform the read/write operation.
+\item 
+Let $2^L$ be the maximum power of  
+$2$ that divides $t$.
+Now do the following: 
+\begin{itemize}[leftmargin=5mm]
+\item 
+For $i = 0$ to $\min(L, D-1)$,  
+level $i$ {\it obliviously} 
+writes back its contents to the corresponding locations 
+in level $i+1$. 
+To hide which locations are written in level $i+1$, we pretend
+to make all four possible writebacks where only one of them is a true
+copy. 
+\item 
+For $i = \min(L, D-1)$ downto $0$,  
+level $i$ 
+{\it obliviously} copies three superwords of size $2^i$
+from level $i+1$ such that 
+the new memory pointer is centered  
+in the middle superblock.
+To hide which locations are fetched from level $i+1$, we pretend
+to make all four possible copies where only one of them is a true
+copy. 
+\end{itemize}
+\end{itemize}
+
+
+The above OTM construction has deterministic access patterns
+regardless of the  
+memory pointer movements in each time step.
+It is not hard to verify correctness of the scheme.
+
+
+To analyze the cost, observe that every $2^i$ steps,
+level $i$ and level $i+1$ need to communicate 
+back and forth, and the cost of this communication is 
+upper bounded by $C \cdot 2^i$ 
+where $C$ is some constant.
+Therefore, the total 
+amortized cost per time step is:
+\[
+C \cdot 2^0/2^0 + C \cdot 2^1/2^1 + \ldots 
+C \cdot 2^{D-1}/2^{D-1}
+= O(\log N)
+\]
+
+
+
+
+\ignore{
 \subsection{Operations}
 As a reminder, in the oblivious Turing machine model we want to hide whether the Turning machine is going left, right, or staying still on the tape.
 
 \subsection{Construction}
 Each level of the structure consists of three ``superblocks" increasing exponentially in size by a power of two (ex: the first level has three superblocks of size 1, the second has three superblocks of size 2, the $i$th level has three superblocks of size $2^i$, and so on) as seen in Figure \ref{fig:turing_blocks}. We denote $HEAD$ to be the head pointer of the Turing machine. We then maintain the following invariant throughout the protocol: When a level is rebuilt--for all except the last $n$th level--HEAD lies in the middle superblock.
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.8]{blocks.png}
-    \caption{A diagram representation of the levels within an oblivious Turing machine}
-    \label{fig:turing_blocks}
-\end{figure}
 
 We also want an invariant that indicates how, if level $i$ is updated, all levels $1$ to $(i-1)$ should be notified that $i$ has been updated. The reason for that is each element has multiple copies across levels, thus we must ensure that each copy is updated when the element is updated. This propagation can be done in linear time with respect to the level size.
 
@@ -682,6 +775,7 @@ The $i$th level is rebuilt every $2^i$ steps with a rebuilding cost in $O(2^i)$.
 At each level we get $c$ work and thus we incur $O(\log n)$ cost per operation. This result is actually quite old and has been proven since Fischer and Pippenger in 1979 \cite{pippenger1979relations}.
 
 \newpage
+}
 \bibliographystyle{alpha}
 \bibliography{refs.bib}
 \end{document}
