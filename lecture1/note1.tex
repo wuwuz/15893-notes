@@ -89,9 +89,10 @@ the client outputs a bit $b \in \{0,1\}$.
 \end{itemize}
 with properties,
 \begin{itemize}
-
-	\item \textbf{Correctness}: $\forall n: \DB \in \{0,1\}^n, i \in [n],$ under honest execution, 
-	\[\Pr[b = \DB[i]] \geq 1 - \mu(n) \tag{negligible $\mu$}\]
+	\item \textbf{Correctness}: for all $\lambda, n$, for 
+all $\DB \in \{0,1\}^n, i \in [n],$ under honest execution, 
+	\[\Pr[b = \DB[i]] = 1%\geq 1 - \mu(n) \tag{negligible $\mu$}
+\]
 	
 	\item \textbf{Privacy}: $\forall i,j \in [n], \DB  \in \{0,1\}^n$, and function $view_{s}$ representing the view of server $s$:
 	\[view_{s_{1}}(n,\DB,i) \cong view_{s_{1}}(n,\DB,j)\]
