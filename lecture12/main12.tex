@@ -639,8 +639,20 @@ In fact, more generally, we can compile any Turing Machine
 to an oblivious Turing Machine (OTM) with $O(\log N)$
 blowup in the running time, and the resulting
 OTM is deterministic.
+The main difference between a Turing Machine (TM) and a general Random 
+Access Machine (RAM) 
+is that in a 
+Turing Machine, the current memory pointer 
+can only move left
+or right by one position, or stay put. 
+By contrast, in a RAM, the current memory 
+pointer can jump around to any location.
+For this reason, Turing Machines are easier 
+to make oblivious than a RAM. 
 
-
+Oblivious Turing Machine was first shown by 
+Pippenger and Fischer~\cite{otm}. In this lecture, we will describe
+a simplified variant of their construction.
 
 \subsection{Operations}
 As a reminder, in the oblivious Turing machine model we want to hide whether the Turning machine is going left, right, or staying still on the tape.
