@@ -124,11 +124,41 @@ and linear server/client computation.
 %which is perfect correctness and privacy, but this has linear bandwidth, client computation, and server computation with respect to the database size.
 
 \subsection{PIR Based on Fully Homomorphic Encryption}
-For a smarter and overall more efficient scheme, we assume we have an FHE scheme (Gen, Enc, Dec). An FHE scheme allows us to perform addition and multiplication operations on the ciphers which propagate to their underlying plain-texts.
+%For a smarter and overall more efficient scheme, 
+It is easy to obtain a bandwidth-efficient
+PIR scheme if we assume a Fully Homomorphic Encryption (FHE)
+scheme. 
+%we assume we have an FHE scheme (Gen, Enc, Dec). 
+An FHE scheme allows us to perform addition and multiplication operations 
+in the ciphertext space. 
+%on the ciphers which propagate to their underlying plain-texts.
 \footnote{TA:
 Arithmetic circuit (including addition and multiplication gates) is Turing-complete. Thus, FHE allows the server to evaluate arbitrary computation given the encrypted input. However, we have to be careful about its efficiency -- we usually discuss the time complexity of an algorithm in the RAM model, whereas FHE only works in the circuit model (in general).}
+Informally, an FHE scheme supports
+the following operations: %The scheme is as follows:
+\begin{itemize}
+\item 
+$(\pk, \sk) \leftarrow {\sf Gen}(1^\lambda)$: samples
+ a public key $\pk$ and a secret key $\sk$; 
+\item 
+$c \leftarrow {\sf Enc}(\pk, m)$: encrypts a message $m$
+from some message space using the public 
+key $\pk$, and outputs the ciphertext $c$;
+\item  
+$m \leftarrow {\sf Enc}(\sk, c)$: %encrypts a message $m$
+decrypts a ciphertext $c$ using the secret key $\sk$,
+and outputs a plaintext message $m$;
+\item  
+$c' \leftarrow {\sf Eval}(\pk, {\sf Circ}, c)$:
+given 
+the public key $\pk$, some circuit ${\sf Circ}$, and
+a ciphertext $c$, output a transformed ciphertext $c'$.
+Correctness requires that 
+$c'$ be a valid FHE encryption of 
+${\sf Circ}(c)$.
+\end{itemize}
 
-The scheme is as follows:
+\paragraph{PIR from FHE.}
 \begin{enumerate}
 	\item The client samples $(pk,sk) \leftarrow \FHE.\Gen(1^\lambda),$ and encrypts their query as $m \leftarrow \FHE.\Enc(i)$. The client then sends $m$ to the server.
 	\item The server homomorphically evaluates the selection circuit $S$ and let ${c} = {\sf Eval}(S, m)$ ($S(i)$ selects the $i$-th bit from $\DB$ and the circuit is $\tilde{O}(n)$\footnote{$\tilde{O}$ hides the polylogarithmic factors.} in size), and sends it to the client. 
