@@ -173,7 +173,8 @@ as follows.
 query as $q \leftarrow \FHE.\Enc(\pk, i)$. The client then sends $q$ to the server.
 	\item The server homomorphically evaluates the selection 
 circuit $S_{\DB}$ 
-and computes ${c} \leftarrow  \FHE.{\sf Eval}(\pk, S_{\DB}, q)$, 
+by calling 
+${c} \leftarrow  \FHE.{\sf Eval}(\pk, S_{\DB}, q)$, 
 where $S_{\DB}(i)$ 
 is the circuit that selects the $i$-th bit from the input $\DB$, 
 %and the circuit is $\tilde{O}(n)$\footnote{$\tilde{O}$ hides the polylogarithmic factors.} in size), 
