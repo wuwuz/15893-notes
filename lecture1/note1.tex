@@ -36,8 +36,8 @@ any $n$ polynomially bounded in $\lambda$, any
 $i,j \in [n], \DB  \in \{0,1\}^n$, 
 it holds that  
 %and function $view_{s}$ representing the view of server $s$:
-	\[{\sf view}_s(1^\lambda, \DB,i) \approx {\sf view}_s(1^\lambda, \DB,j)\]
-where ${\sf view}_{s}(1^\lambda, \DB, i)$ 
+	\[{\sf view}_S(1^\lambda, \DB,i) \approx {\sf view}_S(1^\lambda, \DB,j)\]
+where ${\sf view}_S(1^\lambda, \DB, i)$ 
 is a random variable representing the view of the server  
 if we execute the PIR protocol 
 over client input $(1^\lambda, i)$ and server input $(1^\lambda, \DB)$, 
@@ -77,7 +77,7 @@ For example, a 2-server PIR scheme is defined as follows.
 
 \begin{definition}[Two-server PIR]
 A two-server PIR, parametrized with some security parameter $\lambda$, is a 
-protocol between a client $c$ and two servers $s_{1},s_{2}$ 
+protocol between a client $c$ and two servers $S_{1},S_{2}$ 
 with the following syntax:  
 \begin{itemize}
 	\item 
@@ -97,10 +97,10 @@ all $\DB \in \{0,1\}^n, i \in [n],$ under honest execution,
 for any $\lambda$, any $n$ that is polynomially bounded in $\lambda$,
 any $i,j \in [n]$, any $\DB  \in \{0,1\}^n$, it holds that 
 %, and function $view_{s}$ representing the view of server $s$:
-	\[{\sf view}_{s_{1}}(1^\lambda,\DB,i) \approx {\sf view}_{s_{1}}(1^\lambda,\DB,j)\]
-	\[{\sf view}_{s_{2}}(1^\lambda,\DB,i) \approx {\sf view}_{s_{2}}(1^\lambda,\DB,j)\]
-where ${\sf view}_{s_{1}}(1^\lambda, \DB, i)$
-and ${\sf view}_{s_{2}}(1^\lambda, \DB, i)$
+	\[{\sf view}_{S_{1}}(1^\lambda,\DB,i) \approx {\sf view}_{S_{1}}(1^\lambda,\DB,j)\]
+	\[{\sf view}_{S_{2}}(1^\lambda,\DB,i) \approx {\sf view}_{S_{2}}(1^\lambda,\DB,j)\]
+where ${\sf view}_{S_{1}}(1^\lambda, \DB, i)$
+and ${\sf view}_{S_{2}}(1^\lambda, \DB, i)$
 are random variables representing the 
 view of the first and the second server, respectively, in a protocol
 execution 
@@ -218,23 +218,48 @@ and later we will prove that it is impossible in the single-server setting.
 We now introduce a 2-server $\sqrt{n}$-bandwidth
 PIR scheme 
 with information theoretic security, i.e., 
-the scheme does not rely on any cryptographic assumptions,
-and achieves perfect privacy and correctness.
+the scheme does not rely on any cryptographic assumptions.
 %Note that IT security implies no harness assumptions, so this is perfect and statistically private.
 
-The key idea is the view of database $DB \in \{0,1\}^n$ as a $S \in \{0,1\}^{\sqrt{n} \times \sqrt{n}}$ matrix. Say the client wants to query the $(i,j)$'th entry. To do this, the server can simply return the entire column $j$, which we can afford to do via the square-root bandwidth. To provide security, the client also supplies a one-hot-vector $q_j$, split into two random shares $v_{1},v_{2}$ via a 2-share secret sharing scheme (that is, sample random $v_1,v_2$ conditioned on $v_1 \oplus v_2 = q_{j}$).
-
+The key idea is to view the database $\DB \in \{0,1\}^n$ 
+as a
+$\sqrt{n}$ by $\sqrt{n}$ matrix\footnote{
+Without loss of generality, we may assume that $n$ 
+is a perfect square --- if not, we can always round it up to a perfect square
+incurring only constant blowup.}
+henceforth denoted
+$M \in \{0, 1\}^{\sqrt{n} \times \sqrt{n}}$.
+% $S \in \{0,1\}^{\sqrt{n} \times \sqrt{n}}$ matrix. 
+Say the client wants to query %the $(i,j)$'th entry. 
+the bit $M[i, j]$.
+To achieve this, the client will perform
+a 2-server PIR protocol
+at the  end of which it retrieves
+the entire column $M[:, j]$.
+%To do this, the server can simply return the entire column $j$, which we can afford to do via the square-root bandwidth. To provide security, the client also supplies a one-hot-vector $q_j$, split into two random shares $v_{1},v_{2}$ via a 2-share secret sharing scheme (that is, sample random $v_1,v_2$ conditioned on $v_1 \oplus v_2 = q_{j}$).
 The scheme is as follows:
 \begin{enumerate}
-	\item The client creates $v_{1},v_{2}$ as described above. The client sends these shares to servers $s_{1},s_{2}$ respectively.
-	\item Each server $s_{i}$, on receiving $v_{i}$ computes the matrix-vector product,
-	\[r_{i} \leftarrow S v_{i} \bmod 2\]
-	and sends the $\sqrt{n}$-size vector $r_{i}$ to the client.
+\item The client samples random column vectors 
+$v_{1},v_{2} \in \{0, 1\}^{\sqrt{n}}$ 
+such that 
+$v_1 \oplus v_2 = e_j$ where $e_j$
+is the vector that is $1$    
+at position $j$, and $0$ everywhere else,
+and $\oplus$ denotes bitwise XOR (i.e., addition mod 2).
+The client sends $v_1$ and $v_2$ 
+to the two servers $S_1$ and $S_2$ respectively.
+	\item Each server $S_i$, on receiving $v_i$, 
+computes the matrix-vector product,
+	\[r_{i} \leftarrow M v_{i} \bmod 2\]
+	and sends the $\sqrt{n}$-sized vector $r_{i}$ to the client.
 	\item The client computes and outputs $r_{1} \oplus r_{2}$.
 \end{enumerate}
 It is straightforward to verify correctness by seeing that
-\[r_{1} \oplus r_{2} = S r_{1} \oplus Sr_{2} \bmod 2 = S (r_{1} \oplus r_{2}) \bmod 2\]
-Lastly, this scheme is private, since $v_{1},v_{2}$ are uniformly random in each server's view, respectively.
+\[r_{1} \oplus r_{2} = M v_{1} + M v_{2} \bmod 2 = 
+M (v_{1} + v_{2}) \bmod 2 = M \cdot e_j \]
+Lastly, this scheme is private, since 
+each individual vector $v_{1}$ or $v_{2}$ 
+is uniformly random.
 
 \subsection{$n^{\frac{1}{3}}$-BW 2-server Scheme\cite{chor1998private}}
 We will first motivate this construction with a two server scheme with expected $\frac{n}{2}$ bandwidth and a eight server scheme with $n^{\frac 1 3}$ bandwidth. 
