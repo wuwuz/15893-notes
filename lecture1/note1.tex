@@ -77,7 +77,8 @@ For example, a 2-server PIR scheme is defined as follows.
 
 \begin{definition}[Two-server PIR]
 A two-server PIR, parametrized with some security parameter $\lambda$, is a 
-protocol between a client $c$ and two servers $S_{1},S_{2}$ 
+protocol between a client and two servers %${\sf Server}_{1},
+%{\sf Server}_{2}$ 
 with the following syntax:  
 \begin{itemize}
 	\item 
@@ -97,10 +98,10 @@ all $\DB \in \{0,1\}^n, i \in [n],$ under honest execution,
 for any $\lambda$, any $n$ that is polynomially bounded in $\lambda$,
 any $i,j \in [n]$, any $\DB  \in \{0,1\}^n$, it holds that 
 %, and function $view_{s}$ representing the view of server $s$:
-	\[{\sf view}_{S_{1}}(1^\lambda,\DB,i) \approx {\sf view}_{S_{1}}(1^\lambda,\DB,j)\]
-	\[{\sf view}_{S_{2}}(1^\lambda,\DB,i) \approx {\sf view}_{S_{2}}(1^\lambda,\DB,j)\]
-where ${\sf view}_{S_{1}}(1^\lambda, \DB, i)$
-and ${\sf view}_{S_{2}}(1^\lambda, \DB, i)$
+	\[{\sf view}_{{1}}(1^\lambda,\DB,i) \approx {\sf view}_{{1}}(1^\lambda,\DB,j)\]
+	\[{\sf view}_{{2}}(1^\lambda,\DB,i) \approx {\sf view}_{{2}}(1^\lambda,\DB,j)\]
+where ${\sf view}_{{1}}(1^\lambda, \DB, i)$
+and ${\sf view}_{{2}}(1^\lambda, \DB, i)$
 are random variables representing the 
 view of the first and the second server, respectively, in a protocol
 execution 
@@ -215,6 +216,8 @@ and later we will prove that it is impossible in the single-server setting.
 \section{Two-Server PIR Constructions}
 \subsection{$\sqrt{n}$-Bandwidth 
 2-Server PIR} % with Information-theoretic (IT) security}
+\label{sec:sqrtnbw}
+
 We now introduce a 2-server $\sqrt{n}$-bandwidth
 PIR scheme 
 with information theoretic security, i.e., 
@@ -247,10 +250,12 @@ is the vector that is $1$
 at position $j$, and $0$ everywhere else,
 and $\oplus$ denotes bitwise XOR (i.e., addition mod 2).
 The client sends $v_1$ and $v_2$ 
-to the two servers $S_1$ and $S_2$ respectively.
-	\item Each server $S_i$, on receiving $v_i$, 
-computes the matrix-vector product,
-	\[r_{i} \leftarrow M v_{i} \bmod 2\]
+to the two servers, respectively.
+	\item For $i \in \{1, 2\}$, 
+%${\sf Server}_i$ 
+server $i$ 
+computes the following matrix-vector product on receiving $v_i$:
+	\[r_{i} \leftarrow M v_{i} \bmod 2, \]
 	and sends the $\sqrt{n}$-sized vector $r_{i}$ to the client.
 	\item The client computes and outputs $r_{1} \oplus r_{2}$.
 \end{enumerate}
@@ -261,30 +266,70 @@ Lastly, this scheme is private, since
 each individual vector $v_{1}$ or $v_{2}$ 
 is uniformly random.
 
-\subsection{$n^{\frac{1}{3}}$-BW 2-server Scheme\cite{chor1998private}}
-We will first motivate this construction with a two server scheme with expected $\frac{n}{2}$ bandwidth and a eight server scheme with $n^{\frac 1 3}$ bandwidth. 
-\begin{enumerate}
-	\item \textbf{$\mathbb{E}[\frac{n}{2}]$-BW 2-server Scheme}
-	
-		The client samples $S_{1} \subseteq [n]$ uniformly as follows: for each $i \in [n],$ add $i$ to $S_{1}$ with probability $\frac{1}{2}$. Then, the client computes
-		\[S_{2} = S_{1} \Delta \{i\}\]
-		where $\Delta$ is the symmetric difference operator. That is, if $i$ is included in $S_1$, we remove it from the set, otherwise we add it to the set. $S_{1},S_{2}$ are sent to each server respectively, where server $i$ computes and sends back,
-		\[r_{i} \leftarrow \bigoplus_{j \in S_{i}} \DB[j]\]
-		The client on receiving $r_1,r_2$ outputs $r_1 \oplus r_2$. 
-	
-		\textbf{Correctness} follows from the fact that $i$ is the only database index that appears once, with every other index appearing twice (hence XOR'ing to 0).
+\subsection{$n^{\frac{1}{3}}$-Bandwith 2-Server PIR} %\cite{chor1998private}}
+Chor et al.~\cite{chor1998private}
+showed how to 
+get an information-theoretic 2-Server PIR scheme
+with $O(n^{1/3})$ bandwidth in expectation.
+To get this scheme, we 
+will go through a couple stepping stones. 
+Specficially, we first 
+describe a 2-server scheme 
+%We will first motivate this construction with a two server scheme 
+with expected $\frac{n}{2}$ bandwidth, 
+and an 8-server scheme with $O(n^{\frac 1 3})$ bandwidth. 
+Eventually, we will get a 2-server scheme 
+with $O(n^{\frac 1 3})$ bandwidth
+by coalescing the 
+eight servers down to two.
 
-		\textbf{Privacy}: First, $S_1$ is uniformly random. Second, to see why $S_2$ is uniformly random to server 2, just consider the following distribution -- ``tossing $n$ random coins, and flip the $i$-th coin afterwards, regardless of the original result''. This distribution is uniformly random even when $i$ is known. % because we are just flipping the random coin for $$
+%\begin{enumerate}
+\paragraph{Warmup 1: $\mathbb{E}[\frac{n}{2}]$-Bandwidth 2-Server Scheme.}
+Below is a simple 2-server PIR scheme with 
+$\frac{n}{2}$ expected bandwidth:
+\begin{enumerate}
+\item  
+		The client samples 
+a subset $S_{1} \subseteq [n]$ uniformly as follows: for each $i \in [n],$ add $i$ to $S_{1}$ with probability $\frac{1}{2}$. Then, the client computes
+		\[S_{2} = S_{1} \Delta \{i\}\]
+		where $\Delta$ is the symmetric difference operator, 
+that is, if $i$ is included in $S_1$, we remove it from the set, otherwise we add it to the set. 
+The client sends $S_{1},S_{2}$ to each server respectively.
+\item 
+For $i \in \{1, 2\}$, 
+server $i$ computes and sends back
+		\[r_{i} := \bigoplus_{j \in S_{i}} \DB[j]\]
+\item 
+		On receiving $r_1,r_2$, the client outputs $r_1 \oplus r_2$. 
+\end{enumerate}
+	
+{Correctness} follows from the fact that $i$ is the only database 
+index that appears once in $S_1$ and $S_2$, 
+and every other index $j\neq i$ appears twice 
+and thus the $j$-th index XORs away.
+%$\DB[j] \oplus \DB[j] = 0$
+%(hence XOR'ing to 0).
+For privacy, 
+%		\textbf{Privacy}: 
+observe 
+that $S_1$ is a uniformly random set.
+Further, for any $i \in [n]$, $S_2 = S_1 \Delta \{i\}$ 
+is also a uniform random set. To see 
+this, 
+just consider the following distribution: toss 
+$n$ random coins, and then flip the $i$-th coin. 
+This distribution is uniformly random. %even when $i$ is known. 
         
 \begin{remark}        
-Note that if we run the above $n/2$-BW scheme not on bits,
+Note that if we run the above $n/2$-bandwidth scheme not on bits,
 but on blocks of $\sqrt{n}$ size (i.e., treat
 the $n$-bit database as $\sqrt{n}$ blocks each of size $\sqrt{n})$, 
-the scheme is equivalent to the earlier $\sqrt{n}$-BW scheme.
+the scheme is equivalent to the earlier $\sqrt{n}$-bandwidth scheme
+in \Cref{sec:sqrtnbw}.
 \end{remark}
 	
 		%Although this is not a great bandwidth result, it has good ideas for the $n^{\frac 1 3}$-bandwidth case.
-	\item \textbf{$n^{\frac 1 3}-$BW 8-server Scheme}
+\paragraph{Warmup 2: $n^{\frac 1 3}-$BW 8-server Scheme.}
 	
 		The idea is to view the database as a $n^{\frac 1 3} \times n^{\frac 1 3} \times n^{\frac 1 3}$ cube. Then, each index $i \in \{0,1,\dots,n - 1\}$ can be expressed as a thruple $(x^\star, y^\star, z^\star)$ (note we start at $0$ for natural base 3 representation.
 
@@ -315,7 +360,7 @@ the scheme is equivalent to the earlier $\sqrt{n}$-BW scheme.
 		\end{proof}
 
 		Privacy follows the argument as the previous case. 
-\end{enumerate}
+%\end{enumerate}
 
 Now, we finally compress this scheme from eight servers to two servers. To do this, the client sends $S_{000}$ to server 1 and $S_{111}$ to server 2.
 
