@@ -413,35 +413,78 @@ where
 $i = (x^\star, y^\star, z^\star)$.
 \end{claim}
 		\begin{proof}
-		For every $(x,y,z)$ not equal to the query, it will appear an even number times in the summation. We can pair up the sets to see this. 
-
-		On the other hand, $(x^\star, y^\star, z^\star)$ only appears once in the summation so we are done.
+For every $(x,y,z)$ not equal to the query $(x^*, y^*, z^*)$, 
+$\DB[x, y, z]$ appears an even number times in the XOR summation. 
+We can pair up the sets to see this. 
+On the other hand, the queried index
+ $\DB[x^\star, y^\star, z^\star]$ appears only once in the 
+XOR summation.
 		\end{proof}
 
-		Privacy follows the argument as the previous case. 
+		Privacy follows the argument as before, by observing
+that each of 
+$S_{000}, \ldots, S_{111}$
+has the same distribution as:
+sample $X$, $Y$, $Z$  
+at random 
+by including each of $\{0, \ldots, n^{\frac13}-1\}$
+with probability $1/2$, 
+and output the Cartesian product $X \times Y \times Z$.
 %\end{enumerate}
 
+\paragraph{$n^{\frac13}$-bandwidth 2-server scheme.}
 Now, we finally compress this scheme from eight servers to two servers. To do this, the client sends $S_{000}$ to server 1 and $S_{111}$ to server 2.
 
-Each server on receiving $X' \times Y' \times Z'$ calculates $3 n^{\frac1 3}$ parities to send to the client as follows:
+Henceforth, 
+the parity for some set $S$
+means $\oplus_{j \in S} \DB[j]$. 
+Each server, on receiving $X', Y', Z'$, 
+returns not only the parity of the set 
+$X' \times Y' \times Z'$, but also 
+the parities of the following 
+$3 n^{\frac1 3}$ sets:  
 \begin{enumerate}
-	\item For each $x' \in \{0,\dots,n^{\frac 1 3} - 1\}$ we calculate the parity for $(X' \Delta \{x'\}) \times Y' \times  Z'$ as in the previous scheme.
-	\item For each $y' \in \{0,\dots,n^{\frac 1 3} - 1\}$ we calculate the parity for $X' \times (Y' \Delta \{y'\}) \times  Z'$ as in the previous scheme.
-	\item For each $z' \in \{0,\dots,n^{\frac 1 3} - 1\}$ we calculate the parity for $X' \times Y' \times  (Z' \Delta \{z'\})$ as in the previous scheme.
+\item For each $x' \in \{0,\dots,n^{\frac 1 3} - 1\}$, the server
+returns 
+the parity of the 
+set $(X' \Delta \{x'\}) \times Y' \times  Z'$. %as in the previous scheme.
+	\item For each $y' \in \{0,\dots,n^{\frac 1 3} - 1\}$, the server 
+returns the parity of  
+the set $X' \times (Y' \Delta \{y'\}) \times  Z'$.
+	\item For each $z' \in \{0,\dots,n^{\frac 1 3} - 1\}$, the server
+returns the parity of the set $X' \times Y' \times  (Z' \Delta \{z'\})$.
 \end{enumerate}
 
-Now each server returns $1+3n^{1/3}$ parities to the client.
+Now, observe that 
+the client can find 
+the parities of $S_{000}$ and $S_{100}, S_{010}, S_{001}$
+from the first server's response, 
+and it can find the parities 
+of $S_{111}$ and $S_{011}, S_{101}, S_{110}$
+from the second server's response.
+Thus, it can still reconstruct the answer $\DB[i]$
+as in the eight-server scheme. 
+
+
+%$1+3n^{1/3}$ parities to the client.
+\ignore{
 That is, the server 1 will actually compute $S_{000}$ and $S_{100}, S_{010}, S_{001}$ will be in those $3n^{1/3}$ parities. 
 Similarly, the server 2 will compute $S_{111}$, and $S_{011},S_{101},S_{110}$ will be in those $3n^{1/3}$ parities.
 The client will be able to pick out the correct parities corresponding to its actual query.
+}
 
-Thus, this scheme still has $n^{\frac 1 3}$ bandwidth, and correctness and security still follow.
+Thus, this scheme still has $O(n^{\frac 1 3})$ bandwidth, 
+and correctness and privacy follow as before.
 
-\section{State of the Art and Open Problem}
-	For the 2-server setting, the best
-known lower bound states that $5 - o(1)\log n$ bandwidth is necessary (\cite{WdW05}),  while the best known upper bound requires 
-	$n^{O\left(\sqrt{\lg \lg n / \lg n}\right)} = n^{o(1)}$, i.e., 
+\subsection{Status Quo and Open Problems}
+It is known 
+any 2-server information-theoretic PIR must incur
+ at least 
+$5 - o(1)\log n$ bandwidth~\cite{WdW05},  
+while the best known upper bound requires 
+	$n^{O\left(\sqrt{\lg \lg n / \lg n}\right)} = n^{o(1)}$ bandwith (i.e., 
 sub-polynomial
-bandwidth (\cite{dvir20162}). Closing this gap is a long-standing open problem. 
+bandwidth)~\cite{dvir20162}. 
+Closing this gap is a long-standing open problem. 
 
 
