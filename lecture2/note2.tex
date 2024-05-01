@@ -40,7 +40,7 @@ Therefore, if the user were given the value of $f(1),f(2),f'(1),f'(2)$ then they
     \item User picks $\bfv\in \mathbb{F}_3^m$ uniformly at random
     \item To server $j\in [2]$, user sends $\bfp+j\bfv$
     \item Server $j$ returns $F(\bfp+j\bfv),\frac{\partial F}{\partial z_1}\big|_{(\bfp+j\bfv)},\ldots, \frac{\partial F}{\partial z_m}\big|_{(\bfp+j\bfv)}$
-    \item For $j\in [2]$, server computes $f'(j)=\sum_{\ell=1}^m\frac{\partial F}{\partial z_\ell}\big|_{(\bfp+j\bfv)}\bfv_\ell$ (where $\bfv_\ell$ is the value at the $\ell$-th index of $\bfv$). Use $f(1),f(2),f'(1),f'(2)$ to compute $f(0)$ and output the answer.
+    \item For $j\in [2]$, client computes $f'(j)=\sum_{\ell=1}^m\frac{\partial F}{\partial z_\ell}\big|_{(\bfp+j\bfv)}\bfv_\ell$ (where $\bfv_\ell$ is the value at the $\ell$-th index of $\bfv$). Use $f(1),f(2),f'(1),f'(2)$ to compute $f(0)$ and output the answer.
 \end{enumerate}
 Correctness follows since $f'(\lambda)\big|_j=\sum_{\ell=1}^m\frac{\partial F}{\partial z_\ell}\big|_{(\bfp+j\bfv)}\bfv_\ell$ using the chain rule. Privacy follows for the same reason as in the previous protocol. Note that the communication here is $O(m)=O(n^{1/3})$ but symmetric. Next, we will see a protocol where the communication is significantly reduced using ideas from coding theory.
 \subsection{2-Server PIR using Matching Vector Families}

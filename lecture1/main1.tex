@@ -6,14 +6,18 @@
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
+\usepackage[capitalize,noabbrev]{cleveref}
 \geometry{a4paper, margin=1in}
 
 % Theorem Environments
 \newtheorem{theorem}{Theorem}
+\newtheorem{claim}{Claim}
 \newtheorem{remark}{Remark}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}{
 \newtheorem{definition}[theorem]{Definition}
+}
 \newtheorem{proposition}[theorem]{Proposition}
 
 \input{macro}
