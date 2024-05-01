@@ -1,0 +1,40 @@
+\documentclass[11pt]{article}
+
+% Packages
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+% Theorem Environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\input{macro}
+
+% Document Information
+\title{{\Large Cryptography meets algorithms (15893) Lecture Notes}\\[5pt]
+{\bf Lecture 12: Oblivious Data Structures}}
+\author{Scribe: Tanisha Saxena}
+\date{\today}
+
+
+
+\begin{document}
+
+\maketitle
+
+{
+\input{note12}
+}
+
+\newpage
+\bibliographystyle{alpha}
+\bibliography{refs.bib}
+\end{document}
