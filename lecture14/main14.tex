@@ -1,0 +1,71 @@
+\documentclass[11pt]{article}
+\usepackage[dvipsnames]{xcolor}
+% Packages
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{calc,positioning}
+\usetikzlibrary{shapes.multipart}
+\usepackage[utf8]{inputenc}
+\usepackage[linesnumbered,vlined,ruled]{algorithm2e}
+\SetCommentSty{emph}
+\SetKwProg{Fn}{\textbf{Function}}{}{}
+\usepackage{geometry}
+\usepackage{mdframed}
+
+
+\input{macro}
+
+
+%\definecolor{g1}{gray}{0.7}
+%\definecolor{g2}{gray}{0.6}
+%\definecolor{g3}{gray}{0.5}
+%\definecolor{g4}{gray}{0.4}
+%\definecolor{g5}{gray}{0.3}
+%\definecolor{g6}{gray}{0.2}
+%\definecolor{g7}{gray}{0.1}
+\definecolor{g1}{gray}{0}
+\definecolor{g2}{gray}{0}
+\definecolor{g3}{gray}{0}
+\definecolor{g4}{gray}{0}
+\definecolor{g5}{gray}{0}
+\definecolor{g6}{gray}{0}
+\definecolor{g7}{gray}{0}
+\definecolor{g8}{gray}{0}
+
+
+
+\geometry{a4paper, margin=1in}
+
+\theoremstyle{definition}
+% Theorem Environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+
+
+% Document Informatio n
+\title{{\Large Cryptography Meets Algorithms (15893) Lecture Notes}\\[5pt]
+{\bf Lecture 9: Oblivious Parallel RAMs (OPRAMs)}}
+\author{Scribe: Jeff Xu}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+% Please create a file named noteX.tex, where X is the number of the course. 
+% Only edit the noteX.tex if possible.
+% If you want to define macros, please have them inside the noteX.tex file.
+
+{
+\input{note14.tex}
+}
+\bibliographystyle{alpha}
+\bibliography{refs.bib}
+\end{document}
